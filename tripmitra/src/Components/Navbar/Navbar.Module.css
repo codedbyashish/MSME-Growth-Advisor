@@ -2,28 +2,60 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 0rem 1rem;
   background-color: #f8f9fa;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 10px;
 }
-.log {
+
+.logo {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
+
 .logo img {
   height: 40px;
 }
 
-button {
+.name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.middle {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.middle p {
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.middle p:hover {
+  color: #007bff;
+}
+
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.trip {
   padding: 0.5rem 1rem;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.middile {
-  display: flex;
-  gap: 1rem;
+.trip:hover {
+  background-color: #0056b3;
 }
