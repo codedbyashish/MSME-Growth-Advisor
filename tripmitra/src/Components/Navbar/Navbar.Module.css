@@ -64,7 +64,7 @@
   transition: color 0.25s ease;
 }
 
-/* underline animation on hover */
+
 .middle p::after {
   content: "";
   position: absolute;
