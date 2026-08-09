@@ -65,7 +65,11 @@ export default function SignupPage({
       isDark ? 'bg-[#0a0f16] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* Background Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293715_1px,transparent_1px),linear-gradient(to_bottom,#1f293715_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
+      <div className={`absolute inset-0 pointer-events-none z-0 ${
+        isDark 
+          ? 'bg-[linear-gradient(to_right,#1f293730_1px,transparent_1px),linear-gradient(to_bottom,#1f293730_1px,transparent_1px)]' 
+          : 'bg-[linear-gradient(to_right,#cbd5e180_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e180_1px,transparent_1px)]'
+      } bg-[size:32px_32px]`} />
 
       {/* Ambient Glow Orbs */}
       <div className="absolute top-10 left-10 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/20 via-teal-500/15 to-transparent blur-[140px] rounded-full pointer-events-none animate-pulse-slow z-0" />

@@ -27,14 +27,18 @@ import {
   Zap,
   HelpCircle,
   FileText,
-  Menu
+  Menu,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
+import { useTheme } from '../context/ThemeContext';
 import Sidebar from './Sidebar';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
   const {
     sales,
     expenses,
@@ -156,7 +160,28 @@ export default function Dashboard() {
   const pendingSalesTotal = sales.filter(s => s.status === 'Pending').reduce((acc, curr) => acc + curr.amount, 0);
 
   return (
-    <div className="flex min-h-screen bg-[#090d14] text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
+    <div className={`flex min-h-screen font-sans selection:bg-emerald-500 selection:text-white relative overflow-x-hidden transition-colors duration-300 ${
+      isDark ? 'bg-[#090d14] text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
+      {/* Background Grid Pattern - Dark & Light Mode Adaptive */}
+      <div className={`absolute inset-0 pointer-events-none z-0 ${
+        isDark 
+          ? 'bg-[linear-gradient(to_right,#1f293730_1px,transparent_1px),linear-gradient(to_bottom,#1f293730_1px,transparent_1px)]' 
+          : 'bg-[linear-gradient(to_right,#cbd5e180_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e180_1px,transparent_1px)]'
+      } bg-[size:32px_32px]`} />
+
+      {/* Ambient Glow Orbs */}
+      <div className={`absolute top-10 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none animate-pulse-slow z-0 blur-[150px] ${
+        isDark 
+          ? 'bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent' 
+          : 'bg-gradient-to-tr from-emerald-500/10 via-teal-400/10 to-transparent'
+      }`} />
+      <div className={`absolute bottom-10 right-10 w-[450px] h-[450px] rounded-full pointer-events-none animate-pulse-slow z-0 blur-[150px] ${
+        isDark 
+          ? 'bg-gradient-to-br from-emerald-400/10 to-cyan-500/10' 
+          : 'bg-gradient-to-br from-emerald-500/10 to-cyan-400/10'
+      }`} />
+
       {/* Sidebar Component */}
       <Sidebar 
         activeTab={activeTab} 
@@ -173,14 +198,18 @@ export default function Dashboard() {
       />
 
       {/* Main Content Area Container */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Top Sticky Header */}
-        <header className="sticky top-0 z-30 bg-[#0c121b]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <header className={`sticky top-0 z-30 backdrop-blur-md border-b px-4 sm:px-8 py-3.5 flex items-center justify-between transition-colors ${
+          isDark ? 'bg-[#0c121b]/95 border-slate-800/80 text-white' : 'bg-white/90 border-slate-200 text-slate-900 shadow-sm'
+        }`}>
           <div className="flex items-center space-x-3">
             {/* Mobile Hamburger Trigger */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:text-white"
+              className={`md:hidden p-2 rounded-xl border transition-colors ${
+                isDark ? 'border-slate-800 bg-slate-900 text-slate-300 hover:text-white' : 'border-slate-200 bg-slate-100 text-slate-700 hover:text-slate-900'
+              }`}
               title="Open Navigation Menu"
             >
               <Menu className="w-5 h-5" />
@@ -188,7 +217,9 @@ export default function Dashboard() {
 
             {/* Active Page Title & Subtitle */}
             <div>
-              <h1 className="text-lg font-bold text-white font-poppins tracking-tight flex items-center space-x-2">
+              <h1 className={`text-lg font-bold font-poppins tracking-tight flex items-center space-x-2 ${
+                isDark ? 'text-white' : 'text-slate-900'
+              }`}>
                 <span>
                   {activeTab === 'dashboard' && 'Financial Overview'}
                   {activeTab === 'sales' && 'Sales & Revenue'}
@@ -197,7 +228,9 @@ export default function Dashboard() {
                   {activeTab === 'insights' && 'AI Risk & Strategy'}
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
+              <p className={`text-[11px] font-medium hidden sm:block ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`}>
                 Welcome back, Rajesh • Surat Textiles
               </p>
             </div>
@@ -206,13 +239,19 @@ export default function Dashboard() {
           {/* Global Search Bar */}
           <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`} />
               <input 
                 type="text"
                 placeholder="Search invoices, clients, expenses, items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-900/90 border border-slate-800/90 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors"
+                className={`w-full pl-10 pr-4 py-2 border rounded-xl text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors ${
+                  isDark 
+                    ? 'bg-slate-900/90 border-slate-800/90 text-slate-200' 
+                    : 'bg-slate-100/90 border-slate-200 text-slate-800'
+                }`}
               />
               {searchQuery && (
                 <button 
@@ -227,6 +266,23 @@ export default function Dashboard() {
 
           {/* Header Action Buttons */}
           <div className="flex items-center space-x-3">
+            {/* Dark/Light Mode Theme Toggle Button */}
+            <button 
+              onClick={toggleTheme}
+              className={`p-2 rounded-xl border transition-all hover:scale-105 active:scale-95 shadow-md flex items-center justify-center ${
+                isDark 
+                  ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-emerald-400' 
+                  : 'bg-slate-100 border-slate-200 text-slate-700 hover:text-emerald-600'
+              }`}
+              title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-indigo-600" />
+              )}
+            </button>
+
             <button 
               onClick={() => setIsAiChatOpen(!isAiChatOpen)}
               className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-all shadow-md relative"
@@ -245,10 +301,14 @@ export default function Dashboard() {
 
             <button 
               onClick={() => navigate('/')}
-              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900 border border-slate-800/80 transition-colors"
+              className={`p-2 rounded-xl border transition-colors ${
+                isDark 
+                  ? 'text-slate-400 hover:text-white bg-slate-900 border-slate-800/80' 
+                  : 'text-slate-600 hover:text-slate-900 bg-slate-100 border-slate-200'
+              }`}
               title="Return to Landing Page"
             >
-              <Home className="w-4 h-4 text-emerald-400" />
+              <Home className="w-4 h-4 text-emerald-500" />
             </button>
           </div>
         </header>
