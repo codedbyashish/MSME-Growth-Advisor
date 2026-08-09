@@ -13,10 +13,7 @@ import {
   ChevronRight, 
   Home, 
   LogOut, 
-  User, 
-  X,
-  AlertTriangle,
-  Building2
+  X
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -49,14 +46,14 @@ export default function Sidebar({
       label: 'Sales & Revenue',
       icon: TrendingUp,
       badge: salesCount > 0 ? salesCount : null,
-      badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+      badgeColor: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
     },
     {
       id: 'expenses',
       label: 'Expenses & Costs',
       icon: TrendingDown,
       badge: expensesCount > 0 ? expensesCount : null,
-      badgeColor: 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+      badgeColor: 'bg-rose-500/15 text-rose-400 border-rose-500/30'
     },
     {
       id: 'inventory',
@@ -69,21 +66,23 @@ export default function Sidebar({
       id: 'insights',
       label: 'AI Risk & Strategy',
       icon: Sparkles,
-      badge: 'AI Live',
-      badgeColor: 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-300 border-emerald-500/40'
+      badge: 'AI',
+      badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
     }
   ];
 
   const sidebarContent = (
-    <div className="h-full flex flex-col justify-between p-4 selection:bg-emerald-500 selection:text-white">
-      {/* Top Header & Logo */}
+    <div className={`h-full flex flex-col justify-between selection:bg-emerald-500 selection:text-white ${
+      collapsed ? 'p-2 sm:p-3' : 'p-4'
+    }`}>
+      {/* Brand Header */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between px-2 py-1">
+        <div className={`flex items-center ${collapsed ? 'flex-col gap-3 justify-center text-center' : 'justify-between'} px-1 py-1`}>
           <div 
             onClick={() => navigate('/')} 
             className="flex items-center space-x-3 cursor-pointer group select-none overflow-hidden"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-950/50 group-hover:scale-105 transition-transform shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-950/40 group-hover:scale-105 transition-transform shrink-0">
               <BarChart3 className="w-5 h-5 text-slate-950" />
             </div>
 
@@ -95,7 +94,7 @@ export default function Sidebar({
                   MSME <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-400">Advisor</span>
                 </span>
                 <span className="text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
-                  Growth Co-Pilot
+                  Financial Co-Pilot
                 </span>
               </div>
             )}
@@ -104,7 +103,7 @@ export default function Sidebar({
           {/* Desktop Collapse Toggle */}
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden md:flex p-1.5 rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 hover:text-white transition-colors"
+            className="hidden md:flex p-1.5 rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 hover:text-white transition-colors shrink-0"
             title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -114,43 +113,29 @@ export default function Sidebar({
           {mobileOpen && (
             <button
               onClick={() => setMobileOpen(false)}
-              className="md:hidden p-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-white"
+              className="md:hidden p-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-white shrink-0"
             >
               <X className="w-5 h-5" />
             </button>
           )}
         </div>
 
-        {/* Quick Sidebar Action Triggers */}
+        {/* Quick Action Button */}
         {!collapsed ? (
-          <div className="space-y-2 pt-1">
+          <div className="pt-1">
             <button
               onClick={() => {
                 if (onAddSale) onAddSale();
                 if (mobileOpen) setMobileOpen(false);
               }}
-              className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-md shadow-emerald-950/40 hover:scale-[1.02] active:scale-95"
+              className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition-all shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-95"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
               <span>RECORD NEW SALE</span>
             </button>
-
-            <button
-              onClick={() => {
-                if (onOpenAiChat) onOpenAiChat();
-                if (mobileOpen) setMobileOpen(false);
-              }}
-              className="w-full py-2 px-3 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-400 font-semibold text-xs flex items-center justify-between transition-all"
-            >
-              <div className="flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 text-emerald-300 animate-pulse" />
-                <span>Ask AI Co-Pilot</span>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            </button>
           </div>
         ) : (
-          <div className="flex flex-col items-center space-y-2 pt-1">
+          <div className="flex justify-center pt-1">
             <button
               onClick={onAddSale}
               className="w-10 h-10 rounded-xl bg-emerald-500 text-slate-950 flex items-center justify-center font-bold shadow-md hover:scale-105"
@@ -158,21 +143,14 @@ export default function Sidebar({
             >
               <Plus className="w-5 h-5 stroke-[3]" />
             </button>
-            <button
-              onClick={onOpenAiChat}
-              className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500/40 text-emerald-400 flex items-center justify-center"
-              title="Ask AI Co-Pilot"
-            >
-              <Sparkles className="w-5 h-5" />
-            </button>
           </div>
         )}
 
         {/* Navigation Section */}
-        <nav className="space-y-1.5 pt-2">
+        <nav className="space-y-1 pt-2">
           {!collapsed && (
             <div className="px-3 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-2">
-              Main Menu
+              Menu
             </div>
           )}
 
@@ -190,12 +168,12 @@ export default function Sidebar({
                 title={collapsed ? item.label : undefined}
                 className={`w-full flex items-center ${collapsed ? 'justify-center py-3' : 'justify-between px-3.5 py-2.5'} rounded-xl text-xs font-semibold transition-all group ${
                   isActive 
-                    ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/10 text-emerald-400 border border-emerald-500/30 shadow-md shadow-emerald-950/20' 
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold shadow-sm' 
                     : (isDark ? 'text-slate-400 hover:text-white hover:bg-slate-900/80' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100')
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <Icon className={`w-4 h-4 transition-transform group-hover:scale-110 ${
+                  <Icon className={`w-4.5 h-4.5 transition-transform group-hover:scale-105 ${
                     isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'
                   }`} />
                   {!collapsed && <span>{item.label}</span>}
@@ -216,24 +194,19 @@ export default function Sidebar({
               if (onOpenHealthAudit) onOpenHealthAudit();
               if (mobileOpen) setMobileOpen(false);
             }}
-            title={collapsed ? "Health Audit" : undefined}
+            title={collapsed ? "Bank Health Audit" : undefined}
             className={`w-full flex items-center ${collapsed ? 'justify-center py-3' : 'justify-between px-3.5 py-2.5'} rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900/80 transition-all group`}
           >
             <div className="flex items-center space-x-3">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <ShieldCheck className="w-4.5 h-4.5 text-emerald-400 group-hover:scale-105 transition-transform" />
               {!collapsed && <span>Bank Health Audit</span>}
             </div>
-            {!collapsed && (
-              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                Audit
-              </span>
-            )}
           </button>
         </nav>
       </div>
 
-      {/* Footer Profile & Logout Controls */}
-      <div className="pt-4 border-t border-slate-800/80 space-y-3">
+      {/* Footer User Card */}
+      <div className="pt-4 border-t border-slate-800/80">
         {!collapsed ? (
           <div className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between">
             <div className="flex items-center space-x-3 overflow-hidden">
@@ -274,14 +247,14 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Desktop Persistent Collapsible Sidebar */}
+      {/* Desktop Persistent Sidebar */}
       <aside className={`hidden md:block sticky top-0 h-screen transition-all duration-300 z-40 border-r ${
-        isDark ? 'bg-[#0d131a]/95 border-slate-800/80 text-white' : 'bg-white border-slate-200 text-slate-900'
+        isDark ? 'bg-[#0b1017] border-slate-800/80 text-white' : 'bg-white border-slate-200 text-slate-900'
       } ${collapsed ? 'w-20' : 'w-64'}`}>
         {sidebarContent}
       </aside>
 
-      {/* Mobile Drawer Backdrop & Sidebar */}
+      {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div 
@@ -289,7 +262,7 @@ export default function Sidebar({
             className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm animate-fade-in" 
           />
           <aside className={`relative w-72 h-full z-10 shadow-2xl transition-all duration-300 ${
-            isDark ? 'bg-[#0d131a] text-white border-r border-slate-800' : 'bg-white text-slate-900 border-r border-slate-200'
+            isDark ? 'bg-[#0b1017] text-white border-r border-slate-800' : 'bg-white text-slate-900 border-r border-slate-200'
           }`}>
             {sidebarContent}
           </aside>

@@ -174,115 +174,84 @@ export default function Dashboard() {
 
       {/* Main Content Area Container */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header Navigation */}
-        <header className="sticky top-0 z-30 bg-[#0d131a]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        {/* Top Sticky Header */}
+        <header className="sticky top-0 z-30 bg-[#0c121b]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {/* Mobile Hamburger Trigger */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-300 hover:text-white"
+              className="md:hidden p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 hover:text-white"
               title="Open Navigation Menu"
             >
               <Menu className="w-5 h-5" />
             </button>
 
-            <button 
-              onClick={() => navigate('/')}
-              className="flex items-center space-x-2 text-slate-400 hover:text-white transition-colors text-xs font-semibold uppercase tracking-wider bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg"
-            >
-              <Home className="w-4 h-4 text-emerald-400" />
-              <span className="hidden sm:inline">Landing Page</span>
-            </button>
-            
-            <div className="h-5 w-[1px] bg-slate-800 hidden sm:block" />
-
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                <BarChart3 className="w-4 h-4 text-emerald-400" />
-              </div>
-              <span className="font-bold text-base text-white tracking-tight font-poppins">
-                MSME <span className="text-emerald-400 font-normal">Advisor</span>
-              </span>
+            {/* Active Page Title & Subtitle */}
+            <div>
+              <h1 className="text-lg font-bold text-white font-poppins tracking-tight flex items-center space-x-2">
+                <span>
+                  {activeTab === 'dashboard' && 'Financial Overview'}
+                  {activeTab === 'sales' && 'Sales & Revenue'}
+                  {activeTab === 'expenses' && 'Expenses & Costs'}
+                  {activeTab === 'inventory' && 'Inventory Stock'}
+                  {activeTab === 'insights' && 'AI Risk & Strategy'}
+                </span>
+              </h1>
+              <p className="text-[11px] text-slate-400 font-medium hidden sm:block">
+                Welcome back, Rajesh • Surat Textiles
+              </p>
             </div>
           </div>
 
-        {/* Global Search Bar */}
-        <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text"
-              placeholder="Search invoices, clients, expenses, items..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-1.5 bg-slate-900/90 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
+          {/* Global Search Bar */}
+          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input 
+                type="text"
+                placeholder="Search invoices, clients, expenses, items..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-slate-900/90 border border-slate-800/90 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 transition-colors"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Header Action Buttons */}
-        <div className="flex items-center space-x-3">
-          <button 
-            onClick={() => setIsAiChatOpen(!isAiChatOpen)}
-            className="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-all shadow-lg shadow-emerald-950/40 relative"
-          >
-            <Sparkles className="w-3.5 h-3.5 animate-pulse text-emerald-300" />
-            <span>AI Co-Pilot</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping absolute top-1 right-1" />
-          </button>
-
-          <button 
-            onClick={() => setIsAddSaleOpen(true)}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all shadow-md shadow-emerald-500/20"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Add Sale</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Secondary Dashboard Sub-Header / Tabs */}
-      <div className="bg-[#0d131a]/60 border-b border-slate-800/80 px-4 sm:px-8 py-2.5 flex items-center justify-between overflow-x-auto scrollbar-none">
-        <div className="flex items-center space-x-2 text-xs font-medium min-w-max">
-          {[
-            { id: 'dashboard', label: 'Overview' },
-            { id: 'sales', label: `Sales & Revenue (${sales.length})` },
-            { id: 'expenses', label: `Expenses & Costs (${expenses.length})` },
-            { id: 'inventory', label: `Inventory Stock (${inventory.length})` },
-            { id: 'insights', label: 'AI Risk & Strategy' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-3.5 py-1.5 rounded-lg transition-all ${
-                activeTab === tab.id
-                  ? 'bg-slate-800 text-emerald-400 font-semibold border border-slate-700 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
-              }`}
+          {/* Header Action Buttons */}
+          <div className="flex items-center space-x-3">
+            <button 
+              onClick={() => setIsAiChatOpen(!isAiChatOpen)}
+              className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-900/50 transition-all shadow-md relative"
             >
-              {tab.label}
+              <Sparkles className="w-3.5 h-3.5 animate-pulse text-emerald-300" />
+              <span>AI Co-Pilot</span>
             </button>
-          ))}
-        </div>
 
-        <div className="hidden lg:flex items-center space-x-2">
-          <button 
-            onClick={() => setIsAnalysisModalOpen(true)}
-            className="flex items-center space-x-1.5 px-3 py-1 text-slate-300 hover:text-white bg-slate-900 border border-slate-800 rounded-md text-xs transition-colors"
-          >
-            <FileText className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Health Audit</span>
-          </button>
-        </div>
-      </div>
+            <button 
+              onClick={() => setIsAddSaleOpen(true)}
+              className="flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-extrabold transition-all shadow-md shadow-emerald-500/20"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" />
+              <span>Add Sale</span>
+            </button>
+
+            <button 
+              onClick={() => navigate('/')}
+              className="p-2 rounded-xl text-slate-400 hover:text-white bg-slate-900 border border-slate-800/80 transition-colors"
+              title="Return to Landing Page"
+            >
+              <Home className="w-4 h-4 text-emerald-400" />
+            </button>
+          </div>
+        </header>
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
