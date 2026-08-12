@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  BarChart3, 
   TrendingUp, 
   TrendingDown, 
   DollarSign, 
-  Package, 
   AlertTriangle, 
   Plus, 
   Search, 
@@ -13,22 +11,16 @@ import {
   Send, 
   X, 
   ArrowUpRight, 
-  ArrowDownRight, 
   CheckCircle2, 
-  Clock, 
   Building2, 
   PieChart, 
   Download, 
-  Filter, 
-  RefreshCw,
-  Home,
-  ShieldCheck,
-  ChevronRight,
-  Zap,
-  HelpCircle,
-  FileText,
-  Menu,
-  Sun,
+  Home, 
+  ShieldCheck, 
+  ChevronRight, 
+  Zap, 
+  Menu, 
+  Sun, 
   Moon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -72,6 +64,18 @@ export default function Dashboard() {
   const [saleForm, setSaleForm] = useState({ client: '', item: '', amount: '', status: 'Paid' });
   const [expenseForm, setExpenseForm] = useState({ title: '', category: 'Inventory', amount: '', vendor: '' });
   const [productForm, setProductForm] = useState({ name: '', category: 'Textiles', stock: '', unit: 'Meters', unitPrice: '', minStock: '100' });
+
+  // Acme Corp Overview Card interactive states
+  const [syncStatus, setSyncStatus] = useState('ACTIVE');
+  const [syncSource, setSyncSource] = useState('QuickBooks');
+  const [revenueTimeframe, setRevenueTimeframe] = useState('MTD');
+  const [activeBarHover, setActiveBarHover] = useState(null);
+
+  const toggleSyncStatus = () => {
+    if (syncStatus === 'ACTIVE') setSyncStatus('SYNCING...');
+    else if (syncStatus === 'SYNCING...') setSyncStatus('PAUSED');
+    else setSyncStatus('ACTIVE');
+  };
 
   // AI Chat state
   const [chatMessages, setChatMessages] = useState([
@@ -319,6 +323,210 @@ export default function Dashboard() {
         {/* VIEW 1: OVERVIEW DASHBOARD */}
         {activeTab === 'dashboard' && (
           <>
+            {/* Acme Corp Growth & Daily Score Overview Card */}
+            <div className={`p-6 sm:p-8 rounded-[32px] border backdrop-blur-xl shadow-2xl transition-all duration-300 relative overflow-hidden ${
+              isDark 
+                ? 'bg-slate-900/90 border-emerald-500/30 text-white shadow-emerald-950/30' 
+                : 'bg-white/95 border-emerald-400/40 text-slate-900 shadow-emerald-500/10'
+            }`}>
+              {/* Mint Accent Background Grid Overlay matching reference design */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:28px_28px] pointer-events-none z-0 opacity-60" />
+
+              <div className="relative z-10 space-y-6">
+                {/* Card Header Row */}
+                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-700/40">
+                  <div className="flex items-center space-x-3.5">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shadow-md">
+                      <Building2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-extrabold font-poppins tracking-tight flex items-center gap-2">
+                        Acme Corp Overview
+                      </h3>
+                      <div className="flex items-center space-x-2 text-xs text-slate-400 font-semibold">
+                        <span className={`w-2 h-2 rounded-full ${syncStatus === 'ACTIVE' ? 'bg-emerald-400 animate-pulse' : syncStatus === 'SYNCING...' ? 'bg-amber-400 animate-spin' : 'bg-slate-500'}`} />
+                        <span>Live Sync:</span>
+                        <select 
+                          value={syncSource}
+                          onChange={(e) => setSyncSource(e.target.value)}
+                          className="bg-transparent text-emerald-400 font-bold focus:outline-none cursor-pointer border-b border-emerald-500/30 hover:border-emerald-400"
+                        >
+                          <option value="QuickBooks" className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>QuickBooks</option>
+                          <option value="Tally Prime" className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>Tally Prime</option>
+                          <option value="Busy ERP" className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>Busy ERP</option>
+                          <option value="HDFC Bank API" className={isDark ? 'bg-slate-900 text-white' : 'bg-white text-slate-900'}>HDFC Bank API</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interactive Status Button */}
+                  <button 
+                    onClick={toggleSyncStatus}
+                    className={`px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase transition-all shadow-sm ${
+                      syncStatus === 'ACTIVE' 
+                        ? 'bg-amber-400/20 text-amber-500 border border-amber-400/40 hover:bg-amber-400/30' 
+                        : syncStatus === 'SYNCING...' 
+                        ? 'bg-blue-500/20 text-blue-400 border border-blue-500/40 animate-pulse' 
+                        : 'bg-slate-800 text-slate-400 border border-slate-700'
+                    }`}
+                    title="Click to toggle sync status"
+                  >
+                    {syncStatus}
+                  </button>
+                </div>
+
+                {/* Score & KPIs Grid */}
+                <div className="grid lg:grid-cols-12 gap-6 items-center">
+                  
+                  {/* Left: Daily Growth Score & Micro Cards */}
+                  <div className="lg:col-span-5 space-y-5">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-extrabold tracking-widest uppercase text-slate-400">
+                          DAILY GROWTH SCORE
+                        </span>
+                      </div>
+                      <div className="flex items-baseline space-x-3">
+                        <span className="text-5xl font-black font-poppins text-emerald-400 tracking-tight">
+                          81
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold border border-emerald-500/30">
+                          <TrendingUp className="w-3.5 h-3.5 mr-1" /> +3.4%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Net Revenue & Burn Rate Micro Cards */}
+                    <div className="space-y-2">
+                      {/* Timeframe Selector Pills */}
+                      <div className="flex items-center justify-end space-x-1 text-[10px] font-extrabold">
+                        {['MTD', 'QTD', 'YTD'].map(tf => (
+                          <button
+                            key={tf}
+                            onClick={() => setRevenueTimeframe(tf)}
+                            className={`px-2 py-0.5 rounded-md transition-colors ${
+                              revenueTimeframe === tf 
+                                ? 'bg-emerald-500 text-slate-950 font-black' 
+                                : 'text-slate-400 hover:text-slate-200'
+                            }`}
+                          >
+                            {tf}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Net Revenue */}
+                        <div className={`p-4 rounded-2xl border transition-all ${
+                          isDark 
+                            ? 'bg-[#475569]/80 border-slate-600/60 text-white shadow-md' 
+                            : 'bg-[#505763] border-slate-600 text-white shadow-md'
+                        }`}>
+                          <span className="text-[10px] font-extrabold tracking-wider uppercase text-slate-300 block mb-1">
+                            NET REVENUE ({revenueTimeframe})
+                          </span>
+                          <div className="text-2xl font-black font-poppins text-white">
+                            {revenueTimeframe === 'MTD' && '₹120k'}
+                            {revenueTimeframe === 'QTD' && '₹360k'}
+                            {revenueTimeframe === 'YTD' && '₹14.2L'}
+                          </div>
+                        </div>
+
+                        {/* Burn Rate */}
+                        <div className={`p-4 rounded-2xl border transition-all ${
+                          isDark 
+                            ? 'bg-rose-950/40 border-rose-800/40 text-rose-200 shadow-md' 
+                            : 'bg-[#a67c7c] border-rose-300 text-white shadow-md'
+                        }`}>
+                          <span className="text-[10px] font-extrabold tracking-wider uppercase text-rose-200 block mb-1">
+                            BURN RATE
+                          </span>
+                          <div className="text-2xl font-black font-poppins text-rose-200">
+                            {revenueTimeframe === 'MTD' && '₹40k'}
+                            {revenueTimeframe === 'QTD' && '₹115k'}
+                            {revenueTimeframe === 'YTD' && '₹4.1L'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Bar Chart Visualizer with Hover Tooltips */}
+                  <div className="lg:col-span-7">
+                    <div className={`p-5 rounded-2xl border ${
+                      isDark 
+                        ? 'bg-slate-800/70 border-slate-700/60' 
+                        : 'bg-slate-200/80 border-slate-300'
+                    }`}>
+                      {/* Active Bar Hover Indicator Banner */}
+                      <div className="h-5 flex items-center justify-between text-[11px] font-bold px-1 mb-1">
+                        <span className="text-slate-400">Weekly Target Progress</span>
+                        <span className="text-emerald-400 font-poppins">
+                          {activeBarHover ? activeBarHover : 'Hover bar for daily metrics'}
+                        </span>
+                      </div>
+
+                      <div className="h-36 flex items-end justify-between gap-3 px-2 pt-2">
+                        {/* Bar 1 (Mon) */}
+                        <div 
+                          onMouseEnter={() => setActiveBarHover('Mon: Sales ₹28k | Burn ₹8k')}
+                          onMouseLeave={() => setActiveBarHover(null)}
+                          className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                        >
+                          <div className="w-full bg-emerald-700/60 group-hover:bg-emerald-500 rounded-t-lg transition-all" style={{ height: '35%' }} />
+                          <span className="text-[10px] text-slate-400 font-semibold mt-2 group-hover:text-emerald-400">Mon</span>
+                        </div>
+
+                        {/* Bar 2 (Tue) */}
+                        <div 
+                          onMouseEnter={() => setActiveBarHover('Tue: Sales ₹45k | Burn ₹12k')}
+                          onMouseLeave={() => setActiveBarHover(null)}
+                          className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                        >
+                          <div className="w-full bg-emerald-700/75 group-hover:bg-emerald-500 rounded-t-lg transition-all" style={{ height: '60%' }} />
+                          <span className="text-[10px] text-slate-400 font-semibold mt-2 group-hover:text-emerald-400">Tue</span>
+                        </div>
+
+                        {/* Bar 3 (Wed - Red Burn Drop Bar) */}
+                        <div 
+                          onMouseEnter={() => setActiveBarHover('Wed: Sales ₹15k | Burn ₹22k ⚠️ High Cost')}
+                          onMouseLeave={() => setActiveBarHover(null)}
+                          className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                        >
+                          <div className="w-full bg-rose-800/80 group-hover:bg-rose-600 rounded-t-lg transition-all" style={{ height: '25%' }} />
+                          <span className="text-[10px] text-rose-400 font-bold mt-2">Wed</span>
+                        </div>
+
+                        {/* Bar 4 (Thu) */}
+                        <div 
+                          onMouseEnter={() => setActiveBarHover('Thu: Sales ₹65k | Burn ₹14k')}
+                          onMouseLeave={() => setActiveBarHover(null)}
+                          className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer"
+                        >
+                          <div className="w-full bg-emerald-600/80 group-hover:bg-emerald-500 rounded-t-lg transition-all" style={{ height: '75%' }} />
+                          <span className="text-[10px] text-slate-400 font-semibold mt-2 group-hover:text-emerald-400">Thu</span>
+                        </div>
+
+                        {/* Bar 5 (Fri - Vivid Emerald Peak Bar with 100% badge) */}
+                        <div 
+                          onMouseEnter={() => setActiveBarHover('Fri: Sales ₹120k | Burn ₹40k 🎉 100% Target Peak!')}
+                          onMouseLeave={() => setActiveBarHover(null)}
+                          className="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer relative"
+                        >
+                          <div className="w-full bg-emerald-400 group-hover:bg-emerald-300 rounded-t-lg shadow-lg shadow-emerald-500/40 flex items-end justify-center pb-2.5 transition-all" style={{ height: '100%' }}>
+                            <span className="text-[9px] font-black text-slate-950 tracking-tighter">100%</span>
+                          </div>
+                          <span className="text-[10px] text-emerald-400 font-extrabold mt-2">Fri</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
             {/* Top Metric Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               
