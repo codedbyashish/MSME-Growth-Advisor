@@ -9,6 +9,9 @@ import AboutSection from './landing/AboutSection';
 import PricingSection from './landing/PricingSection';
 import TestimonialsSection from './landing/TestimonialsSection';
 import CtaFooterSection from './landing/CtaFooterSection';
+import GrowthCalculatorSection from './landing/GrowthCalculatorSection';
+import GrowthComparisonSection from './landing/GrowthComparisonSection';
+import GrowthLiveTicker from './landing/GrowthLiveTicker';
 import { defaultLandingData } from '../data/landingData';
 
 export default function LandingPage({ 
@@ -16,6 +19,9 @@ export default function LandingPage({
   data = defaultLandingData,
   heroData = data?.hero || defaultLandingData.hero,
   featuresData = data?.features || defaultLandingData.features,
+  calculatorData = data?.calculator || defaultLandingData.calculator,
+  comparisonData = data?.comparison || defaultLandingData.comparison,
+  liveTickerEvents = data?.liveTickerEvents || defaultLandingData.liveTickerEvents,
   onboardingData = data?.onboarding || defaultLandingData.onboarding,
   aboutData = data?.about || defaultLandingData.about,
   pricingData = data?.pricing || defaultLandingData.pricing,
@@ -68,7 +74,7 @@ export default function LandingPage({
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-300 ${
+    <div className={`min-h-screen font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-300 relative ${
       isDark ? 'bg-[#0d131a] text-slate-100' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* Grid pattern background */}
@@ -86,6 +92,7 @@ export default function LandingPage({
       {/* Ambient Gradient Fluid Glow Orbs */}
       <div className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/20 via-teal-500/15 to-transparent blur-[140px] rounded-full pointer-events-none animate-pulse-slow z-0" />
       <div className="absolute top-60 right-10 w-[400px] h-[400px] bg-gradient-to-br from-emerald-400/15 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none animate-pulse-slow z-0" />
+      <div className="absolute top-[1200px] left-10 w-[550px] h-[550px] bg-gradient-to-tr from-teal-500/15 via-emerald-500/10 to-transparent blur-[160px] rounded-full pointer-events-none z-0" />
 
       {/* Modular Landing Page Sections */}
       <HeroSection 
@@ -93,10 +100,22 @@ export default function LandingPage({
         onStart={handleStart} 
       />
 
+      {/* Interactive Growth Calculator */}
+      <GrowthCalculatorSection
+        calculatorData={calculatorData}
+        onStart={handleStart}
+      />
+
       <FeaturesSection 
         featuresData={featuresData} 
         featuresVisible={featuresVisible} 
         onStart={handleStart} 
+      />
+
+      {/* Before vs After Growth Transformation */}
+      <GrowthComparisonSection
+        comparisonData={comparisonData}
+        onStart={handleStart}
       />
 
       <OnboardingSection 
@@ -126,6 +145,10 @@ export default function LandingPage({
         setEmail={setEmail} 
         onStart={handleStart} 
       />
+
+      {/* Floating Live Growth Milestone Ticker */}
+      <GrowthLiveTicker tickerEvents={liveTickerEvents} />
     </div>
   );
 }
+

@@ -1,20 +1,110 @@
 export const defaultLandingData = {
   hero: {
-    badge: "NEW : PREDICTIVE INSIGHTS ENGINE",
-    title: "Know your business better than your accountant does.",
-    description: "Turn raw financial data into clear, actionable strategy. The MSME Growth Advisor acts as your continuous financial co-pilot, identifying risks and opportunities in real-time before they impact your bottom line.",
-    ctaPrimary: "START FREE ANALYSIS",
-    ctaSecondary: "VIEW DEMO",
+    badge: "⚡ AI-POWERED MSME GROWTH ENGINE 2.0",
+    title: "Accelerate Your Business Growth with Real-Time AI Financial Intelligence.",
+    description: "Stop relying on delayed spreadsheets. MSME Growth Advisor continuously syncs your financial ledgers, predicts cash shortages before they happen, unlocks collateral-free credit, and guides your daily growth trajectory.",
+    ctaPrimary: "CALCULATE YOUR GROWTH",
+    ctaSecondary: "TEST AI CO-PILOT LIVE",
     companyMock: {
-      name: "Acme Corp Overview",
-      syncSource: "Live Sync: QuickBooks",
-      status: "Active",
-      growthScore: 81,
-      growthTrend: "+3.4%",
-      netRevenue: "₹120k",
-      burnRate: "₹40k"
-    }
+      name: "Apex Electronics & Supplies",
+      syncSource: "Live Sync: Tally Prime + Bank Feeds",
+      status: "Active Co-Pilot",
+      growthScore: 92,
+      growthTrend: "+18.4% YoY",
+      netRevenue: "₹24.8 Lakhs",
+      burnRate: "₹4.2 Lakhs"
+    },
+    heroPrompts: [
+      {
+        id: "cash-flow",
+        label: "🔮 Forecast 90-Day Cash Flow",
+        query: "What is my cash runway for the next 90 days?",
+        answer: "Surplus of ₹6.4L projected by Month 3. Overdue invoices of ₹3.2L from 2 clients need automated collection reminders.",
+        growthMetric: "+22% Working Capital",
+        growthScore: 94,
+        bars: [40, 55, 70, 85, 100]
+      },
+      {
+        id: "loan-eligible",
+        label: "🏦 Check CGTMSE Loan Limit",
+        query: "Am I eligible for CGTMSE collateral-free credit?",
+        answer: "Eligible for up to ₹25.0 Lakhs at 8.75% p.a. Bank audit readiness score is 92/100 (Pre-approved).",
+        growthMetric: "₹25L Credit Approved",
+        growthScore: 96,
+        bars: [50, 65, 80, 92, 98]
+      },
+      {
+        id: "inventory-cut",
+        label: "📦 Optimize Inventory Deadstock",
+        query: "How can I reduce inventory carrying costs by 15%?",
+        answer: "3 fast-moving SKUs are understocked by 18%, while SKU-B4 has ₹1.8L tied up. Reallocate stock to unlock cash in 7 days.",
+        growthMetric: "₹1.8L Cash Unlocked",
+        growthScore: 91,
+        bars: [30, 45, 60, 78, 91]
+      }
+    ]
   },
+  calculator: {
+    badge: "INTERACTIVE MSME GROWTH ENGINE",
+    title: "See How Fast Your MSME Can Scale",
+    subtitle: "Select your sector & monthly turnover below to generate your personalized 90-day AI Growth Directive.",
+    sectors: [
+      { id: "textile", name: "Textiles & Garments", icon: "Shirt" },
+      { id: "manufacturing", name: "Manufacturing & Engineering", icon: "Factory" },
+      { id: "retail", name: "Retail & Wholesale Trading", icon: "ShoppingBag" },
+      { id: "services", name: "Services & Tech Agencies", icon: "Laptop" },
+      { id: "food", name: "Food & Agriculture", icon: "Utensils" }
+    ],
+    turnovers: [
+      { id: "t1", label: "₹2L - ₹5L / mo", value: 3.5 },
+      { id: "t2", label: "₹5L - ₹15L / mo", value: 10 },
+      { id: "t3", label: "₹15L - ₹50L / mo", value: 30 },
+      { id: "t4", label: "₹50L+ / mo", value: 75 }
+    ],
+    goals: [
+      { id: "cashflow", label: "Recover Overdue Payments", icon: "Zap" },
+      { id: "credit", label: "Unlock Collateral-Free Loans", icon: "Building2" },
+      { id: "margin", label: "Expand Profit Margins", icon: "TrendingUp" }
+    ]
+  },
+  comparison: {
+    badge: "THE MSME TRANSFORMATION",
+    title: "Traditional Bookkeeping vs. MSME Growth Advisor",
+    subtitle: "Move from reactive tax-filing to continuous proactive growth acceleration.",
+    items: [
+      {
+        title: "Cash Flow Forecasting",
+        traditional: "Guesswork based on bank balance at month-end",
+        advisor: "AI-predicted 90-day cash runway with automated risk warnings",
+        impact: "Zero Cash Outages"
+      },
+      {
+        title: "Overdue Invoice Recovery",
+        traditional: "Manual phone calls & 45+ day payment delays",
+        advisor: "Automated WhatsApp payment reminders with one-tap UPI links",
+        impact: "14 Days Faster Collection"
+      },
+      {
+        title: "Bank Credit Access",
+        traditional: "Months of paperwork & rejection due to informal metrics",
+        advisor: "Instant bank-ready credit health score & CGTMSE matching",
+        impact: "₹25L Unlocked Fast"
+      },
+      {
+        title: "Strategic Decision Making",
+        traditional: "Waiting 6 months for CA audit reports",
+        advisor: "Instant 24/7 AI Co-Pilot chat for pricing, hiring & expansion advice",
+        impact: "+24% Margin Growth"
+      }
+    ]
+  },
+  liveTickerEvents: [
+    { city: "Surat, Gujarat", sector: "Textiles", result: "Unlocked ₹18.5L CGTMSE Credit", time: "2 mins ago" },
+    { city: "Rajkot, Gujarat", sector: "Auto Parts", result: "Recovered ₹4.2L Overdue Receivables", time: "5 mins ago" },
+    { city: "Jaipur, Rajasthan", sector: "Crafts & Exports", result: "Boosted Profit Margin by +6.8%", time: "9 mins ago" },
+    { city: "Bengaluru, Karnataka", sector: "Electronics", result: "Reduced Inventory Carrying Cost by 18%", time: "14 mins ago" },
+    { city: "Ludhiana, Punjab", sector: "Manufacturing", result: "Achieved 96/100 Bank Credit Score", time: "18 mins ago" }
+  ],
   features: {
     title: "Enterprise-grade intelligence for the MSME ecosystem.",
     subtitle: "We strip away the complexity of financial modeling, providing you with clear directives rather than confusing spreadsheets.",
