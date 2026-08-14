@@ -16,7 +16,7 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           {comparisonData.badge && (
-            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+            <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-black uppercase tracking-wider backdrop-blur-md">
               <Zap className="w-3.5 h-3.5 text-emerald-400" />
               <span>{comparisonData.badge}</span>
             </div>
@@ -26,7 +26,7 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
             {comparisonData.title}
           </h2>
 
-          <p className={`text-base sm:text-lg leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed font-normal ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
             {comparisonData.subtitle}
           </p>
         </div>
@@ -35,25 +35,25 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
         <div className="grid lg:grid-cols-2 gap-8 items-stretch">
           {/* Traditional Way (Pain Points) */}
           <div className={`rounded-3xl p-7 border space-y-6 relative overflow-hidden ${
-            isDark ? 'bg-slate-950/60 border-red-900/30' : 'bg-red-50/40 border-red-200'
+            isDark ? 'bg-slate-900 border-red-500/40 text-white' : 'bg-red-50 border-red-300 text-slate-900'
           }`}>
-            <div className="flex items-center justify-between border-b pb-4 border-red-200 dark:border-red-900/40">
+            <div className="flex items-center justify-between border-b pb-4 border-red-200 dark:border-red-900/60">
               <div>
-                <span className="text-[10px] uppercase font-black tracking-wider text-red-500">TRADITIONAL METHOD</span>
-                <h3 className="text-xl font-bold font-poppins text-slate-800 dark:text-slate-200">Manual Bookkeeping & Excel</h3>
+                <span className="text-[10px] uppercase font-black tracking-wider text-red-600 dark:text-red-400">TRADITIONAL METHOD</span>
+                <h3 className="text-xl font-extrabold font-poppins text-slate-900 dark:text-white">Manual Bookkeeping & Excel</h3>
               </div>
-              <span className="px-3 py-1 rounded-full bg-red-500/15 text-red-500 font-extrabold text-xs">
+              <span className="px-3.5 py-1 rounded-full bg-red-500 text-white font-black text-xs uppercase">
                 Slow & Reactive
               </span>
             </div>
 
             <div className="space-y-6">
               {comparisonData.items?.map((item, idx) => (
-                <div key={idx} className="flex items-start space-x-3.5 p-3 rounded-2xl bg-red-500/5 border border-red-500/10">
-                  <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <div key={idx} className="flex items-start space-x-3.5 p-3.5 rounded-2xl bg-red-500/10 dark:bg-red-950/40 border border-red-500/20">
+                  <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5 stroke-[2.5]" />
                   <div>
-                    <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300">{item.title}</h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">{item.traditional}</p>
+                    <h4 className="text-xs font-black text-slate-900 dark:text-white">{item.title}</h4>
+                    <p className="text-xs text-slate-700 dark:text-slate-200 mt-1 leading-relaxed font-medium">{item.traditional}</p>
                   </div>
                 </div>
               ))}
@@ -63,8 +63,8 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
           {/* With MSME Growth Advisor (Growth Transformation) */}
           <div className={`rounded-3xl p-7 border space-y-6 relative overflow-hidden shadow-2xl ${
             isDark 
-              ? 'glass-panel-dark border-emerald-500/50 shadow-emerald-950/40' 
-              : 'bg-white border-emerald-500/40 shadow-emerald-500/10'
+              ? 'glass-panel-dark border-emerald-500/60 shadow-emerald-950/60 text-white' 
+              : 'bg-white border-emerald-500/50 shadow-emerald-500/15 text-slate-900'
           }`}>
             {/* Glowing Tag */}
             <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-400 to-teal-400 text-slate-950 font-black text-[10px] uppercase px-4 py-1.5 rounded-bl-2xl shadow-md">
@@ -73,8 +73,8 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
 
             <div className="flex items-center justify-between border-b pb-4 border-slate-200 dark:border-slate-800">
               <div>
-                <span className="text-[10px] uppercase font-black tracking-wider text-emerald-400">THE GROWTH ADVISOR WAY</span>
-                <h3 className="text-xl font-bold font-poppins text-slate-900 dark:text-white flex items-center space-x-2">
+                <span className="text-[10px] uppercase font-black tracking-wider text-emerald-600 dark:text-emerald-400">THE GROWTH ADVISOR WAY</span>
+                <h3 className="text-xl font-extrabold font-poppins text-slate-900 dark:text-white flex items-center space-x-2">
                   <span>AI Strategic Financial Co-Pilot</span>
                 </h3>
               </div>
@@ -82,15 +82,15 @@ export default function GrowthComparisonSection({ comparisonData, onStart }) {
 
             <div className="space-y-6">
               {comparisonData.items?.map((item, idx) => (
-                <div key={idx} className="flex items-start justify-between space-x-3.5 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+                <div key={idx} className="flex items-start justify-between space-x-3.5 p-3.5 rounded-2xl bg-emerald-500/15 dark:bg-emerald-950/40 border border-emerald-500/40">
                   <div className="flex items-start space-x-3">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white">{item.title}</h4>
-                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{item.advisor}</p>
+                      <h4 className="text-xs font-black text-slate-900 dark:text-white">{item.title}</h4>
+                      <p className="text-xs text-slate-800 dark:text-slate-100 mt-1 leading-relaxed font-medium">{item.advisor}</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 shrink-0">
+                  <span className="text-[10px] font-black uppercase px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 shrink-0 shadow-sm">
                     {item.impact}
                   </span>
                 </div>

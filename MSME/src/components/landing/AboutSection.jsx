@@ -22,7 +22,7 @@ export default function AboutSection({ aboutData }) {
           <h2 className={`text-3xl sm:text-5xl font-bold tracking-tight font-poppins ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {aboutData.title}
           </h2>
-          <p className={`text-base sm:text-lg leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+          <p className={`text-base sm:text-lg leading-relaxed font-normal ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
             {aboutData.description}
           </p>
         </div>
@@ -33,12 +33,12 @@ export default function AboutSection({ aboutData }) {
             <div 
               key={idx}
               className={`fluid-hover-card rounded-3xl p-6 border text-center space-y-2 ${
-                isDark ? 'glass-panel-dark' : 'glass-panel-light'
+                isDark ? 'glass-panel-dark text-white' : 'glass-panel-light text-slate-900'
               }`}
             >
-              <div className="text-3xl sm:text-4xl font-black text-emerald-500 font-poppins">{stat.value}</div>
-              <div className="text-xs font-bold uppercase tracking-wider text-slate-400">{stat.label}</div>
-              <p className="text-[11px] text-slate-500">{stat.sublabel}</p>
+              <div className="text-3xl sm:text-4xl font-black text-emerald-500 dark:text-emerald-400 font-poppins">{stat.value}</div>
+              <div className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">{stat.label}</div>
+              <p className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">{stat.sublabel}</p>
             </div>
           ))}
         </div>

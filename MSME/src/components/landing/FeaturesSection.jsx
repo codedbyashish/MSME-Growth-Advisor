@@ -19,10 +19,10 @@ export default function FeaturesSection({ featuresData, featuresVisible, onStart
     }`}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-poppins">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-poppins">
             {featuresData.title}
           </h2>
-          <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
+          <p className={`text-base sm:text-lg leading-relaxed font-medium ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
             {featuresData.subtitle}
           </p>
         </div>
@@ -43,27 +43,27 @@ export default function FeaturesSection({ featuresData, featuresVisible, onStart
               >
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-125 group-hover:rotate-6 ${
                   isTeal 
-                    ? 'bg-teal-500/10 border border-teal-500/30 group-hover:bg-teal-500/25' 
-                    : 'bg-emerald-500/10 border border-emerald-500/30 group-hover:bg-emerald-500/25'
+                    ? 'bg-teal-500/20 border border-teal-500/40 group-hover:bg-teal-500/30' 
+                    : 'bg-emerald-500/20 border border-emerald-500/40 group-hover:bg-emerald-500/30'
                 }`}>
-                  <IconComponent className={`w-6 h-6 ${isTeal ? 'text-teal-400' : 'text-emerald-400'}`} />
+                  <IconComponent className={`w-6 h-6 stroke-[2.5] ${isTeal ? 'text-teal-400' : 'text-emerald-400'}`} />
                 </div>
-                <h3 className={`text-xl font-bold mb-2 font-poppins transition-colors ${
+                <h3 className={`text-xl font-extrabold mb-2 font-poppins transition-colors ${
                   isTeal ? 'group-hover:text-teal-400' : 'group-hover:text-emerald-400'
                 }`}>
                   {item.title}
                 </h3>
-                <p className={`text-sm mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <p className={`text-sm mb-6 leading-relaxed font-normal ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                   {item.description}
                 </p>
 
                 {/* Sub Card Visuals */}
                 {item.id === 'ai-advisor' && (
                   <div className={`p-4 rounded-2xl border space-y-3 ${
-                    isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-100/80 border-slate-200'
+                    isDark ? 'bg-slate-900 border-slate-700' : 'bg-slate-100 border-slate-300'
                   }`}>
-                    <div className={`text-xs px-3 py-2 rounded-xl font-medium inline-block max-w-[85%] ${
-                      isDark ? 'bg-slate-800 text-slate-200' : 'bg-slate-200 text-slate-800'
+                    <div className={`text-xs px-3 py-2 rounded-xl font-bold inline-block max-w-[85%] ${
+                      isDark ? 'bg-slate-800 text-slate-100 border border-slate-700' : 'bg-white text-slate-900 border border-slate-300 shadow-sm'
                     }`}>
                       {item.badgeQuestion}
                     </div>

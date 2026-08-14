@@ -26,12 +26,12 @@ export default function TestimonialsSection({ testimonialsData }) {
             </div>
           )}
 
-          <h2 className={`text-3xl sm:text-5xl font-bold tracking-tight font-poppins ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          <h2 className={`text-3xl sm:text-5xl font-extrabold tracking-tight font-poppins ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {testimonialsData.title}
           </h2>
 
-          <p className={`text-base sm:text-lg ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            {testimonialsData.subtitle} <span className="text-emerald-500 font-semibold">{testimonialsData.hoverNotice}</span>
+          <p className={`text-base sm:text-lg font-medium ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+            {testimonialsData.subtitle} <span className="text-emerald-500 font-black">{testimonialsData.hoverNotice}</span>
           </p>
         </div>
 
@@ -57,23 +57,23 @@ export default function TestimonialsSection({ testimonialsData }) {
                       ))}
                     </div>
                     {rev.metric && (
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-500 text-slate-950 shadow-sm">
                         {rev.metric}
                       </span>
                     )}
                   </div>
 
-                  <p className={`text-xs leading-relaxed italic ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                  <p className={`text-xs leading-relaxed italic font-medium ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
                     "{rev.comment}"
                   </p>
                 </div>
 
-                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
+                <div className="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <h4 className="text-sm font-bold font-poppins">{rev.name}</h4>
-                    <p className="text-[11px] text-slate-400">{rev.role}</p>
+                    <h4 className="text-sm font-extrabold font-poppins text-slate-900 dark:text-white">{rev.name}</h4>
+                    <p className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">{rev.role}</p>
                   </div>
-                  <span className="text-[10px] text-slate-500 font-semibold">{rev.location}</span>
+                  <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold uppercase">{rev.location}</span>
                 </div>
               </div>
             ))}

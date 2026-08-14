@@ -146,31 +146,31 @@ h1, h2, h3, h4, .font-poppins {
   width: 80%;
 }
 
-/* Fluid Translucent Glass Cards */
+/* Fluid Translucent High-Contrast Glass Cards */
 .glass-panel-dark {
-  background: rgba(15, 23, 34, 0.55);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  background: rgba(13, 19, 28, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 .glass-panel-dark:hover {
-  border-color: rgba(16, 185, 129, 0.45);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 35px rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.6);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(16, 185, 129, 0.25);
 }
 
 .glass-panel-light {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(15, 23, 42, 0.18);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.05);
 }
 
 .glass-panel-light:hover {
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 30px rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.7);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 0 30px rgba(16, 185, 129, 0.2);
 }
 
 /* 3D Fluid Hover Card Sheen & Lift */

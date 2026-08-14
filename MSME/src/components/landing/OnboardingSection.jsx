@@ -14,12 +14,12 @@ export default function OnboardingSection({ onboardingData, scrollProgress }) {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16 space-y-2">
           {onboardingData.tag && (
-            <span className="text-xs font-extrabold tracking-widest text-emerald-500 uppercase">{onboardingData.tag}</span>
+            <span className="text-xs font-black tracking-widest text-emerald-500 uppercase">{onboardingData.tag}</span>
           )}
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-poppins">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight font-poppins">
             {onboardingData.title}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
+          <p className={`text-sm max-w-md mx-auto font-medium ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
             {onboardingData.subtitle}
           </p>
         </div>
@@ -41,44 +41,44 @@ export default function OnboardingSection({ onboardingData, scrollProgress }) {
               return (
                 <div 
                   key={step.number}
-                  className={`flex items-start space-x-6 p-4 rounded-2xl transition-all duration-500 ${
+                  className={`flex items-start space-x-6 p-5 rounded-2xl transition-all duration-500 border ${
                     isActive 
-                      ? (isDark ? 'bg-slate-900/90 border border-emerald-500/40 shadow-xl shadow-emerald-950/40' : 'bg-white border border-emerald-500/40 shadow-xl') 
-                      : 'opacity-70'
+                      ? (isDark ? 'bg-slate-900 border-emerald-500/60 shadow-xl shadow-emerald-950/60' : 'bg-white border-emerald-500/50 shadow-xl') 
+                      : (isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-white/80 border-slate-300')
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 transition-all duration-500 ${
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shrink-0 transition-all duration-500 ${
                     isActive 
                       ? 'bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 scale-110 shadow-lg shadow-emerald-500/40 ring-4 ring-emerald-500/20' 
-                      : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700'
+                      : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-400 dark:border-slate-600'
                   }`}>
                     {isActive ? <Check className="w-6 h-6 stroke-[3]" /> : step.number}
                   </div>
                   <div className="pt-1 flex-1">
                     <div className="flex items-center justify-between">
-                      <h3 className={`text-lg font-bold font-poppins transition-colors ${isActive ? 'text-emerald-400' : ''}`}>
+                      <h3 className={`text-lg font-extrabold font-poppins transition-colors ${isActive ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-900 dark:text-white'}`}>
                         {step.title}
                       </h3>
 
                       {step.icons && (
-                        <div className="flex space-x-2 bg-slate-200/60 dark:bg-slate-800 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                          <Building2 className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
-                          <Database className={`w-4 h-4 ${isActive ? 'text-teal-400' : 'text-slate-500'}`} />
-                          <Zap className={`w-4 h-4 ${isActive ? 'text-amber-400' : 'text-slate-500'}`} />
+                        <div className="flex space-x-2 bg-slate-100 dark:bg-slate-800 p-2 rounded-xl border border-slate-300 dark:border-slate-700">
+                          <Building2 className={`w-4 h-4 ${isActive ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-500'}`} />
+                          <Database className={`w-4 h-4 ${isActive ? 'text-teal-500 dark:text-teal-400' : 'text-slate-500'}`} />
+                          <Zap className={`w-4 h-4 ${isActive ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500'}`} />
                         </div>
                       )}
 
                       {step.badge && isActive && (
-                        <span className={`text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full border transition-all ${
+                        <span className={`text-[10px] sm:text-xs font-black px-3 py-1 rounded-full border transition-all ${
                           step.badge === 'Active Engine' 
-                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 animate-pulse'
+                            ? 'bg-emerald-500/25 text-emerald-600 dark:text-emerald-300 border-emerald-500/50 animate-pulse'
                             : 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/30'
                         }`}>
                           {step.badge}
                         </span>
                       )}
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5 leading-relaxed">
+                    <p className="text-slate-700 dark:text-slate-200 text-sm mt-1.5 leading-relaxed font-normal">
                       {step.description}
                     </p>
                   </div>
