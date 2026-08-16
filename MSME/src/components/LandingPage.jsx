@@ -1,68 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import Navbar from './Navbar';
 import HeroSection from './landing/HeroSection';
-import FeaturesSection from './landing/FeaturesSection';
-import OnboardingSection from './landing/OnboardingSection';
+import ProblemSection from './landing/ProblemSection';
+import GrowthJourneySection from './landing/GrowthJourneySection';
+import CoreFeaturesSection from './landing/CoreFeaturesSection';
+import PredictionFeatureSection from './landing/PredictionFeatureSection';
+import BusinessHealthSection from './landing/BusinessHealthSection';
+import AiAssistantSection from './landing/AiAssistantSection';
+import DashboardShowcaseSection from './landing/DashboardShowcaseSection';
 import AboutSection from './landing/AboutSection';
-import PricingSection from './landing/PricingSection';
-import TestimonialsSection from './landing/TestimonialsSection';
-import CtaFooterSection from './landing/CtaFooterSection';
-import GrowthCalculatorSection from './landing/GrowthCalculatorSection';
-import GrowthComparisonSection from './landing/GrowthComparisonSection';
-import GrowthLiveTicker from './landing/GrowthLiveTicker';
-import { defaultLandingData } from '../data/landingData';
+import FinalCtaSection from './landing/FinalCtaSection';
+import Footer from './landing/Footer';
 
-export default function LandingPage({ 
-  onLaunchDashboard, 
-  data = defaultLandingData,
-  heroData = data?.hero || defaultLandingData.hero,
-  featuresData = data?.features || defaultLandingData.features,
-  calculatorData = data?.calculator || defaultLandingData.calculator,
-  comparisonData = data?.comparison || defaultLandingData.comparison,
-  liveTickerEvents = data?.liveTickerEvents || defaultLandingData.liveTickerEvents,
-  onboardingData = data?.onboarding || defaultLandingData.onboarding,
-  aboutData = data?.about || defaultLandingData.about,
-  pricingData = data?.pricing || defaultLandingData.pricing,
-  testimonialsData = data?.testimonials || defaultLandingData.testimonials,
-  ctaData = data?.cta || defaultLandingData.cta,
-  footerData = data?.footer || defaultLandingData.footer
-}) {
+export default function LandingPage({ onLaunchDashboard }) {
   const { isDark } = useTheme();
-  const [email, setEmail] = useState('');
-  const [isAnnual, setIsAnnual] = useState(true);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Onboarding scroll progress
-      const section = document.getElementById('how-it-works');
-      if (section) {
-        const rect = section.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        const totalHeight = rect.height;
-        const currentScroll = windowHeight - rect.top - (windowHeight * 0.25);
-        const progress = Math.min(100, Math.max(0, (currentScroll / totalHeight) * 100));
-        setScrollProgress(progress);
-      }
-
-      // Features section scroll reveal
-      const featEl = document.getElementById('features');
-      if (featEl) {
-        const rect = featEl.getBoundingClientRect();
-        if (rect.top <= window.innerHeight * 0.85) {
-          setFeaturesVisible(true);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const handleStart = (e) => {
     if (e) e.preventDefault();
@@ -74,81 +28,37 @@ export default function LandingPage({
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-emerald-500 selection:text-white transition-colors duration-300 relative ${
-      isDark ? 'bg-[#0d131a] text-slate-100' : 'bg-slate-50 text-slate-900'
+    <div className={`min-h-screen font-sans selection:bg-[#10b981] selection:text-white transition-colors duration-300 relative ${
+      isDark ? 'bg-[#0a0e1a] text-[#f8fafc]' : 'bg-slate-50 text-slate-900'
     }`}>
-      {/* Grid pattern background */}
+      {/* Background Subtle Grid Pattern */}
       <div 
         className={`absolute inset-0 pointer-events-none z-0 ${
           isDark 
-            ? 'bg-[linear-gradient(to_right,#1f293730_1px,transparent_1px),linear-gradient(to_bottom,#1f293730_1px,transparent_1px)]' 
-            : 'bg-[linear-gradient(to_right,#cbd5e180_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e180_1px,transparent_1px)]'
+            ? 'bg-[linear-gradient(to_right,#1e273930_1px,transparent_1px),linear-gradient(to_bottom,#1e273930_1px,transparent_1px)]' 
+            : 'bg-[linear-gradient(to_right,#cbd5e150_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e150_1px,transparent_1px)]'
         } bg-[size:32px_32px]`} 
       />
 
-      {/* Fluid Glassmorphic Navbar */}
+      {/* Navbar */}
       <Navbar onLaunchDashboard={onLaunchDashboard} />
 
-      {/* Ambient Gradient Fluid Glow Orbs */}
-      <div className="absolute top-10 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/20 via-teal-500/15 to-transparent blur-[140px] rounded-full pointer-events-none animate-pulse-slow z-0" />
-      <div className="absolute top-60 right-10 w-[400px] h-[400px] bg-gradient-to-br from-emerald-400/15 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none animate-pulse-slow z-0" />
-      <div className="absolute top-[1200px] left-10 w-[550px] h-[550px] bg-gradient-to-tr from-teal-500/15 via-emerald-500/10 to-transparent blur-[160px] rounded-full pointer-events-none z-0" />
+      {/* Main Content Sections */}
+      <main className="relative z-10">
+        <HeroSection onStart={handleStart} />
+        <ProblemSection />
+        <GrowthJourneySection />
+        <CoreFeaturesSection />
+        <PredictionFeatureSection />
+        <BusinessHealthSection />
+        <AiAssistantSection />
+        <DashboardShowcaseSection onStart={handleStart} />
+        <AboutSection />
+        <FinalCtaSection onStart={handleStart} />
+      </main>
 
-      {/* Modular Landing Page Sections */}
-      <HeroSection 
-        heroData={heroData} 
-        onStart={handleStart} 
-      />
-
-      {/* Interactive Growth Calculator */}
-      <GrowthCalculatorSection
-        calculatorData={calculatorData}
-        onStart={handleStart}
-      />
-
-      <FeaturesSection 
-        featuresData={featuresData} 
-        featuresVisible={featuresVisible} 
-        onStart={handleStart} 
-      />
-
-      {/* Before vs After Growth Transformation */}
-      <GrowthComparisonSection
-        comparisonData={comparisonData}
-        onStart={handleStart}
-      />
-
-      <OnboardingSection 
-        onboardingData={onboardingData} 
-        scrollProgress={scrollProgress} 
-      />
-
-      <AboutSection 
-        aboutData={aboutData} 
-      />
-
-      <PricingSection 
-        pricingData={pricingData} 
-        isAnnual={isAnnual} 
-        setIsAnnual={setIsAnnual} 
-        onStart={handleStart} 
-      />
-
-      <TestimonialsSection 
-        testimonialsData={testimonialsData} 
-      />
-
-      <CtaFooterSection 
-        ctaData={ctaData} 
-        footerData={footerData} 
-        email={email} 
-        setEmail={setEmail} 
-        onStart={handleStart} 
-      />
-
-      {/* Floating Live Growth Milestone Ticker */}
-      <GrowthLiveTicker tickerEvents={liveTickerEvents} />
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
-
