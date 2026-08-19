@@ -12,12 +12,12 @@
   --border-subtle: #243247;
 
   /* Accents */
-  --accent-primary: #10B981;
-  --accent-primary-hover: #0ea371;
-  --accent-secondary: #14B8A6;
+  --accent-primary: #66BB6A;
+  --accent-primary-hover: #57A85B;
+  --accent-secondary: #81C784;
 
   /* Semantic Colors */
-  --positive: #10B981;
+  --positive: #66BB6A;
   --negative: #f43f5e;
   --info: #3b82f6;
   --neutral-icon: #64748B;
@@ -82,7 +82,7 @@ h1, h2, h3, h4, .font-poppins {
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, #10B981 0%, #14B8A6 50%, #10B981 100%);
+  background: linear-gradient(90deg, #66BB6A 0%, #81C784 50%, #66BB6A 100%);
   background-size: 200% 100%;
   animation: shimmer 3.5s infinite linear;
 }
@@ -102,13 +102,13 @@ h1, h2, h3, h4, .font-poppins {
 
 .fluid-nav-container.scrolled {
   background: rgba(11, 18, 32, 0.95);
-  border-color: #10B981;
+  border-color: #66BB6A;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
 }
 
 .fluid-nav-container.light-theme {
   background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(102, 187, 106, 0.3);
 }
 
 .nav-link-fluid {
@@ -123,7 +123,7 @@ h1, h2, h3, h4, .font-poppins {
   left: 50%;
   width: 0;
   height: 2px;
-  background: #10B981;
+  background: #66BB6A;
   border-radius: 9999px;
   transition: all 0.3s ease;
   transform: translateX(-50%);

@@ -49,7 +49,7 @@ export default function ProblemSection() {
 
           <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
             Every Business Has Data. <br className="hidden sm:inline" />
-            <span className="text-[#10B981]">
+            <span className="text-[#66BB6A]">
               The Challenge Is Knowing What It Means.
             </span>
           </h2>
@@ -69,7 +69,7 @@ export default function ProblemSection() {
                 className={`p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
                   isDark
                     ? 'bg-[#111B2E] border-[#243247] hover:bg-[#162238]'
-                    : 'bg-white border-slate-200 hover:border-emerald-300 shadow-sm'
+                    : 'bg-white border-slate-200 hover:border-[#66BB6A]/50 shadow-sm'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-4 ${
@@ -98,10 +98,10 @@ export default function ProblemSection() {
 
         {/* Visual Connector to Solution */}
         <div className="mt-12 text-center flex flex-col items-center justify-center space-y-3">
-          <div className="w-10 h-10 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 flex items-center justify-center text-[#10B981]">
+          <div className="w-10 h-10 rounded-full bg-[#66BB6A]/10 border border-[#66BB6A]/30 flex items-center justify-center text-[#66BB6A]">
             <ArrowDown className="w-5 h-5" />
           </div>
-          <span className={`text-xs font-extrabold uppercase tracking-widest ${isDark ? 'text-[#10B981]' : 'text-emerald-600'}`}>
+          <span className={`text-xs font-extrabold uppercase tracking-widest ${isDark ? 'text-[#66BB6A]' : 'text-[#4CAF50]'}`}>
             MSME Growth Advisor Bridges The Gap
           </span>
         </div>

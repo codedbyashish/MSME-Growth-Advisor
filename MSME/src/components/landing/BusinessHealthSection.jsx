@@ -6,10 +6,10 @@ export default function BusinessHealthSection() {
   const { isDark } = useTheme();
 
   const metrics = [
-    { name: 'Sales Performance', score: 88, status: 'Strong', color: 'bg-[#10B981]' },
-    { name: 'Expense Control', score: 76, status: 'Optimal', color: 'bg-[#14B8A6]' },
+    { name: 'Sales Performance', score: 88, status: 'Strong', color: 'bg-[#66BB6A]' },
+    { name: 'Expense Control', score: 76, status: 'Optimal', color: 'bg-[#81C784]' },
     { name: 'Inventory Health', score: 85, status: 'Good', color: 'bg-[#3B82F6]' },
-    { name: 'Growth Trend', score: 80, status: 'Positive', color: 'bg-[#10B981]' },
+    { name: 'Growth Trend', score: 80, status: 'Positive', color: 'bg-[#66BB6A]' },
   ];
 
   return (
@@ -21,15 +21,15 @@ export default function BusinessHealthSection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
-            isDark ? 'bg-[#111B2E] text-[#94A3B8] border-[#243247]' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            isDark ? 'bg-[#111B2E] text-[#94A3B8] border-[#243247]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
           }`}>
-            <Activity className="w-3.5 h-3.5 text-[#10B981]" />
+            <Activity className="w-3.5 h-3.5 text-[#66BB6A]" />
             <span>Instant Diagnostics</span>
           </div>
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
             Know the Health of Your Business{' '}
-            <span className="text-[#10B981]">
+            <span className="text-[#66BB6A]">
               at a Glance
             </span>
           </h2>
@@ -70,7 +70,7 @@ export default function BusinessHealthSection() {
                       cx="50"
                       cy="50"
                       r="40"
-                      stroke="#10B981"
+                      stroke="#66BB6A"
                       strokeWidth="10"
                       strokeDasharray="251.2"
                       strokeDashoffset="45"
@@ -87,7 +87,7 @@ export default function BusinessHealthSection() {
                   </div>
                 </div>
 
-                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#10B981] text-[#0B1220] text-xs font-black uppercase tracking-wider shadow-sm">
+                <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#66BB6A] text-[#0B1220] text-xs font-black uppercase tracking-wider shadow-sm">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Healthy Status</span>
                 </div>
@@ -107,7 +107,7 @@ export default function BusinessHealthSection() {
                           {item.name}
                         </span>
                         <div className="space-x-2">
-                          <span className="text-[#10B981]">{item.status}</span>
+                          <span className="text-[#66BB6A]">{item.status}</span>
                           <span className={isDark ? 'text-[#64748B]' : 'text-slate-500'}>
                             {item.score}%
                           </span>

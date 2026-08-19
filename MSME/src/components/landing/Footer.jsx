@@ -16,11 +16,11 @@ export default function Footer() {
           {/* Logo & Description */}
           <div className="md:col-span-6 space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-[#10b981] flex items-center justify-center text-slate-950 font-bold shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-[#66BB6A] flex items-center justify-center text-slate-950 font-bold shadow-md">
                 <BarChart3 className="w-5 h-5" />
               </div>
               <span className="text-xl font-bold tracking-tight text-[#f8fafc]">
-                MSME <span className="text-[#10b981] font-medium">Growth Advisor</span>
+                MSME <span className="text-[#66BB6A] font-medium">Growth Advisor</span>
               </span>
             </div>
 
@@ -35,19 +35,19 @@ export default function Footer() {
             <div className="space-y-3">
               <span className="text-[#f8fafc] font-extrabold uppercase tracking-wider text-[11px]">Navigation</span>
               <ul className="space-y-2 text-[#94a3b8]">
-                <li><a href="#home" className="hover:text-[#10b981] transition-colors">Home</a></li>
-                <li><a href="#features" className="hover:text-[#10b981] transition-colors">Features</a></li>
-                <li><a href="#how-it-works" className="hover:text-[#10b981] transition-colors">How It Works</a></li>
-                <li><a href="#about" className="hover:text-[#10b981] transition-colors">About</a></li>
+                <li><a href="#home" className="hover:text-[#66BB6A] transition-colors">Home</a></li>
+                <li><a href="#features" className="hover:text-[#66BB6A] transition-colors">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#66BB6A] transition-colors">How It Works</a></li>
+                <li><a href="#about" className="hover:text-[#66BB6A] transition-colors">About</a></li>
               </ul>
             </div>
 
             <div className="space-y-3">
               <span className="text-[#f8fafc] font-extrabold uppercase tracking-wider text-[11px]">Legal & Help</span>
               <ul className="space-y-2 text-[#94a3b8]">
-                <li><a href="#privacy" className="hover:text-[#10b981] transition-colors">Privacy Policy</a></li>
-                <li><a href="#terms" className="hover:text-[#10b981] transition-colors">Terms of Service</a></li>
-                <li><a href="#contact" className="hover:text-[#10b981] transition-colors">Contact Support</a></li>
+                <li><a href="#privacy" className="hover:text-[#66BB6A] transition-colors">Privacy Policy</a></li>
+                <li><a href="#terms" className="hover:text-[#66BB6A] transition-colors">Terms of Service</a></li>
+                <li><a href="#contact" className="hover:text-[#66BB6A] transition-colors">Contact Support</a></li>
               </ul>
             </div>
 
@@ -67,7 +67,7 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} MSME Growth Advisor. All rights reserved.</p>
           <div className="flex items-center space-x-1">
             <span>Built for MSME Growth</span>
-            <Heart className="w-3.5 h-3.5 text-[#10b981] fill-[#10b981] inline" />
+            <Heart className="w-3.5 h-3.5 text-[#66BB6A] fill-[#66BB6A] inline" />
           </div>
         </div>
 

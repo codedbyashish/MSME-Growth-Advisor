@@ -37,7 +37,7 @@ export default function AiAssistantSection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
           <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide ${
-            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
           }`}>
             <Bot className="w-3.5 h-3.5 text-[#64748b]" />
             <span>Natural Language Business Intelligence</span>
@@ -45,7 +45,7 @@ export default function AiAssistantSection() {
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
             Ask Your Business.{' '}
-            <span className="text-[#10b981]">
+            <span className="text-[#66BB6A]">
               Get Simple Answers.
             </span>
           </h2>
@@ -70,7 +70,7 @@ export default function AiAssistantSection() {
                   onClick={() => setActiveIdx(idx)}
                   className={`w-full text-left p-3.5 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all cursor-pointer ${
                     activeIdx === idx
-                      ? 'bg-[#10b981] text-slate-950 border-[#10b981] shadow-md font-bold'
+                      ? 'bg-[#66BB6A] text-slate-950 border-[#66BB6A] shadow-md font-bold'
                       : isDark
                       ? 'bg-[#101625]/80 border-[#1e2739] text-[#94a3b8] hover:bg-[#141b2d]'
                       : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm'
@@ -92,21 +92,21 @@ export default function AiAssistantSection() {
               {/* Chat Title bar */}
               <div className="p-4 border-b border-[#1e2739] flex items-center justify-between bg-[#0a0e1a]">
                 <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#10b981] flex items-center justify-center text-slate-950 font-bold shadow">
+                  <div className="w-8 h-8 rounded-lg bg-[#66BB6A] flex items-center justify-center text-slate-950 font-bold shadow">
                     <Bot className="w-4 h-4" />
                   </div>
                   <div>
                     <h3 className={`text-xs font-bold ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
                       MSME Business Assistant
                     </h3>
-                    <span className="text-[10px] text-[#22c55e] font-semibold flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                    <span className="text-[10px] text-[#66BB6A] font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#66BB6A] animate-pulse" />
                       Active & Connected to your ledger data
                     </span>
                   </div>
                 </div>
 
-                <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-[#10b981]/10 text-[#10b981] border border-[#10b981]/20">
+                <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-[#66BB6A]/10 text-[#66BB6A] border border-[#66BB6A]/20">
                   AI Mode
                 </span>
               </div>
@@ -116,7 +116,7 @@ export default function AiAssistantSection() {
                 
                 {/* User Message Bubble */}
                 <div className="flex items-start justify-end space-x-2">
-                  <div className="max-w-md p-4 rounded-2xl rounded-tr-none bg-[#10b981] text-slate-950 font-semibold text-xs sm:text-sm shadow">
+                  <div className="max-w-md p-4 rounded-2xl rounded-tr-none bg-[#66BB6A] text-slate-950 font-semibold text-xs sm:text-sm shadow">
                     {sampleQuestions[activeIdx].q}
                   </div>
                   <div className="w-7 h-7 rounded-full bg-[#0a0e1a] border border-[#1e2739] flex items-center justify-center text-[#64748b] text-xs shrink-0">
@@ -126,7 +126,7 @@ export default function AiAssistantSection() {
 
                 {/* AI Response Bubble */}
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-xl bg-[#10b981] flex items-center justify-center text-slate-950 text-xs shrink-0 shadow">
+                  <div className="w-8 h-8 rounded-xl bg-[#66BB6A] flex items-center justify-center text-slate-950 text-xs shrink-0 shadow">
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div className={`max-w-md p-4 rounded-2xl rounded-tl-none border text-xs sm:text-sm leading-relaxed ${
@@ -150,7 +150,7 @@ export default function AiAssistantSection() {
                 />
                 <button
                   onClick={() => setActiveIdx((prev) => (prev + 1) % sampleQuestions.length)}
-                  className="px-4 py-2.5 rounded-xl bg-[#10b981] hover:bg-[#0ea371] text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow transition-all cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-[#66BB6A] hover:bg-[#57a85b] text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow transition-all cursor-pointer"
                 >
                   <span>Ask AI</span>
                   <Send className="w-3.5 h-3.5" />

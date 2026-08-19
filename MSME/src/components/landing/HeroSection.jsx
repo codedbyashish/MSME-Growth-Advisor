@@ -16,10 +16,10 @@ export default function HeroSection({ onStart }) {
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
             <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
               isDark 
-                ? 'bg-[#111B2E] border-[#243247] text-[#10B981]' 
-                : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                ? 'bg-[#111B2E] border-[#243247] text-[#66BB6A]' 
+                : 'bg-[#66BB6A]/10 border-[#66BB6A]/30 text-[#4CAF50]'
             }`}>
-              <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#66BB6A]" />
               <span>AI-Powered MSME Growth Platform</span>
             </div>
 
@@ -27,7 +27,7 @@ export default function HeroSection({ onStart }) {
               isDark ? 'text-[#F8FAFC]' : 'text-slate-900'
             }`}>
               Turn Your Business Data Into{' '}
-              <span className="text-[#10B981]">
+              <span className="text-[#66BB6A]">
                 Growth
               </span>
             </h1>
@@ -42,7 +42,7 @@ export default function HeroSection({ onStart }) {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <button
                 onClick={onStart}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#10B981] hover:bg-[#0ea371] text-[#0B1220] font-extrabold text-sm sm:text-base tracking-wide flex items-center justify-center space-x-2.5 shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#66BB6A] hover:bg-[#57a85b] text-[#0B1220] font-extrabold text-sm sm:text-base tracking-wide flex items-center justify-center space-x-2.5 shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span>Start Your Growth Journey</span>
                 <ArrowRight className="w-4 h-4" />
@@ -65,12 +65,12 @@ export default function HeroSection({ onStart }) {
               isDark ? 'text-[#64748B]' : 'text-slate-500'
             }`}>
               <div className="flex items-center space-x-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#10B981]" />
+                <ShieldCheck className="w-4 h-4 text-[#66BB6A]" />
                 <span>Simple & Non-Technical</span>
               </div>
               <div className="w-1 h-1 rounded-full bg-[#243247]" />
               <div className="flex items-center space-x-1.5">
-                <TrendingUp className="w-4 h-4 text-[#10B981]" />
+                <TrendingUp className="w-4 h-4 text-[#66BB6A]" />
                 <span>Predictive AI Insights</span>
               </div>
             </div>
@@ -88,7 +88,7 @@ export default function HeroSection({ onStart }) {
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 rounded-full bg-[#F43F5E]" />
                   <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-[#10B981]" />
+                  <div className="w-3 h-3 rounded-full bg-[#66BB6A]" />
                   <span className={`text-xs font-bold uppercase tracking-wider pl-2 ${
                     isDark ? 'text-[#64748B]' : 'text-slate-500'
                   }`}>
@@ -97,7 +97,7 @@ export default function HeroSection({ onStart }) {
                 </div>
                 
                 {/* Growth Badge */}
-                <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-bold">
+                <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#66BB6A]/10 border border-[#66BB6A]/30 text-[#66BB6A] text-xs font-bold">
                   <TrendingUp className="w-3.5 h-3.5" />
                   <span>Business Growth ↑</span>
                 </div>
@@ -107,13 +107,13 @@ export default function HeroSection({ onStart }) {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
                 <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
                   <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <DollarSign className="w-3.5 h-3.5 text-[#10B981]" />
+                    <DollarSign className="w-3.5 h-3.5 text-[#66BB6A]" />
                     <span>Revenue</span>
                   </div>
                   <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
                     ₹2,45,000
                   </div>
-                  <span className="text-[10px] text-[#10B981] font-semibold">+14.2% vs last mo</span>
+                  <span className="text-[10px] text-[#66BB6A] font-semibold">+14.2% vs last mo</span>
                 </div>
 
                 <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
@@ -124,7 +124,7 @@ export default function HeroSection({ onStart }) {
                   <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
                     1,280 units
                   </div>
-                  <span className="text-[10px] text-[#10B981] font-semibold">Upward trend</span>
+                  <span className="text-[10px] text-[#66BB6A] font-semibold">Upward trend</span>
                 </div>
 
                 <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
@@ -135,18 +135,18 @@ export default function HeroSection({ onStart }) {
                   <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
                     94% Stocked
                   </div>
-                  <span className="text-[10px] text-[#10B981] font-semibold">Optimal</span>
+                  <span className="text-[10px] text-[#66BB6A] font-semibold">Optimal</span>
                 </div>
 
                 <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
                   <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <Activity className="w-3.5 h-3.5 text-[#10B981]" />
+                    <Activity className="w-3.5 h-3.5 text-[#66BB6A]" />
                     <span>Health Score</span>
                   </div>
-                  <div className="text-base font-extrabold text-[#10B981]">
+                  <div className="text-base font-extrabold text-[#66BB6A]">
                     82 / 100
                   </div>
-                  <span className="text-[10px] text-[#10B981] font-semibold">Healthy</span>
+                  <span className="text-[10px] text-[#66BB6A] font-semibold">Healthy</span>
                 </div>
               </div>
 
@@ -161,8 +161,8 @@ export default function HeroSection({ onStart }) {
                       <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6] inline-block" />
                       <span>Historical</span>
                     </span>
-                    <span className="flex items-center space-x-1 text-[#10B981]">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#10B981] inline-block" />
+                    <span className="flex items-center space-x-1 text-[#66BB6A]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#66BB6A] inline-block" />
                       <span>AI Predicted ↑</span>
                     </span>
                   </div>
@@ -173,8 +173,8 @@ export default function HeroSection({ onStart }) {
                   <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
                     <defs>
                       <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10B981" stopOpacity="0.2" />
-                        <stop offset="100%" stopColor="#10B981" stopOpacity="0.0" />
+                        <stop offset="0%" stopColor="#66BB6A" stopOpacity="0.2" />
+                        <stop offset="100%" stopColor="#66BB6A" stopOpacity="0.0" />
                       </linearGradient>
                     </defs>
 
@@ -195,11 +195,11 @@ export default function HeroSection({ onStart }) {
                       strokeLinecap="round"
                     />
 
-                    {/* AI Predicted (Green/Teal) */}
+                    {/* AI Predicted (Green) */}
                     <path
                       d="M 240 45 L 300 35 L 360 20 L 400 15"
                       fill="none"
-                      stroke="#10B981"
+                      stroke="#66BB6A"
                       strokeWidth="3.5"
                       strokeDasharray="5 4"
                       strokeLinecap="round"
@@ -209,10 +209,10 @@ export default function HeroSection({ onStart }) {
                     <circle cx="60" cy="80" r="4" fill="#3B82F6" />
                     <circle cx="120" cy="70" r="4" fill="#3B82F6" />
                     <circle cx="180" cy="60" r="4" fill="#3B82F6" />
-                    <circle cx="240" cy="45" r="5" fill="#10B981" />
-                    <circle cx="300" cy="35" r="4" fill="#10B981" />
-                    <circle cx="360" cy="20" r="4" fill="#10B981" />
-                    <circle cx="400" cy="15" r="5" fill="#10B981" />
+                    <circle cx="240" cy="45" r="5" fill="#66BB6A" />
+                    <circle cx="300" cy="35" r="4" fill="#66BB6A" />
+                    <circle cx="360" cy="20" r="4" fill="#66BB6A" />
+                    <circle cx="400" cy="15" r="5" fill="#66BB6A" />
                   </svg>
                 </div>
 
@@ -222,8 +222,8 @@ export default function HeroSection({ onStart }) {
                   <span>Mar</span>
                   <span>Apr</span>
                   <span>May</span>
-                  <span className="text-[#10B981] font-bold">Jun (Predicted)</span>
-                  <span className="text-[#10B981] font-bold">Jul (Predicted)</span>
+                  <span className="text-[#66BB6A] font-bold">Jun (Predicted)</span>
+                  <span className="text-[#66BB6A] font-bold">Jul (Predicted)</span>
                 </div>
               </div>
 

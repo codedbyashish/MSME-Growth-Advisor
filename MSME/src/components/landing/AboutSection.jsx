@@ -19,7 +19,7 @@ export default function AboutSection() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide ${
-            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
           }`}>
             <Target className="w-3.5 h-3.5 text-[#64748b]" />
             <span>Our Mission</span>
@@ -27,7 +27,7 @@ export default function AboutSection() {
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
             Built Specially For{' '}
-            <span className="text-[#10b981]">
+            <span className="text-[#66BB6A]">
               MSME Business Owners
             </span>
           </h2>
@@ -48,7 +48,7 @@ export default function AboutSection() {
                   : 'bg-slate-50 border-slate-200 shadow-sm'
               }`}
             >
-              <div className="text-3xl sm:text-4xl font-black text-[#10b981]">
+              <div className="text-3xl sm:text-4xl font-black text-[#66BB6A]">
                 {stat.value}
               </div>
               <div className={`text-sm font-bold ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>

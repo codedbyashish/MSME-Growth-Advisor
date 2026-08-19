@@ -50,14 +50,14 @@ export default function GrowthJourneySection() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide ${
-            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
           }`}>
             <span>5-Step Visual Framework</span>
           </div>
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
             Your Journey From{' '}
-            <span className="text-[#10b981]">
+            <span className="text-[#66BB6A]">
               Data to Growth
             </span>
           </h2>
@@ -85,24 +85,24 @@ export default function GrowthJourneySection() {
                   className={`group relative p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between ${
                     isLast
                       ? isDark
-                        ? 'bg-[#101625] border-[#10b981] shadow-lg shadow-[#10b981]/10'
-                        : 'bg-gradient-to-b from-emerald-50 to-white border-emerald-400 shadow-md'
+                        ? 'bg-[#101625] border-[#66BB6A] shadow-lg shadow-[#66BB6A]/10'
+                        : 'bg-gradient-to-b from-[#66BB6A]/10 to-white border-[#66BB6A] shadow-md'
                       : isDark
                       ? 'bg-[#101625]/90 border-[#1e2739] hover:bg-[#141b2d]'
-                      : 'bg-white border-slate-200 hover:border-emerald-300 shadow-sm'
+                      : 'bg-white border-slate-200 hover:border-[#66BB6A]/50 shadow-sm'
                   }`}
                 >
                   <div>
                     {/* Top Step Header */}
                     <div className="flex items-center justify-between mb-4">
                       <span className={`text-2xl font-black ${
-                        isLast ? 'text-[#10b981]' : isDark ? 'text-[#64748b] group-hover:text-[#10b981]' : 'text-slate-400'
+                        isLast ? 'text-[#66BB6A]' : isDark ? 'text-[#64748b] group-hover:text-[#66BB6A]' : 'text-slate-400'
                       }`}>
                         {step.number}
                       </span>
                       <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
                         isLast
-                          ? 'bg-[#10b981] text-slate-950'
+                          ? 'bg-[#66BB6A] text-slate-950'
                           : isDark
                           ? 'bg-[#0a0e1a] text-[#64748b]'
                           : 'bg-slate-100 text-slate-600'
@@ -114,10 +114,10 @@ export default function GrowthJourneySection() {
                     {/* Step Icon */}
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 ${
                       isLast
-                        ? 'bg-[#10b981] text-slate-950'
+                        ? 'bg-[#66BB6A] text-slate-950'
                         : isDark
-                        ? 'bg-[#0a0e1a] text-[#64748b] group-hover:text-[#10b981]'
-                        : 'bg-emerald-50 text-emerald-600'
+                        ? 'bg-[#0a0e1a] text-[#64748b] group-hover:text-[#66BB6A]'
+                        : 'bg-[#66BB6A]/10 text-[#4CAF50]'
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
@@ -140,7 +140,7 @@ export default function GrowthJourneySection() {
 
                   {!isLast && (
                     <div className="pt-4 flex justify-center lg:hidden">
-                      <div className="w-6 h-6 rounded-full bg-[#10b981]/10 text-[#10b981] flex items-center justify-center text-xs">
+                      <div className="w-6 h-6 rounded-full bg-[#66BB6A]/10 text-[#66BB6A] flex items-center justify-center text-xs">
                         ↓
                       </div>
                     </div>

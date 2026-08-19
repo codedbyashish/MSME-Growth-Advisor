@@ -28,7 +28,7 @@ export default function LandingPage({ onLaunchDashboard }) {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#10b981] selection:text-white transition-colors duration-300 relative ${
+    <div className={`min-h-screen font-sans selection:bg-[#66BB6A] selection:text-white transition-colors duration-300 relative ${
       isDark ? 'bg-[#0a0e1a] text-[#f8fafc]' : 'bg-slate-50 text-slate-900'
     }`}>
       {/* Background Subtle Grid Pattern */}

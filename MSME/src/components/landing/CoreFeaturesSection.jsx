@@ -45,14 +45,14 @@ export default function CoreFeaturesSection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide ${
-            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
           }`}>
             <span>Tailored for MSMEs</span>
           </div>
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
             Tools Built Around Your{' '}
-            <span className="text-[#10b981]">
+            <span className="text-[#66BB6A]">
               Business Growth
             </span>
           </h2>
@@ -72,13 +72,13 @@ export default function CoreFeaturesSection() {
                 className={`p-7 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
                   isDark
                     ? 'bg-[#101625]/90 border-[#1e2739] hover:bg-[#141b2d]'
-                    : 'bg-white border-slate-200 hover:border-emerald-300 shadow-sm'
+                    : 'bg-white border-slate-200 hover:border-[#66BB6A]/50 shadow-sm'
                 }`}
               >
                 <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${
                   isDark 
                     ? 'bg-[#0a0e1a] border-[#1e2739] text-[#64748b]' 
-                    : 'bg-emerald-50 border-emerald-100 text-emerald-600'
+                    : 'bg-[#66BB6A]/10 border-[#66BB6A]/20 text-[#4CAF50]'
                 }`}>
                   <Icon className="w-6 h-6" />
                 </div>
