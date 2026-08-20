@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-08-19T20:21:12.233399",
+  "total_chunks": 32,
+  "documents": [
+    "msme_tax_and_compliance.txt",
+    "msme_schemes_and_subsidies.txt",
+    "msme_growth_and_scaling_guide.txt",
+    "msme_financial_management.txt"
+  ],
+  "has_gemini_embeddings": false,
+  "tfidf_vocabulary_size": 1660
+}

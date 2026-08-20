@@ -1,0 +1,34 @@
+# MSME Tax Guidelines, Compliance, and Legal Regulations
+
+## 1. Udyam Registration (Official MSME Registration)
+- **Mandatory Portal**: Udyam Registration Portal (udyamregistration.gov.in) is the single official free online registration platform for MSMEs in India.
+- **Classification Criteria**:
+  - **Micro Enterprise**: Investment in Plant & Machinery/Equipment <= Rs. 1 Crore AND Annual Turnover <= Rs. 5 Crore.
+  - **Small Enterprise**: Investment <= Rs. 10 Crore AND Annual Turnover <= Rs. 50 Crore.
+  - **Medium Enterprise**: Investment <= Rs. 50 Crore AND Annual Turnover <= Rs. 250 Crore.
+- **Benefits of Udyam**: Concession in electricity bills, lower interest rates on bank loans, exemption from EMD in government tenders, 50% discount on patent/trademark filing, protection against delayed payments under MSMED Act.
+
+## 2. Section 43B(h) Income Tax Act (45-Day Payment Rule)
+- **Key Regulation**: Introduced to ensure timely payments to Micro and Small Enterprises (MSEs).
+- **Rule**: Any sum payable by a buyer to a registered Micro or Small enterprise for goods or services supplied must be paid within:
+  - 15 days if there is no written agreement.
+  - Up to 45 days if there is a written agreement.
+- **Tax Consequence**: If payment is NOT made within the stipulated period (15/45 days) before the end of the financial year, the buyer CANNOT claim the expense as a tax deduction in that financial year. The expense will only be deductible in the year payment is actually made.
+- **Exclusion**: Medium enterprises and trader MSMEs are currently exempt from Section 43B(h) provisions.
+
+## 3. GST Slabs, Thresholds, and Composition Scheme for MSMEs
+- **GST Registration Threshold**:
+  - Goods Suppliers: Rs. 40 Lakhs turnover limit (Rs. 20 Lakhs for special category states).
+  - Service Providers: Rs. 20 Lakhs turnover limit (Rs. 10 Lakhs for special category states).
+- **GST Composition Scheme**:
+  - Eligible for businesses with aggregate turnover up to Rs. 1.5 Crore (Rs. 75 Lakhs for Special Category States).
+  - Tax Rates: 1% for Manufacturers and Traders; 5% for Restaurants; 6% for Service Providers (up to Rs. 50 Lakhs turnover under Section 10(2A)).
+  - Benefits: Quarterly filing with simplified CMP-08 return, lower compliance burden. Cannot collect GST from customers or claim Input Tax Credit (ITC).
+
+## 4. Presumptive Taxation Scheme (Section 44AD & 44ADA)
+- **Section 44AD (Small Businesses)**: Available for resident individuals, HUFs, and partnership firms with turnover up to Rs. 3 Crore (if 95%+ transactions are digital). Income is presumed at 6% of digital turnover and 8% of non-digital turnover without maintaining detailed books of accounts.
+- **Section 44ADA (Professionals)**: Available for eligible professionals with gross receipts up to Rs. 75 Lakhs (if 95%+ transactions are digital). Presumed income is 50% of gross receipts.
+
+## 5. Delayed Payment Remedies & MSME Samadhaan Portal
+- **MSMED Act Provision**: Buyers must pay interest at 3 times the RBI bank rate compounded monthly for delayed payments beyond 45 days.
+- **MSME Samadhaan Portal**: Online delayed payment monitoring system where MSEs can file applications against defaulting buyers for recovery through Micro and Small Facilitation Councils (MSEFC).

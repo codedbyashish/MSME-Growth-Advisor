@@ -1,0 +1,46 @@
+# MSME Government Schemes, Loans, and Subsidies Guide
+
+## 1. Prime Minister’s Employment Generation Programme (PMEGP)
+- **Overview**: A credit-linked subsidy scheme aimed at generating self-employment opportunities through micro-enterprise establishment in non-farm sectors.
+- **Eligibility**: Individuals above 18 years of age. For setting up project costing above Rs. 10 lakh in manufacturing sector and above Rs. 5 lakh in business/service sector, beneficiaries should possess at least VIII standard pass qualification.
+- **Subsidy Rate**:
+  - General Category: 15% (Urban), 25% (Rural)
+  - Special Category (SC/ST/OBC/Minorities/Women/Ex-servicemen/PH): 25% (Urban), 35% (Rural)
+- **Maximum Project Cost**: Rs. 50 Lakhs for Manufacturing; Rs. 20 Lakhs for Service Sector.
+- **Nodal Agency**: Khadi and Village Industries Commission (KVIC) at national level.
+
+## 2. Credit Guarantee Fund Trust for Micro and Small Enterprises (CGTMSE)
+- **Overview**: Provides collateral-free credit to Micro and Small Enterprises (MSEs) to encourage first-generation entrepreneurs to set up MSEs without collateral security or third-party guarantee.
+- **Coverage Ceiling**: Up to Rs. 500 Lakhs (5 Crore) per borrower.
+- **Extent of Guarantee**:
+  - Up to 85% for micro enterprises (up to Rs. 5 Lakhs).
+  - Up to 80% for MSEs operated/owned by Women and MSEs located in North East Region (NER).
+  - Up to 75% for general category MSEs.
+- **Eligible Institutions**: Scheduled Commercial Banks, selected Regional Rural Banks, Small Finance Banks, and NBFCs.
+
+## 3. Pradhan Mantri MUDRA Yojana (PMMY)
+- **Overview**: Offers loans up to Rs. 20 Lakhs to non-corporate, non-farm small/micro enterprises.
+- **Categories**:
+  - **Shishu**: Loans up to Rs. 50,000 (for starting new micro ventures).
+  - **Kishore**: Loans above Rs. 50,000 and up to Rs. 5 Lakhs (for business expansion and buying equipment).
+  - **Tarun**: Loans above Rs. 5 Lakhs and up to Rs. 10 Lakhs.
+  - **Tarun Plus**: Loans up to Rs. 20 Lakhs for entrepreneurs who have successfully repaid previous Tarun loans.
+- **Collateral**: No collateral required for Mudra loans.
+
+## 4. MSME Sustainable (ZED) Certification Scheme
+- **Overview**: Zero Defect Zero Effect (ZED) certification encourages MSMEs to manufacture high-quality products while minimizing environmental impact.
+- **Financial Assistance**:
+  - Bronze Certification: 80% subsidy on certification cost.
+  - Silver Certification: 60% subsidy on certification cost.
+  - Gold Certification: 50% subsidy on certification cost.
+  - Additional 10% subsidy for Women/SC/ST owned MSMEs or those in NER/Himalayan regions.
+- **Benefits**: Interest rate concessions on bank loans, concession in processing fees, and priority in government procurement.
+
+## 5. MSME Champions Scheme & Digital MSME
+- **Overview**: Holistic scheme supporting MSMEs through technology adoption, design improvement, intellectual property protection (IPR), and lean manufacturing practices.
+- **Digital MSME Component**: Offers financial assistance up to Rs. 1 Lakh for Cloud Computing services per MSME over a period of 2 years.
+- **IPR Component**: Financial assistance up to Rs. 5 Lakhs for Foreign Patent registration, Rs. 1 Lakh for Domestic Patent registration, and Rs. 10,000 for Trademark registration.
+
+## 6. Stand-Up India Scheme
+- **Overview**: Facilitates bank loans between Rs. 10 Lakhs and Rs. 1 Crore to at least one SC/ST borrower and at least one woman borrower per bank branch for setting up a greenfield enterprise.
+- **Repayment**: 7 years with a maximum moratorium period of 18 months.
