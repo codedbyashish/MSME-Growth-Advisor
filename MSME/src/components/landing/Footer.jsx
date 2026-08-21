@@ -1,74 +1,83 @@
 import React from 'react';
-import { BarChart3, Heart } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
 
-export default function Footer() {
-  const { isDark } = useTheme();
-
+export default function Footer({ onOpenPricing, onOpenFaq, onOpenContact, onOpenPrivacy }) {
   return (
-    <footer className={`border-t transition-colors ${
-      isDark ? 'bg-[#0a0e1a] border-[#1e2739] text-[#94a3b8]' : 'bg-slate-900 border-slate-800 text-slate-300'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <footer className="bg-[#FAF8F5] border-t border-[#EAE6DF] pt-12 pb-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-[#1e2739]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-8 pb-12">
           
-          {/* Logo & Description */}
-          <div className="md:col-span-6 space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-[#66BB6A] flex items-center justify-center text-slate-950 font-bold shadow-md">
-                <BarChart3 className="w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-[#f8fafc]">
-                MSME <span className="text-[#66BB6A] font-medium">Growth Advisor</span>
-              </span>
-            </div>
-
-            <p className="text-sm leading-relaxed max-w-md text-[#94a3b8]">
-              AI-powered insights to help MSMEs understand their business, predict sales, and make smarter growth decisions.
+          {/* Column 1: Brand & Bio */}
+          <div className="md:col-span-4 space-y-3">
+            <h3 className="text-lg font-bold text-[#1E293B]">
+              MSME Growth Advisor
+            </h3>
+            <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed max-w-sm font-normal">
+              Empowering Indian small businesses with clarity, control, and predictable growth.
             </p>
           </div>
 
-          {/* Quick Links */}
-          <div className="md:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-6 text-xs font-semibold">
-            
-            <div className="space-y-3">
-              <span className="text-[#f8fafc] font-extrabold uppercase tracking-wider text-[11px]">Navigation</span>
-              <ul className="space-y-2 text-[#94a3b8]">
-                <li><a href="#home" className="hover:text-[#66BB6A] transition-colors">Home</a></li>
-                <li><a href="#features" className="hover:text-[#66BB6A] transition-colors">Features</a></li>
-                <li><a href="#how-it-works" className="hover:text-[#66BB6A] transition-colors">How It Works</a></li>
-                <li><a href="#about" className="hover:text-[#66BB6A] transition-colors">About</a></li>
-              </ul>
-            </div>
+          {/* Column 2: PRODUCT */}
+          <div className="md:col-span-2 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1E293B]">
+              PRODUCT
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-sm text-[#64748B]">
+              <li><a href="#features" className="hover:text-[#1E293B] transition-colors">Features</a></li>
+              <li>
+                <button 
+                  onClick={onOpenPricing} 
+                  className="hover:text-[#1E293B] transition-colors text-left cursor-pointer"
+                >
+                  Pricing
+                </button>
+              </li>
+              <li><a href="#changelog" className="hover:text-[#1E293B] transition-colors">Changelog</a></li>
+            </ul>
+          </div>
 
-            <div className="space-y-3">
-              <span className="text-[#f8fafc] font-extrabold uppercase tracking-wider text-[11px]">Legal & Help</span>
-              <ul className="space-y-2 text-[#94a3b8]">
-                <li><a href="#privacy" className="hover:text-[#66BB6A] transition-colors">Privacy Policy</a></li>
-                <li><a href="#terms" className="hover:text-[#66BB6A] transition-colors">Terms of Service</a></li>
-                <li><a href="#contact" className="hover:text-[#66BB6A] transition-colors">Contact Support</a></li>
-              </ul>
-            </div>
+          {/* Column 3: COMPANY */}
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1E293B]">
+              COMPANY
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-sm text-[#64748B]">
+              <li><a href="#about" className="hover:text-[#1E293B] transition-colors">About Us</a></li>
+              <li>
+                <button 
+                  onClick={onOpenContact} 
+                  className="hover:text-[#1E293B] transition-colors text-left cursor-pointer"
+                >
+                  Contact
+                </button>
+              </li>
+              <li><a href="#blog" className="hover:text-[#1E293B] transition-colors">Blog</a></li>
+            </ul>
+          </div>
 
-            <div className="space-y-3 col-span-2 sm:col-span-1">
-              <span className="text-[#f8fafc] font-extrabold uppercase tracking-wider text-[11px]">Platform</span>
-              <p className="text-[#64748b] leading-normal text-xs font-normal">
-                Designed for retail, manufacturing, services, and trading MSMEs.
-              </p>
-            </div>
-
+          {/* Column 4: LEGAL */}
+          <div className="md:col-span-3 space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#1E293B]">
+              LEGAL
+            </h4>
+            <ul className="space-y-2 text-xs sm:text-sm text-[#64748B]">
+              <li>
+                <button 
+                  onClick={onOpenPrivacy} 
+                  className="hover:text-[#1E293B] transition-colors text-left cursor-pointer"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li><a href="#terms" className="hover:text-[#1E293B] transition-colors">Terms of Service</a></li>
+            </ul>
           </div>
 
         </div>
 
-        {/* Bottom Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#64748b] gap-4">
-          <p>© {new Date().getFullYear()} MSME Growth Advisor. All rights reserved.</p>
-          <div className="flex items-center space-x-1">
-            <span>Built for MSME Growth</span>
-            <Heart className="w-3.5 h-3.5 text-[#66BB6A] fill-[#66BB6A] inline" />
-          </div>
+        {/* Bottom Copyright line */}
+        <div className="pt-6 border-t border-[#EAE6DF] text-xs text-[#94A3B8]">
+          <p>© 2024 MSME Growth Advisor. All rights reserved.</p>
         </div>
 
       </div>

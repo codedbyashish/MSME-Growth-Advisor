@@ -1,64 +1,103 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
 import Navbar from './Navbar';
 import HeroSection from './landing/HeroSection';
-import ProblemSection from './landing/ProblemSection';
-import GrowthJourneySection from './landing/GrowthJourneySection';
 import CoreFeaturesSection from './landing/CoreFeaturesSection';
-import PredictionFeatureSection from './landing/PredictionFeatureSection';
-import BusinessHealthSection from './landing/BusinessHealthSection';
-import AiAssistantSection from './landing/AiAssistantSection';
-import DashboardShowcaseSection from './landing/DashboardShowcaseSection';
-import AboutSection from './landing/AboutSection';
 import FinalCtaSection from './landing/FinalCtaSection';
 import Footer from './landing/Footer';
 
+// Modals
+import PricingModal from './modals/PricingModal';
+import FaqModal from './modals/FaqModal';
+import HowItWorksModal from './modals/HowItWorksModal';
+import ContactModal from './modals/ContactModal';
+import PrivacyModal from './modals/PrivacyModal';
+
 export default function LandingPage({ onLaunchDashboard }) {
-  const { isDark } = useTheme();
   const navigate = useNavigate();
+
+  // Modal State Management
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
+  const [isFaqOpen, setIsFaqOpen] = useState(false);
+  const [isHowItWorksOpen, setIsHowItWorksOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
   const handleStart = (e) => {
     if (e) e.preventDefault();
     if (onLaunchDashboard) {
       onLaunchDashboard();
     } else {
-      navigate('/dashboard');
+      navigate('/signup');
     }
   };
 
+  const handleSelectPlan = (planName) => {
+    navigate('/signup', { state: { selectedPlan: planName } });
+  };
+
   return (
-    <div className={`min-h-screen font-sans selection:bg-[#66BB6A] selection:text-white transition-colors duration-300 relative ${
-      isDark ? 'bg-[#0a0e1a] text-[#f8fafc]' : 'bg-slate-50 text-slate-900'
-    }`}>
-      {/* Background Subtle Grid Pattern */}
-      <div 
-        className={`absolute inset-0 pointer-events-none z-0 ${
-          isDark 
-            ? 'bg-[linear-gradient(to_right,#1e273930_1px,transparent_1px),linear-gradient(to_bottom,#1e273930_1px,transparent_1px)]' 
-            : 'bg-[linear-gradient(to_right,#cbd5e150_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e150_1px,transparent_1px)]'
-        } bg-[size:32px_32px]`} 
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] font-sans selection:bg-[#1E293B] selection:text-white relative">
+      
+      {/* Navigation Header */}
+      <Navbar 
+        onLaunchDashboard={onLaunchDashboard}
+        onOpenPricing={() => setIsPricingOpen(true)}
+        onOpenFaq={() => setIsFaqOpen(true)}
+        onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
       />
 
-      {/* Navbar */}
-      <Navbar onLaunchDashboard={onLaunchDashboard} />
+      {/* Main Content */}
+      <main>
+        {/* Hero Section */}
+        <HeroSection 
+          onStart={handleStart}
+          onSeeHowItWorks={() => setIsHowItWorksOpen(true)}
+        />
 
-      {/* Main Content Sections */}
-      <main className="relative z-10">
-        <HeroSection onStart={handleStart} />
-        <ProblemSection />
-        <GrowthJourneySection />
+        {/* 6 Features Grid Section ("Everything you need to grow") */}
         <CoreFeaturesSection />
-        <PredictionFeatureSection />
-        <BusinessHealthSection />
-        <AiAssistantSection />
-        <DashboardShowcaseSection onStart={handleStart} />
-        <AboutSection />
+
+        {/* Final CTA Banner ("Ready to understand your business better?") */}
         <FinalCtaSection onStart={handleStart} />
       </main>
 
       {/* Footer */}
-      <Footer />
+      <Footer 
+        onOpenPricing={() => setIsPricingOpen(true)}
+        onOpenFaq={() => setIsFaqOpen(true)}
+        onOpenContact={() => setIsContactOpen(true)}
+        onOpenPrivacy={() => setIsPrivacyOpen(true)}
+      />
+
+      {/* Interactive Modals */}
+      <PricingModal 
+        isOpen={isPricingOpen} 
+        onClose={() => setIsPricingOpen(false)} 
+        onSelectPlan={handleSelectPlan}
+      />
+
+      <FaqModal 
+        isOpen={isFaqOpen} 
+        onClose={() => setIsFaqOpen(false)} 
+      />
+
+      <HowItWorksModal 
+        isOpen={isHowItWorksOpen} 
+        onClose={() => setIsHowItWorksOpen(false)}
+        onStart={handleStart}
+      />
+
+      <ContactModal 
+        isOpen={isContactOpen} 
+        onClose={() => setIsContactOpen(false)} 
+      />
+
+      <PrivacyModal 
+        isOpen={isPrivacyOpen} 
+        onClose={() => setIsPrivacyOpen(false)} 
+      />
+
     </div>
   );
 }

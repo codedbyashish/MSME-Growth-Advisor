@@ -4,7 +4,18 @@
 :root {
   font-family: 'Inter', sans-serif;
 
-  /* Color System - Financial SaaS Palette */
+  /* Landing Page Color Theme (Warm Cream & Deep Navy) */
+  --bg-landing-warm: #FAF8F5;
+  --bg-landing-card: #FFFFFF;
+  --bg-landing-strip: #F3F0E6;
+  --bg-landing-navy: #23395B;
+  --border-landing: #EAE7DF;
+
+  --text-landing-main: #0F172A;
+  --text-landing-navy: #1E293B;
+  --text-landing-muted: #475569;
+
+  /* Financial SaaS Palette (Dark Mode & Dashboard) */
   --bg-base: #0B1220;
   --bg-secondary: #0F172A;
   --bg-card: #111B2E;

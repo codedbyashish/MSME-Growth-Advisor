@@ -1,93 +1,76 @@
 import React from 'react';
-import { TrendingUp, BarChart3, Wallet, PackageCheck, Activity, Bot } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import { LayoutGrid, Users, Package, TrendingUp, BarChart2, Lightbulb } from 'lucide-react';
 
 export default function CoreFeaturesSection() {
-  const { isDark } = useTheme();
-
   const features = [
     {
-      name: 'Sales Prediction',
-      description: 'Predict future sales based on historical business data so you can prepare stock and manage cash flow effectively.',
+      title: 'Sales Dashboard',
+      description: 'Track revenue, monitor daily transactions, and see your financial health at a single glance.',
+      icon: LayoutGrid,
+    },
+    {
+      title: 'Customer Insights',
+      description: 'Understand who buys from you, identify repeat customers, and uncover spending patterns.',
+      icon: Users,
+    },
+    {
+      title: 'Inventory Alerts',
+      description: 'Never run out of stock. Get timely notifications before popular items hit zero.',
+      icon: Package,
+    },
+    {
+      title: 'Sales Forecasts',
+      description: 'Predict upcoming demand based on historical data, helping you plan purchases better.',
       icon: TrendingUp,
     },
     {
-      name: 'Sales Analytics',
-      description: 'Understand sales performance, growth trends, peak selling windows, and total revenue with clean visuals.',
-      icon: BarChart3,
+      title: 'Business Insights',
+      description: 'Deep dives into margin analysis, cost tracking, and profitability across different product lines.',
+      icon: BarChart2,
     },
     {
-      name: 'Expense Management',
-      description: 'Track operational expenses, categorize vendor payouts, and identify wasteful spending patterns instantly.',
-      icon: Wallet,
-    },
-    {
-      name: 'Inventory Management',
-      description: 'Monitor stock levels, avoid stock-outs during peak demand, and identify slow-moving inventory issues early.',
-      icon: PackageCheck,
-    },
-    {
-      name: 'Business Health Score',
-      description: 'Get a simple, composite 0–100 overview of your overall business stability, revenue strength, and efficiency.',
-      icon: Activity,
-    },
-    {
-      name: 'AI Business Assistant',
-      description: 'Ask plain-language questions about your business data and receive simple, actionable advice in real time.',
-      icon: Bot,
+      title: 'Recommended Actions',
+      description: 'Receive concrete, step-by-step suggestions on how to improve cash flow and reduce waste.',
+      icon: Lightbulb,
     },
   ];
 
   return (
-    <section id="features" className={`py-20 md:py-28 relative ${isDark ? 'bg-[#0a0e1a]' : 'bg-slate-50'}`}>
+    <section id="features" className="bg-[#FAF8F5] py-16 md:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide ${
-            isDark ? 'bg-[#101625] text-[#94a3b8] border border-[#1e2739]' : 'bg-[#66BB6A]/10 text-[#4CAF50] border border-[#66BB6A]/30'
-          }`}>
-            <span>Tailored for MSMEs</span>
-          </div>
-
-          <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
-            Tools Built Around Your{' '}
-            <span className="text-[#66BB6A]">
-              Business Growth
-            </span>
+        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#1E293B] tracking-tight">
+            Everything you need to grow
           </h2>
 
-          <p className={`text-base sm:text-lg leading-relaxed ${isDark ? 'text-[#94a3b8]' : 'text-slate-600'}`}>
-            Everything a growing small-to-medium enterprise needs in one clean, straightforward toolkit.
+          <p className="text-base sm:text-lg text-[#64748B] leading-relaxed">
+            Powerful tools wrapped in a simple interface, designed specifically for the daily realities of small businesses.
           </p>
         </div>
 
-        {/* 6 Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* 6 Feature Cards Grid (3 columns x 2 rows) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {features.map((feat, idx) => {
             const Icon = feat.icon;
             return (
               <div
                 key={idx}
-                className={`p-7 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-                  isDark
-                    ? 'bg-[#101625]/90 border-[#1e2739] hover:bg-[#141b2d]'
-                    : 'bg-white border-slate-200 hover:border-[#66BB6A]/50 shadow-sm'
-                }`}
+                className="bg-white p-7 rounded-xl border border-[#E5E7EB] shadow-sm hover:shadow-md transition-all duration-200"
               >
-                <div className={`w-12 h-12 rounded-xl border flex items-center justify-center mb-5 ${
-                  isDark 
-                    ? 'bg-[#0a0e1a] border-[#1e2739] text-[#64748b]' 
-                    : 'bg-[#66BB6A]/10 border-[#66BB6A]/20 text-[#4CAF50]'
-                }`}>
-                  <Icon className="w-6 h-6" />
+                {/* Icon Box */}
+                <div className="w-10 h-10 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-center text-[#1E293B] mb-5">
+                  <Icon className="w-5 h-5" />
                 </div>
 
-                <h3 className={`text-xl font-bold mb-2.5 ${isDark ? 'text-[#f8fafc]' : 'text-slate-900'}`}>
-                  {feat.name}
+                {/* Card Title */}
+                <h3 className="text-lg font-bold text-[#1E293B] mb-2.5">
+                  {feat.title}
                 </h3>
 
-                <p className={`text-sm leading-relaxed ${isDark ? 'text-[#94a3b8]' : 'text-slate-600'}`}>
+                {/* Card Description */}
+                <p className="text-sm text-[#64748B] leading-relaxed font-normal">
                   {feat.description}
                 </p>
               </div>

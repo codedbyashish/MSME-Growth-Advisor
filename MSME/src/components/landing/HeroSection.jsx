@@ -1,240 +1,81 @@
 import React from 'react';
-import { TrendingUp, ArrowRight, ShieldCheck, BarChart2, DollarSign, Package, Activity, Sparkles } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
+import heroOwnerImg from '../../assets/hero-owner.jpg';
 
-export default function HeroSection({ onStart }) {
-  const { isDark } = useTheme();
-
+export default function HeroSection({ onStart, onSeeHowItWorks }) {
   return (
-    <section id="home" className={`relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden ${
-      isDark ? 'bg-[#0B1220]' : 'bg-slate-50'
-    }`}>
+    <section className="bg-[#FAF8F5] pt-12 pb-16 md:pt-16 md:pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
-          {/* Left Hero Content */}
-          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide border ${
-              isDark 
-                ? 'bg-[#111B2E] border-[#243247] text-[#66BB6A]' 
-                : 'bg-[#66BB6A]/10 border-[#66BB6A]/30 text-[#4CAF50]'
-            }`}>
-              <Sparkles className="w-3.5 h-3.5 text-[#66BB6A]" />
-              <span>AI-Powered MSME Growth Platform</span>
+          {/* Left Column Text Content */}
+          <div className="lg:col-span-6 space-y-6">
+            
+            {/* Pill Badge */}
+            <div className="inline-block px-3.5 py-1 rounded-full text-xs font-bold tracking-wider text-[#475569] bg-[#F1F5F9] border border-[#CBD5E1] uppercase">
+              FOR INDIAN MSMEs
             </div>
 
-            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] ${
-              isDark ? 'text-[#F8FAFC]' : 'text-slate-900'
-            }`}>
-              Turn Your Business Data Into{' '}
-              <span className="text-[#66BB6A]">
-                Growth
-              </span>
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#1E293B] leading-[1.12]">
+              Understand your business.<br />
+              Predict what's next.<br />
+              Grow smarter.
             </h1>
 
-            <p className={`text-lg sm:text-xl font-normal leading-relaxed max-w-2xl mx-auto lg:mx-0 ${
-              isDark ? 'text-[#94A3B8]' : 'text-slate-600'
-            }`}>
-              Understand your business, predict future sales, and make smarter decisions with AI-powered insights designed for MSMEs.
+            {/* Subtitle */}
+            <p className="text-base sm:text-lg text-[#64748B] leading-relaxed max-w-xl font-normal">
+              Clear, actionable insights without the jargon. We turn your scattered data into a simple dashboard that tells you exactly how your business is performing and what to do next.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            {/* CTA Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
               <button
                 onClick={onStart}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-[#66BB6A] hover:bg-[#57a85b] text-[#0B1220] font-extrabold text-sm sm:text-base tracking-wide flex items-center justify-center space-x-2.5 shadow-md transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-lg bg-[#1E293B] hover:bg-[#0F172A] text-white font-semibold text-base shadow-sm transition-all cursor-pointer text-center"
               >
-                <span>Start Your Growth Journey</span>
-                <ArrowRight className="w-4 h-4" />
+                Get Started Free
               </button>
 
-              <a
-                href="#features"
-                className={`w-full sm:w-auto px-7 py-3.5 rounded-xl border text-sm sm:text-base font-semibold flex items-center justify-center space-x-2 transition-all cursor-pointer ${
-                  isDark
-                    ? 'border-[#243247] bg-[#111B2E] text-[#F8FAFC] hover:bg-[#162238]'
-                    : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 shadow-sm'
-                }`}
+              <button
+                onClick={() => {
+                  if (onSeeHowItWorks) {
+                    onSeeHowItWorks();
+                  } else {
+                    const el = document.getElementById('how-it-works');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+                className="w-full sm:w-auto px-6 py-3.5 rounded-lg bg-white hover:bg-slate-50 text-[#1E293B] border border-[#E2E8F0] font-semibold text-base shadow-sm transition-all cursor-pointer text-center"
               >
-                <span>Explore Features</span>
-              </a>
+                See how it works
+              </button>
             </div>
 
-            {/* Trust Badges */}
-            <div className={`pt-4 flex items-center justify-center lg:justify-start space-x-6 text-xs font-medium ${
-              isDark ? 'text-[#64748B]' : 'text-slate-500'
-            }`}>
-              <div className="flex items-center space-x-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#66BB6A]" />
-                <span>Simple & Non-Technical</span>
-              </div>
-              <div className="w-1 h-1 rounded-full bg-[#243247]" />
-              <div className="flex items-center space-x-1.5">
-                <TrendingUp className="w-4 h-4 text-[#66BB6A]" />
-                <span>Predictive AI Insights</span>
-              </div>
-            </div>
           </div>
 
-          {/* Right Hero Preview Dashboard */}
-          <div className="lg:col-span-6 relative">
-            <div className={`relative rounded-2xl border p-5 sm:p-6 shadow-2xl transition-all ${
-              isDark 
-                ? 'bg-[#162238] border-[#243247]' 
-                : 'bg-white border-slate-200 shadow-slate-200'
-            }`}>
-              {/* Header Bar */}
-              <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#243247]">
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 rounded-full bg-[#F43F5E]" />
-                  <div className="w-3 h-3 rounded-full bg-amber-400" />
-                  <div className="w-3 h-3 rounded-full bg-[#66BB6A]" />
-                  <span className={`text-xs font-bold uppercase tracking-wider pl-2 ${
-                    isDark ? 'text-[#64748B]' : 'text-slate-500'
-                  }`}>
-                    Live Dashboard Preview
-                  </span>
-                </div>
-                
-                {/* Growth Badge */}
-                <div className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#66BB6A]/10 border border-[#66BB6A]/30 text-[#66BB6A] text-xs font-bold">
-                  <TrendingUp className="w-3.5 h-3.5" />
-                  <span>Business Growth ↑</span>
-                </div>
-              </div>
-
-              {/* Grid Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-                <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
-                  <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <DollarSign className="w-3.5 h-3.5 text-[#66BB6A]" />
-                    <span>Revenue</span>
-                  </div>
-                  <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
-                    ₹2,45,000
-                  </div>
-                  <span className="text-[10px] text-[#66BB6A] font-semibold">+14.2% vs last mo</span>
-                </div>
-
-                <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
-                  <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <BarChart2 className="w-3.5 h-3.5 text-[#3B82F6]" />
-                    <span>Sales</span>
-                  </div>
-                  <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
-                    1,280 units
-                  </div>
-                  <span className="text-[10px] text-[#66BB6A] font-semibold">Upward trend</span>
-                </div>
-
-                <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
-                  <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <Package className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Inventory</span>
-                  </div>
-                  <div className={`text-base font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
-                    94% Stocked
-                  </div>
-                  <span className="text-[10px] text-[#66BB6A] font-semibold">Optimal</span>
-                </div>
-
-                <div className={`p-3 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50 border-slate-200'}`}>
-                  <div className="flex items-center space-x-1.5 text-xs text-[#64748B] mb-1">
-                    <Activity className="w-3.5 h-3.5 text-[#66BB6A]" />
-                    <span>Health Score</span>
-                  </div>
-                  <div className="text-base font-extrabold text-[#66BB6A]">
-                    82 / 100
-                  </div>
-                  <span className="text-[10px] text-[#66BB6A] font-semibold">Healthy</span>
-                </div>
-              </div>
-
-              {/* Chart Preview */}
-              <div className={`p-4 rounded-xl border ${isDark ? 'bg-[#111B2E] border-[#243247]' : 'bg-slate-50/80 border-slate-200'}`}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className={`text-xs font-bold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-700'}`}>
-                    Sales Performance & Prediction
-                  </span>
-                  <div className="flex items-center space-x-3 text-[11px]">
-                    <span className="flex items-center space-x-1 text-[#94A3B8]">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#3B82F6] inline-block" />
-                      <span>Historical</span>
-                    </span>
-                    <span className="flex items-center space-x-1 text-[#66BB6A]">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#66BB6A] inline-block" />
-                      <span>AI Predicted ↑</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* SVG Trend Chart */}
-                <div className="h-36 w-full relative pt-2">
-                  <svg className="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="heroGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#66BB6A" stopOpacity="0.2" />
-                        <stop offset="100%" stopColor="#66BB6A" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-
-                    <line x1="0" y1="30" x2="400" y2="30" stroke={isDark ? '#243247' : '#e2e8f0'} strokeDasharray="3 3" />
-                    <line x1="0" y1="70" x2="400" y2="70" stroke={isDark ? '#243247' : '#e2e8f0'} strokeDasharray="3 3" />
-                    
-                    <path
-                      d="M 0 90 L 60 80 L 120 70 L 180 60 L 240 45 L 300 35 L 360 20 L 400 15 L 400 120 L 0 120 Z"
-                      fill="url(#heroGradient)"
-                    />
-
-                    {/* Historical (Blue/Cyan) */}
-                    <path
-                      d="M 0 90 L 60 80 L 120 70 L 180 60 L 240 45"
-                      fill="none"
-                      stroke="#3B82F6"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                    />
-
-                    {/* AI Predicted (Green) */}
-                    <path
-                      d="M 240 45 L 300 35 L 360 20 L 400 15"
-                      fill="none"
-                      stroke="#66BB6A"
-                      strokeWidth="3.5"
-                      strokeDasharray="5 4"
-                      strokeLinecap="round"
-                    />
-
-                    <circle cx="0" cy="90" r="4" fill="#3B82F6" />
-                    <circle cx="60" cy="80" r="4" fill="#3B82F6" />
-                    <circle cx="120" cy="70" r="4" fill="#3B82F6" />
-                    <circle cx="180" cy="60" r="4" fill="#3B82F6" />
-                    <circle cx="240" cy="45" r="5" fill="#66BB6A" />
-                    <circle cx="300" cy="35" r="4" fill="#66BB6A" />
-                    <circle cx="360" cy="20" r="4" fill="#66BB6A" />
-                    <circle cx="400" cy="15" r="5" fill="#66BB6A" />
-                  </svg>
-                </div>
-
-                <div className="flex justify-between items-center text-[10px] text-[#64748B] pt-2 border-t border-[#243247]">
-                  <span>Jan</span>
-                  <span>Feb</span>
-                  <span>Mar</span>
-                  <span>Apr</span>
-                  <span>May</span>
-                  <span className="text-[#66BB6A] font-bold">Jun (Predicted)</span>
-                  <span className="text-[#66BB6A] font-bold">Jul (Predicted)</span>
-                </div>
-              </div>
-
-              <p className={`text-[11px] text-center pt-3 italic ${isDark ? 'text-[#64748B]' : 'text-slate-500'}`}>
-                * Designed to assist business planning; predictions are estimates based on historical trends.
-              </p>
+          {/* Right Column Hero Image */}
+          <div className="lg:col-span-6">
+            <div className="relative rounded-2xl overflow-hidden shadow-xl border border-slate-200/80 bg-white">
+              <img 
+                src={heroOwnerImg} 
+                alt="Indian business owner reviewing sales analytics on laptop in shop warehouse" 
+                className="w-full h-[380px] sm:h-[450px] object-cover object-center"
+              />
             </div>
           </div>
 
         </div>
+
       </div>
+
+      {/* Sub-hero Social Proof Banner Strip */}
+      <div className="mt-16 md:mt-20 border-y border-[#EAE6DF] bg-[#F5F3EF] py-5 px-4 text-center">
+        <p className="text-xs sm:text-sm md:text-base font-medium text-[#64748B]">
+          Built for retail, manufacturing, wholesale, and service businesses across India
+        </p>
+      </div>
+
     </section>
   );
 }
