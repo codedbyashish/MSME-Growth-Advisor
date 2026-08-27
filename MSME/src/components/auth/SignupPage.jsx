@@ -6,11 +6,9 @@ import InputField from './InputField';
 import PasswordInput from './PasswordInput';
 import AuthButton from './AuthButton';
 import { useAuth } from '../../context/AuthContext';
-import { useTheme } from '../../context/ThemeContext';
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const { isDark } = useTheme();
   const { register } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -114,11 +112,11 @@ export default function SignupPage() {
       <div className="space-y-6">
         
         {/* Header */}
-        <div className="text-left space-y-1.5">
-          <h2 className={`text-2xl font-extrabold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>
+        <div className="text-left space-y-1">
+          <h2 className="text-2xl font-bold text-[#1E293B] tracking-tight">
             Create Your Account
           </h2>
-          <p className={`text-xs ${isDark ? 'text-[#94A3B8]' : 'text-slate-600'}`}>
+          <p className="text-xs sm:text-sm text-[#64748B] font-normal">
             Start turning your business data into smarter decisions.
           </p>
         </div>
@@ -202,10 +200,8 @@ export default function SignupPage() {
 
         {/* OR Divider */}
         <div className="relative flex items-center justify-center">
-          <div className={`border-t w-full ${isDark ? 'border-[#243247]' : 'border-slate-200'}`} />
-          <span className={`px-3 text-[10px] uppercase font-bold absolute ${
-            isDark ? 'bg-[#111B2E] text-[#64748B]' : 'bg-white text-slate-400'
-          }`}>
+          <div className="border-t border-[#E2E8F0] w-full" />
+          <span className="px-3 text-[10px] uppercase font-bold text-[#94A3B8] bg-white absolute">
             OR
           </span>
         </div>
@@ -215,11 +211,7 @@ export default function SignupPage() {
           type="button"
           onClick={handleGoogleLogin}
           disabled={googleLoading}
-          className={`w-full py-2.5 px-4 rounded-xl border font-semibold text-xs flex items-center justify-center space-x-2 transition-all duration-200 ${
-            isDark 
-              ? 'border-[#243247] bg-[#0B1220] hover:bg-[#162238] text-[#F8FAFC]' 
-              : 'border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800'
-          }`}
+          className="w-full py-2.5 px-4 rounded-lg bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#1E293B] font-semibold text-xs shadow-sm flex items-center justify-center space-x-2 transition-all cursor-pointer"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -243,9 +235,9 @@ export default function SignupPage() {
         </button>
 
         {/* Footer Link */}
-        <p className={`text-xs text-center pt-1 ${isDark ? 'text-[#94A3B8]' : 'text-slate-600'}`}>
+        <p className="text-xs text-center text-[#64748B] pt-1">
           Already have an account?{' '}
-          <Link to="/login" className="font-bold text-[#10B981] hover:underline">
+          <Link to="/login" className="font-bold text-[#1E293B] hover:text-black hover:underline">
             Sign in
           </Link>
         </p>
@@ -256,3 +248,4 @@ export default function SignupPage() {
 }
 
 export { SignupPage as RegisterPage };
+

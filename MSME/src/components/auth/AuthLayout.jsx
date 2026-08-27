@@ -1,138 +1,113 @@
 import React from 'react';
-import { TrendingUp, CheckCircle2, ShieldCheck, Sparkles, Sun, Moon } from 'lucide-react';
+import { LayoutGrid, TrendingUp, Users, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '../../context/ThemeContext';
 
 export default function AuthLayout({ children }) {
   const navigate = useNavigate();
-  const { toggleTheme, isDark } = useTheme();
 
   const benefits = [
-    { title: 'Sales Insights', desc: 'Clear performance metrics & revenue trends' },
-    { title: 'Future Sales Prediction', desc: 'AI-driven forecasting based on past data' },
-    { title: 'Business Health Overview', desc: '0–100 composite stability score' },
+    { 
+      title: 'Sales & Revenue Insights', 
+      desc: 'Clear performance metrics, transaction tracking, and revenue trends.',
+      icon: LayoutGrid
+    },
+    { 
+      title: 'Demand Forecasting', 
+      desc: 'Predict upcoming sales demand based on past business data.',
+      icon: TrendingUp
+    },
+    { 
+      title: 'Customer Intelligence', 
+      desc: 'Identify repeat buyers and understand purchasing patterns.',
+      icon: Users
+    },
   ];
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between transition-colors duration-300 selection:bg-[#10B981] selection:text-[#0B1220] ${
-      isDark ? 'bg-[#0B1220] text-[#F8FAFC]' : 'bg-slate-50 text-slate-900'
-    }`}>
+    <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] font-sans flex flex-col justify-between selection:bg-[#1E293B] selection:text-white">
       
-      {/* Top Header with Theme Switcher */}
-      <header className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
-        <div 
-          onClick={() => navigate('/')}
-          className="flex items-center space-x-3 cursor-pointer group w-fit"
-        >
-          <div className="w-10 h-10 rounded-xl bg-[#10B981]/10 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] group-hover:bg-[#10B981] group-hover:text-[#0B1220] transition-colors duration-200 shadow-md shadow-[#10B981]/10">
-            <TrendingUp className="w-5 h-5" />
-          </div>
-
-          <div className="flex flex-col">
-            <span className={`text-lg sm:text-xl font-bold tracking-tight flex items-center gap-1.5 ${
-              isDark ? 'text-[#F8FAFC]' : 'text-slate-900'
-            }`}>
-              <span>MSME</span>
-              <span className="text-[#10B981] font-medium">Growth Advisor</span>
-            </span>
-            <span className={`text-[10px] font-semibold tracking-wider uppercase ${
-              isDark ? 'text-[#94A3B8]' : 'text-slate-500'
-            }`}>
-              AI-Powered Business Growth
-            </span>
-          </div>
-        </div>
-
-        {/* Right Header Actions: Theme Switcher & Back to Home */}
-        <div className="flex items-center space-x-3">
-          <button 
-            onClick={toggleTheme}
-            className={`p-2 rounded-xl border transition-all flex items-center justify-center ${
-              isDark 
-                ? 'bg-[#111B2E] border-[#243247] text-[#94A3B8] hover:text-[#10B981]' 
-                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100 shadow-sm'
-            }`}
-            title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
-            aria-label="Toggle Theme"
+      {/* Top Header matching Landing Page Navbar */}
+      <header className="w-full bg-[#FAF8F5] border-b border-[#EAE6DF] sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          
+          {/* Brand Logo */}
+          <div 
+            onClick={() => navigate('/')}
+            className="cursor-pointer flex items-center space-x-2 select-none"
           >
-            {isDark ? (
-              <Sun className="w-4.5 h-4.5 text-amber-400" />
-            ) : (
-              <Moon className="w-4.5 h-4.5 text-indigo-500" />
-            )}
-          </button>
+            <span className="text-xl sm:text-2xl font-bold tracking-tight text-[#1E293B]">
+              MSME Growth Advisor
+            </span>
+          </div>
 
+          {/* Right Navigation Link */}
           <button
             onClick={() => navigate('/')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all hidden sm:block ${
-              isDark
-                ? 'bg-[#111B2E] border-[#243247] text-[#94A3B8] hover:text-[#F8FAFC]'
-                : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100 shadow-sm'
-            }`}
+            className="text-sm font-semibold text-[#1E293B] hover:text-black flex items-center space-x-1.5 transition-colors cursor-pointer"
           >
-            Home
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Home</span>
           </button>
+
         </div>
       </header>
 
-      {/* Main Content (2-Column Grid on Desktop) */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      {/* Main Content: 2-Column Layout */}
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           
-          {/* Left Column: Business Marketing & Benefits (Desktop Visible) */}
-          <div className="lg:col-span-6 space-y-8 text-left hidden lg:block">
+          {/* Left Column: Landing Page Style Brand Messaging & Features */}
+          <div className="lg:col-span-6 space-y-7 text-left hidden lg:block">
             
-            <div className={`inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-semibold border ${
-              isDark ? 'bg-[#111B2E] border-[#243247] text-[#10B981]' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-            }`}>
-              <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
-              <span>Financial Intelligence Co-Pilot</span>
+            {/* Pill Badge matching HeroSection */}
+            <div className="inline-block px-3.5 py-1 rounded-full text-xs font-bold tracking-wider text-[#475569] bg-[#F1F5F9] border border-[#CBD5E1] uppercase">
+              FOR INDIAN MSMEs
             </div>
 
-            <h1 className={`text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.15] ${
-              isDark ? 'text-[#F8FAFC]' : 'text-slate-900'
-            }`}>
-              Your Business.<br />
-              Your Data.<br />
-              <span className="text-[#10B981]">Your Growth.</span>
+            {/* Headline matching HeroSection */}
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-[#1E293B] leading-[1.12]">
+              Understand your business.<br />
+              Predict what's next.<br />
+              Grow smarter.
             </h1>
 
-            <p className={`text-base leading-relaxed max-w-lg font-normal ${
-              isDark ? 'text-[#94A3B8]' : 'text-slate-600'
-            }`}>
-              MSME Growth Advisor helps you understand your business data, identify trends, and plan ahead with AI-powered insights designed for business owners.
+            {/* Subtitle */}
+            <p className="text-base text-[#64748B] leading-relaxed max-w-lg font-normal">
+              MSME Growth Advisor turns your scattered data into simple, actionable insights so you can make confident decisions every day.
             </p>
 
-            {/* 3 Business Benefits */}
-            <div className="space-y-4 pt-2">
-              {benefits.map((item, idx) => (
-                <div key={idx} className={`flex items-start space-x-3 p-3.5 rounded-xl border max-w-lg ${
-                  isDark ? 'bg-[#111B2E]/60 border-[#243247]' : 'bg-white border-slate-200 shadow-sm'
-                }`}>
-                  <CheckCircle2 className="w-5 h-5 text-[#10B981] shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className={`text-sm font-bold ${isDark ? 'text-[#F8FAFC]' : 'text-slate-900'}`}>{item.title}</h3>
-                    <p className={`text-xs ${isDark ? 'text-[#94A3B8]' : 'text-slate-500'}`}>{item.desc}</p>
+            {/* Feature Cards matching CoreFeaturesSection card style */}
+            <div className="space-y-3.5 pt-2">
+              {benefits.map((item, idx) => {
+                const Icon = item.icon;
+                return (
+                  <div 
+                    key={idx} 
+                    className="bg-white p-4 sm:p-4.5 rounded-xl border border-[#E5E7EB] shadow-sm flex items-start space-x-4 max-w-lg transition-all duration-200"
+                  >
+                    <div className="w-9 h-9 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-center text-[#1E293B] shrink-0 mt-0.5">
+                      <Icon className="w-4.5 h-4.5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-[#1E293B]">{item.title}</h3>
+                      <p className="text-xs text-[#64748B] font-normal leading-relaxed mt-0.5">{item.desc}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            <div className={`flex items-center space-x-2 text-xs pt-2 ${
-              isDark ? 'text-[#64748B]' : 'text-slate-500'
-            }`}>
+            {/* Security Assurance */}
+            <div className="flex items-center space-x-2 text-xs text-[#64748B] pt-2">
               <ShieldCheck className="w-4 h-4 text-[#10B981]" />
-              <span>Secure, Private & Enterprise-Grade Data Encryption</span>
+              <span className="font-medium">Bank-grade data privacy and secure cloud infrastructure</span>
             </div>
+
           </div>
 
           {/* Right Column: Authentication Card */}
           <div className="lg:col-span-6 flex justify-center w-full">
-            <div className={`w-full max-w-[460px] border rounded-3xl p-6 sm:p-8 shadow-2xl relative transition-colors ${
-              isDark 
-                ? 'bg-[#111B2E] border-[#243247] shadow-[#0B1220]/90' 
-                : 'bg-white border-slate-200 shadow-slate-200'
-            }`}>
+            <div className="w-full max-w-[460px] bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 shadow-xl relative transition-all">
               {children}
             </div>
           </div>
@@ -140,13 +115,12 @@ export default function AuthLayout({ children }) {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className={`py-6 text-center text-xs border-t ${
-        isDark ? 'text-[#64748B] border-[#243247]/60' : 'text-slate-500 border-slate-200'
-      }`}>
+      {/* Footer matching Landing Page Footer */}
+      <footer className="bg-[#FAF8F5] border-t border-[#EAE6DF] py-6 text-center text-xs text-[#94A3B8]">
         <p>© {new Date().getFullYear()} MSME Growth Advisor. All rights reserved.</p>
       </footer>
 
     </div>
   );
 }
+

@@ -16,10 +16,10 @@ export default function AuthButton({
       type={type}
       disabled={loading || disabled}
       onClick={onClick}
-      className={`w-full py-3 px-5 rounded-xl font-bold text-xs sm:text-sm tracking-wider uppercase flex items-center justify-center space-x-2 transition-all duration-200 shadow-md ${
+      className={`w-full py-3 px-5 rounded-lg font-semibold text-sm tracking-wide flex items-center justify-center space-x-2 transition-all duration-200 cursor-pointer ${
         isPrimary
-          ? 'bg-[#10B981] hover:bg-[#0ea371] text-[#0B1220] hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 shadow-[#10B981]/20'
-          : 'bg-[#0B1220] hover:bg-[#162238] text-[#F8FAFC] border border-[#243247] hover:border-[#10B981]/50'
+          ? 'bg-[#1E293B] hover:bg-[#0F172A] text-white shadow-sm hover:shadow disabled:opacity-50 disabled:cursor-not-allowed'
+          : 'bg-white hover:bg-slate-50 text-[#1E293B] border border-[#E2E8F0] shadow-sm disabled:opacity-50'
       }`}
     >
       {loading ? (
@@ -36,3 +36,4 @@ export default function AuthButton({
     </button>
   );
 }
+

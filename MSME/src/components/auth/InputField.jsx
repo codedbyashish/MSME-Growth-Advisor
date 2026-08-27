@@ -1,6 +1,5 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
 
 export default function InputField({
   label,
@@ -14,23 +13,17 @@ export default function InputField({
   required = false,
   autoComplete,
 }) {
-  const { isDark } = useTheme();
-
   return (
     <div className="space-y-1.5 text-left">
       {label && (
-        <label htmlFor={name} className={`block text-xs font-semibold ${
-          isDark ? 'text-[#F8FAFC]' : 'text-slate-700'
-        }`}>
+        <label htmlFor={name} className="block text-xs sm:text-sm font-semibold text-[#1E293B]">
           {label} {required && <span className="text-[#F43F5E]">*</span>}
         </label>
       )}
 
-      <div className="relative rounded-xl shadow-sm">
+      <div className="relative rounded-lg shadow-sm">
         {Icon && (
-          <div className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none ${
-            isDark ? 'text-[#64748B]' : 'text-slate-400'
-          }`}>
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
             <Icon className="w-4 h-4" />
           </div>
         )}
@@ -43,18 +36,12 @@ export default function InputField({
           onChange={onChange}
           placeholder={placeholder}
           autoComplete={autoComplete}
-          className={`w-full py-2.5 text-xs sm:text-sm rounded-xl border transition-all duration-200 focus:outline-none ${
+          className={`w-full py-2.5 text-xs sm:text-sm rounded-lg border bg-white text-[#1E293B] placeholder-[#94A3B8] transition-all duration-200 focus:outline-none ${
             Icon ? 'pl-10 pr-3.5' : 'px-3.5'
-          } ${
-            isDark 
-              ? 'bg-[#0B1220] text-[#F8FAFC] placeholder-[#64748B]' 
-              : 'bg-slate-50 text-slate-900 placeholder-slate-400'
           } ${
             error
               ? 'border-[#F43F5E] focus:border-[#F43F5E] focus:ring-1 focus:ring-[#F43F5E]'
-              : isDark
-              ? 'border-[#243247] focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]'
-              : 'border-slate-300 focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981]'
+              : 'border-[#E2E8F0] focus:border-[#1E293B] focus:ring-1 focus:ring-[#1E293B]'
           }`}
         />
       </div>
@@ -68,3 +55,4 @@ export default function InputField({
     </div>
   );
 }
+
