@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import HeroSection from './landing/HeroSection';
+import HowItWorksSection from './landing/HowItWorksSection';
 import CoreFeaturesSection from './landing/CoreFeaturesSection';
+import PricingSection from './landing/PricingSection';
+import FaqSection from './landing/FaqSection';
 import FinalCtaSection from './landing/FinalCtaSection';
 import Footer from './landing/Footer';
 
@@ -36,15 +39,36 @@ export default function LandingPage({ onLaunchDashboard }) {
     navigate('/signup', { state: { selectedPlan: planName } });
   };
 
+  const scrollToHowItWorks = () => {
+    const el = document.getElementById('how-it-works');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToPricing = () => {
+    const el = document.getElementById('pricing');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToFaq = () => {
+    const el = document.getElementById('faq');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1E293B] font-sans selection:bg-[#1E293B] selection:text-white relative">
       
       {/* Navigation Header */}
       <Navbar 
         onLaunchDashboard={onLaunchDashboard}
-        onOpenPricing={() => setIsPricingOpen(true)}
-        onOpenFaq={() => setIsFaqOpen(true)}
-        onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
+        onOpenPricing={scrollToPricing}
+        onOpenFaq={scrollToFaq}
+        onOpenHowItWorks={scrollToHowItWorks}
       />
 
       {/* Main Content */}
@@ -52,11 +76,20 @@ export default function LandingPage({ onLaunchDashboard }) {
         {/* Hero Section */}
         <HeroSection 
           onStart={handleStart}
-          onSeeHowItWorks={() => setIsHowItWorksOpen(true)}
+          onSeeHowItWorks={scrollToHowItWorks}
         />
+
+        {/* How It Works Section directly in landing page */}
+        <HowItWorksSection onStart={handleStart} />
 
         {/* 6 Features Grid Section ("Everything you need to grow") */}
         <CoreFeaturesSection />
+
+        {/* Pricing Section directly in landing page */}
+        <PricingSection onSelectPlan={handleSelectPlan} />
+
+        {/* FAQ Section directly in landing page */}
+        <FaqSection onOpenContact={() => setIsContactOpen(true)} />
 
         {/* Final CTA Banner ("Ready to understand your business better?") */}
         <FinalCtaSection onStart={handleStart} />
@@ -64,8 +97,8 @@ export default function LandingPage({ onLaunchDashboard }) {
 
       {/* Footer */}
       <Footer 
-        onOpenPricing={() => setIsPricingOpen(true)}
-        onOpenFaq={() => setIsFaqOpen(true)}
+        onOpenPricing={scrollToPricing}
+        onOpenFaq={scrollToFaq}
         onOpenContact={() => setIsContactOpen(true)}
         onOpenPrivacy={() => setIsPrivacyOpen(true)}
       />
