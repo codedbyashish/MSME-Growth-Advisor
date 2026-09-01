@@ -36,7 +36,13 @@ import {
   MoreVertical,
   Receipt,
   Box,
-  TrendingDown
+  TrendingDown,
+  Pencil,
+  SlidersHorizontal,
+  Shirt,
+  Armchair,
+  Cpu,
+  Watch
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
@@ -77,11 +83,16 @@ export default function Dashboard() {
   const [salesTrendTimeframe, setSalesTrendTimeframe] = useState('30D');
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  // Orders Management Specific State
+  // Orders Management State
   const [orderSearchQuery, setOrderSearchQuery] = useState('');
   const [orderStatusFilter, setOrderStatusFilter] = useState('All Statuses');
   const [orderCurrentPage, setOrderCurrentPage] = useState(1);
   const ordersPerPage = 5;
+
+  // Products Management State
+  const [productSearchQuery, setProductSearchQuery] = useState('');
+  const [productCurrentPage, setProductCurrentPage] = useState(1);
+  const productsPerPage = 5;
 
   // Form states for modals
   const [saleForm, setSaleForm] = useState({ client: '', item: '', amount: '', status: 'Paid' });
@@ -102,6 +113,54 @@ export default function Dashboard() {
   const profitMargin = totalRevenueAmount > 0 
     ? ((netProfitAmount / totalRevenueAmount) * 100).toFixed(1) 
     : '0.0';
+
+  // Base Products Dataset matching mockup structure
+  const defaultProducts = [
+    { id: 'PRD-101', name: 'Premium Cotton Shirts', category: 'Apparel', iconType: 'shirt', unitsSold: 1245, revenue: 452000, orders: 312, growth: '+12.5%', status: 'In Stock (450)', statusType: 'inStock' },
+    { id: 'PRD-102', name: 'Ergonomic Office Chair', category: 'Furniture', iconType: 'chair', unitsSold: 89, revenue: 380500, orders: 45, growth: '+8.2%', status: 'Low Stock (12)', statusType: 'lowStock' },
+    { id: 'PRD-103', name: 'Basic White Tees (Pack of 3)', category: 'Apparel', iconType: 'box', unitsSold: 150, revenue: 45000, orders: 88, growth: '-4.1%', status: 'In Stock (800)', statusType: 'inStock' },
+    { id: 'PRD-104', name: 'Legacy Router Model X', category: 'Electronics', iconType: 'cpu', unitsSold: 8, revenue: 12400, orders: 6, growth: '-15.0%', status: 'Out of Stock', statusType: 'outOfStock' },
+    { id: 'PRD-105', name: 'Smartwatch Pro Gen 3', category: 'Electronics', iconType: 'watch', unitsSold: 340, revenue: 850000, orders: 290, growth: '0.0%', status: 'Low Stock (4)', statusType: 'lowStock' },
+  ];
+
+  // Dynamic user inventory mapped into products format
+  const mergedUserProducts = inventory.map((inv) => ({
+    id: inv.id || 'PRD-USER',
+    name: inv.name,
+    category: inv.category || 'General',
+    iconType: 'box',
+    unitsSold: Number(inv.stock) * 2 || 100,
+    revenue: Number(inv.unitPrice || 0) * Number(inv.stock || 1),
+    orders: Math.floor(Number(inv.stock || 1) / 2) || 10,
+    growth: '+5.0%',
+    status: Number(inv.stock) <= Number(inv.minStock || 10) ? `Low Stock (${inv.stock})` : Number(inv.stock) === 0 ? 'Out of Stock' : `In Stock (${inv.stock})`,
+    statusType: Number(inv.stock) <= Number(inv.minStock || 10) ? 'lowStock' : Number(inv.stock) === 0 ? 'outOfStock' : 'inStock'
+  }));
+
+  const allProductsList = [...mergedUserProducts, ...defaultProducts];
+
+  const filteredProductsList = allProductsList.filter((prod) =>
+    prod.name.toLowerCase().includes(productSearchQuery.toLowerCase()) ||
+    prod.category.toLowerCase().includes(productSearchQuery.toLowerCase())
+  );
+
+  const totalProductPages = Math.ceil(filteredProductsList.length / productsPerPage) || 1;
+  const productStartIndex = (productCurrentPage - 1) * productsPerPage;
+  const paginatedProducts = filteredProductsList.slice(productStartIndex, productStartIndex + productsPerPage);
+
+  const handleExportProductsCSV = () => {
+    const headers = 'Product Name,Units Sold,Revenue,Orders,Growth,Inventory Status\n';
+    const rows = filteredProductsList
+      .map((p) => `"${p.name}","${p.unitsSold}","${p.revenue}","${p.orders}","${p.growth}","${p.status}"`)
+      .join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Products_Export_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   // Orders Dataset
   const defaultOrders = [
@@ -269,6 +328,22 @@ export default function Dashboard() {
     s.item.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Helper icon renderer for product rows
+  const renderProductIcon = (iconType) => {
+    switch (iconType) {
+      case 'shirt':
+        return <Shirt className="w-4 h-4" />;
+      case 'chair':
+        return <Armchair className="w-4 h-4" />;
+      case 'cpu':
+        return <Cpu className="w-4 h-4" />;
+      case 'watch':
+        return <Watch className="w-4 h-4" />;
+      default:
+        return <Box className="w-4 h-4" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] text-[#1C2A39] flex font-sans antialiased selection:bg-[#274258] selection:text-white">
@@ -618,7 +693,7 @@ export default function Dashboard() {
             </>
           )}
 
-          {/* VIEW: SALES PERFORMANCE TAB (Matches Provided Mockup Image Exactly) */}
+          {/* VIEW: SALES PERFORMANCE TAB */}
           {activeTab === 'sales' && (
             <div className="space-y-6">
               {/* Title & Subtitle Header */}
@@ -1187,12 +1262,10 @@ export default function Dashboard() {
                       {paginatedOrders.length > 0 ? (
                         paginatedOrders.map((order) => (
                           <tr key={order.id} className="hover:bg-[#FAF8F5]/80 transition-colors">
-                            {/* ORDER ID */}
                             <td className="p-3.5 font-bold text-[#274258] hover:underline cursor-pointer">
                               {order.id}
                             </td>
 
-                            {/* CUSTOMER (Initials badge + Name) */}
                             <td className="p-3.5 font-semibold text-[#1C2A39]">
                               <div className="flex items-center space-x-2.5">
                                 <div className="w-7 h-7 rounded-full bg-[#E2E8F0] text-[#475569] font-bold text-[11px] flex items-center justify-center shrink-0">
@@ -1202,18 +1275,12 @@ export default function Dashboard() {
                               </div>
                             </td>
 
-                            {/* DATE */}
                             <td className="p-3.5 text-[#64748B] font-medium">{order.date}</td>
-
-                            {/* PRODUCT */}
                             <td className="p-3.5 text-[#334155] font-medium">{order.product}</td>
-
-                            {/* AMOUNT */}
                             <td className="p-3.5 font-bold text-[#1C2A39]">
                               ₹{Number(order.amount).toLocaleString('en-IN')}
                             </td>
 
-                            {/* STATUS PILL BADGE */}
                             <td className="p-3.5">
                               <span
                                 className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
@@ -1230,7 +1297,6 @@ export default function Dashboard() {
                               </span>
                             </td>
 
-                            {/* ACTIONS */}
                             <td className="p-3.5 text-right">
                               <button className="text-[#64748B] hover:text-[#1C2A39] p-1 rounded-md transition-colors cursor-pointer">
                                 <MoreHorizontal className="w-4 h-4" />
@@ -1257,7 +1323,6 @@ export default function Dashboard() {
                     <span className="font-bold text-[#1C2A39]">{filteredOrdersList.length}</span> results
                   </div>
 
-                  {/* Page Buttons */}
                   <div className="flex items-center space-x-1.5">
                     <button
                       onClick={() => setOrderCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -1297,38 +1362,316 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* VIEW: PRODUCTS / INVENTORY */}
+          {/* VIEW: PRODUCT PERFORMANCE (Matches Provided Mockup Image Exactly) */}
           {(activeTab === 'products' || activeTab === 'inventory') && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h1 className="font-serif-heading text-3xl font-bold text-[#1C2A39]">
-                  {activeTab === 'products' ? 'Product Inventory' : 'Stock Management'}
-                </h1>
+              {/* Page Title & Add Product Header Button */}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h1 className="font-serif-heading text-3xl font-bold text-[#1C2A39] tracking-tight">
+                    Product Performance
+                  </h1>
+                  <p className="text-xs text-[#786E60] font-sans">
+                    Analyze and manage your inventory metrics.
+                  </p>
+                </div>
+
                 <button
                   onClick={() => setIsAddProductOpen(true)}
-                  className="px-4 py-2 bg-[#274258] text-white rounded-lg text-xs font-semibold hover:bg-[#1C3142] flex items-center space-x-2 cursor-pointer shadow-2xs"
+                  className="bg-[#1C2A39] hover:bg-[#274258] text-white px-4 py-2 rounded-lg text-xs font-semibold shadow-xs flex items-center space-x-2 transition-all cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Product</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {inventory.map((prod) => (
-                  <div key={prod.id} className="bg-white rounded-xl border border-[#E8E3D9] p-5 shadow-2xs space-y-3">
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-mono text-[#786E60]">{prod.id}</span>
-                      <span className="bg-[#F5F3EE] text-[#274258] px-2 py-0.5 rounded-md text-[10px] font-bold">{prod.category}</span>
+              {/* Top Summary Cards: Top Performing (Left) & Declining Sales (Right) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {/* Top Performing Card */}
+                <div className="bg-white rounded-xl p-6 border border-[#E8E3D9] shadow-2xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-emerald-700 flex items-center gap-1.5 font-serif-heading">
+                        <TrendingUp className="w-4 h-4" /> Top Performing
+                      </div>
+                      <p className="text-[11px] text-[#786E60] mt-0.5">Last 30 days revenue leaders</p>
                     </div>
-                    <h4 className="font-bold text-sm text-[#1C2A39]">{prod.name}</h4>
-                    <div className="flex justify-between text-xs pt-2 border-t border-[#E8E3D9]">
-                      <span className="text-[#786E60]">Stock Level:</span>
-                      <span className={`font-bold ${prod.stock <= prod.minStock ? 'text-rose-600' : 'text-emerald-700'}`}>
-                        {prod.stock} {prod.unit}
-                      </span>
+                    <button className="text-[#786E60] hover:text-[#1C2A39] p-1 rounded-md">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    {/* Item 1: Premium Cotton Shirts */}
+                    <div className="p-3.5 bg-[#FAF8F5] border border-[#E8E3D9] rounded-xl flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2.5 bg-white border border-[#E5E0D6] rounded-lg text-[#274258]">
+                          <Shirt className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-[#1C2A39]">Premium Cotton Shirts</h4>
+                          <div className="font-serif-heading text-sm font-bold text-[#1C2A39]">₹4,52,000</div>
+                        </div>
+                      </div>
+                      <div className="w-20 h-8">
+                        <svg viewBox="0 0 100 30" className="w-full h-full">
+                          <path d="M5 25 Q30 20 50 15 T95 5" fill="none" stroke="#16a34a" strokeWidth="2.5" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Item 2: Ergonomic Office Chair */}
+                    <div className="p-3.5 bg-[#FAF8F5] border border-[#E8E3D9] rounded-xl flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2.5 bg-white border border-[#E5E0D6] rounded-lg text-[#274258]">
+                          <Armchair className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-[#1C2A39]">Ergonomic Office Chair</h4>
+                          <div className="font-serif-heading text-sm font-bold text-[#1C2A39]">₹3,80,500</div>
+                        </div>
+                      </div>
+                      <div className="w-20 h-8">
+                        <svg viewBox="0 0 100 30" className="w-full h-full">
+                          <path d="M5 25 Q30 20 50 18 T95 6" fill="none" stroke="#16a34a" strokeWidth="2.5" />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Declining Sales Card */}
+                <div className="bg-white rounded-xl p-6 border border-[#E8E3D9] shadow-2xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-rose-700 flex items-center gap-1.5 font-serif-heading">
+                        <TrendingDown className="w-4 h-4" /> Declining Sales
+                      </div>
+                      <p className="text-[11px] text-[#786E60] mt-0.5">Action required to move inventory</p>
+                    </div>
+                    <button className="text-[#786E60] hover:text-[#1C2A39] p-1 rounded-md">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    {/* Item 1: Basic White Tees */}
+                    <div className="p-3.5 bg-[#FAF8F5] border border-[#E8E3D9] rounded-xl flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2.5 bg-white border border-[#E5E0D6] rounded-lg text-[#274258]">
+                          <Box className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-[#1C2A39]">Basic White Tees (Pack of 3)</h4>
+                          <div className="font-serif-heading text-sm font-bold text-[#1C2A39]">₹45,000</div>
+                        </div>
+                      </div>
+                      <div className="w-20 h-8">
+                        <svg viewBox="0 0 100 30" className="w-full h-full">
+                          <path d="M5 5 Q30 10 50 20 T95 25" fill="none" stroke="#dc2626" strokeWidth="2.5" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Item 2: Legacy Router Model X */}
+                    <div className="p-3.5 bg-[#FAF8F5] border border-[#E8E3D9] rounded-xl flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2.5 bg-white border border-[#E5E0D6] rounded-lg text-[#274258]">
+                          <Cpu className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-xs text-[#1C2A39]">Legacy Router Model X</h4>
+                          <div className="font-serif-heading text-sm font-bold text-[#1C2A39]">₹12,400</div>
+                        </div>
+                      </div>
+                      <div className="w-20 h-8">
+                        <svg viewBox="0 0 100 30" className="w-full h-full">
+                          <path d="M5 8 Q30 14 50 18 T95 28" fill="none" stroke="#dc2626" strokeWidth="2.5" />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Controls Row (Search Box + Filters Button + Export Button) */}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="relative w-full sm:w-72">
+                  <Search className="w-4 h-4 text-[#786E60] absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={productSearchQuery}
+                    onChange={(e) => {
+                      setProductSearchQuery(e.target.value);
+                      setProductCurrentPage(1);
+                    }}
+                    className="w-full pl-9 pr-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-xs text-[#1C2A39] placeholder-[#8C8275] focus:outline-none focus:border-[#274258] transition-colors shadow-2xs"
+                  />
+                  {productSearchQuery && (
+                    <button
+                      onClick={() => setProductSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#786E60] hover:text-[#1C2A39]"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-3 w-full sm:w-auto justify-end">
+                  <button className="bg-white border border-[#CBD5E1] rounded-lg px-3.5 py-2 text-xs font-medium text-[#1C2A39] flex items-center space-x-2 hover:bg-[#FAF8F5] cursor-pointer shadow-2xs transition-colors">
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-[#786E60]" />
+                    <span>Filters</span>
+                  </button>
+
+                  <button
+                    onClick={handleExportProductsCSV}
+                    className="bg-white border border-[#CBD5E1] rounded-lg px-3.5 py-2 text-xs font-medium text-[#1C2A39] flex items-center space-x-2 hover:bg-[#FAF8F5] cursor-pointer shadow-2xs transition-colors"
+                  >
+                    <Download className="w-3.5 h-3.5 text-[#786E60]" />
+                    <span>Export</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Products Table Container */}
+              <div className="bg-white rounded-xl border border-[#E8E3D9] shadow-2xs overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs text-[#1C2A39]">
+                    <thead className="bg-[#FAF8F5] border-b border-[#E8E3D9] text-[#786E60] font-semibold tracking-wider text-[11px] uppercase">
+                      <tr>
+                        <th className="p-3.5">Product Name</th>
+                        <th className="p-3.5">Units Sold</th>
+                        <th className="p-3.5">Revenue</th>
+                        <th className="p-3.5">Orders</th>
+                        <th className="p-3.5">Growth</th>
+                        <th className="p-3.5">Inventory Status</th>
+                        <th className="p-3.5 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#E8E3D9]">
+                      {paginatedProducts.length > 0 ? (
+                        paginatedProducts.map((prod) => (
+                          <tr key={prod.id} className="hover:bg-[#FAF8F5]/80 transition-colors">
+                            {/* Product Icon & Name */}
+                            <td className="p-3.5 font-bold text-[#1C2A39]">
+                              <div className="flex items-center space-x-3">
+                                <div className="p-2 rounded-lg bg-[#F5F3EE] border border-[#E5E0D6] text-[#274258] shrink-0">
+                                  {renderProductIcon(prod.iconType)}
+                                </div>
+                                <span>{prod.name}</span>
+                              </div>
+                            </td>
+
+                            {/* Units Sold */}
+                            <td className="p-3.5 font-medium text-[#475569]">
+                              {prod.unitsSold.toLocaleString('en-IN')}
+                            </td>
+
+                            {/* Revenue */}
+                            <td className="p-3.5 font-bold text-[#1C2A39]">
+                              ₹{Number(prod.revenue).toLocaleString('en-IN')}
+                            </td>
+
+                            {/* Orders */}
+                            <td className="p-3.5 font-medium text-[#475569]">
+                              {prod.orders}
+                            </td>
+
+                            {/* Growth */}
+                            <td className="p-3.5 font-bold">
+                              <span
+                                className={
+                                  prod.growth.startsWith('+')
+                                    ? 'text-emerald-700'
+                                    : prod.growth.startsWith('-')
+                                    ? 'text-rose-700'
+                                    : 'text-slate-600'
+                                }
+                              >
+                                {prod.growth.startsWith('+') ? `↑ ${prod.growth.replace('+', '')}` : prod.growth.startsWith('-') ? `↓ ${prod.growth.replace('-', '')}` : `─ ${prod.growth}`}
+                              </span>
+                            </td>
+
+                            {/* Inventory Status Pill */}
+                            <td className="p-3.5">
+                              <span
+                                className={`inline-block px-3 py-0.5 rounded-full text-[11px] font-bold ${
+                                  prod.statusType === 'inStock'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : prod.statusType === 'lowStock'
+                                    ? 'bg-amber-100 text-amber-800'
+                                    : 'bg-rose-100 text-rose-800'
+                                }`}
+                              >
+                                {prod.status}
+                              </span>
+                            </td>
+
+                            {/* Actions Pencil Button */}
+                            <td className="p-3.5 text-right">
+                              <button className="text-[#64748B] hover:text-[#1C2A39] p-1 rounded-md transition-colors cursor-pointer">
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={7} className="p-8 text-center text-[#786E60]">
+                            No products match your search query.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination Footer */}
+                <div className="bg-[#FAF8F5] border-t border-[#E8E3D9] px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs text-[#64748B]">
+                  <div>
+                    Showing <span className="font-bold text-[#1C2A39]">{productStartIndex + 1}</span> to{' '}
+                    <span className="font-bold text-[#1C2A39]">{Math.min(productStartIndex + productsPerPage, filteredProductsList.length)}</span> of{' '}
+                    <span className="font-bold text-[#1C2A39]">{filteredProductsList.length}</span> entries
+                  </div>
+
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() => setProductCurrentPage((prev) => Math.max(prev - 1, 1))}
+                      disabled={productCurrentPage === 1}
+                      className="w-7 h-7 rounded-md border border-[#CBD5E1] bg-white flex items-center justify-center text-[#1C2A39] hover:bg-[#F5F3EE] disabled:opacity-40 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                    </button>
+
+                    {[...Array(totalProductPages)].map((_, i) => {
+                      const pageNum = i + 1;
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setProductCurrentPage(pageNum)}
+                          className={`w-7 h-7 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                            productCurrentPage === pageNum
+                              ? 'bg-[#1C2A39] text-white shadow-2xs'
+                              : 'bg-white border border-[#CBD5E1] text-[#1C2A39] hover:bg-[#F5F3EE]'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      onClick={() => setProductCurrentPage((prev) => Math.min(prev + 1, totalProductPages))}
+                      disabled={productCurrentPage === totalProductPages}
+                      className="w-7 h-7 rounded-md border border-[#CBD5E1] bg-white flex items-center justify-center text-[#1C2A39] hover:bg-[#F5F3EE] disabled:opacity-40 cursor-pointer"
+                    >
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
