@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@500;600;700;800&display=swap');
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 .font-serif-heading {
   font-family: 'Playfair Display', Georgia, serif;
 }
@@ -96,6 +100,11 @@ h1, h2, h3, h4, .font-poppins {
   50% { transform: translateY(-3px); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 .animate-shimmer {
   background: linear-gradient(90deg, #66BB6A 0%, #81C784 50%, #66BB6A 100%);
   background-size: 200% 100%;
@@ -104,6 +113,10 @@ h1, h2, h3, h4, .font-poppins {
 
 .animate-float-nav {
   animation: floatNav 4s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
 }
 
 /* Fluid Glass Navbar */
