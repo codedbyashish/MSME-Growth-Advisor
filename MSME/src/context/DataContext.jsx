@@ -1,40 +1,30 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useAuth } from './AuthContext';
+import {
+  getSales,
+  createSaleApi,
+  deleteSaleApi,
+  getExpenses,
+  createExpenseApi,
+  deleteExpenseApi,
+  getInventory,
+  createProductApi,
+  deleteProductApi,
+  getActivities,
+  seedUserDataApi,
+} from '../services/dataApi';
 
 const DataContext = createContext();
 
-const initialSales = [
-  { id: 'INV-2026-001', client: 'Metro Distributors', amount: 45000, status: 'Paid', date: '2026-08-07', item: 'Cotton Blends' },
-  { id: 'INV-2026-002', client: 'Sia Designs', amount: 82000, status: 'Paid', date: '2026-08-06', item: 'Raw Silk Fabric' },
-  { id: 'INV-2026-003', client: 'Apex Retailers', amount: 120000, status: 'Pending', date: '2026-08-05', item: 'Synthetic Yarns' },
-  { id: 'INV-2026-004', client: 'Kishan Crafts', amount: 35000, status: 'Paid', date: '2026-08-04', item: 'Cotton Blends' },
-  { id: 'INV-2026-005', client: 'Vardhman Textiles', amount: 143000, status: 'Paid', date: '2026-08-02', item: 'Raw Silk Fabric' },
-];
-
-const initialExpenses = [
-  { id: 'EXP-101', title: 'Inventory Restock: Raw Materials', amount: 12800, category: 'Inventory', date: '2026-08-06', vendor: 'Surat Weavers Co.' },
-  { id: 'EXP-102', title: 'Factory Electricity Bill', amount: 24500, category: 'Operations', date: '2026-08-04', vendor: 'State Electricity Board' },
-  { id: 'EXP-103', title: 'Digital Ad Campaign - August', amount: 18000, category: 'Marketing', date: '2026-08-03', vendor: 'Google Ads' },
-  { id: 'EXP-104', title: 'Logistics & Packaging Supplies', amount: 9500, category: 'Others', date: '2026-08-02', vendor: 'Speedy Delivery Services' },
-];
-
-const initialInventory = [
-  { id: 'PRD-01', name: 'Cotton Blends', stock: 450, unit: 'Meters', minStock: 200, unitPrice: 320, category: 'Textiles' },
-  { id: 'PRD-02', name: 'Raw Silk Fabric', stock: 120, unit: 'Meters', minStock: 150, unitPrice: 850, category: 'Premium' },
-  { id: 'PRD-03', name: 'Synthetic Yarns', stock: 890, unit: 'Spools', minStock: 300, unitPrice: 180, category: 'Raw Materials' },
-  { id: 'PRD-04', name: 'Polyester Thread Rolls', stock: 65, unit: 'Boxes', minStock: 100, unitPrice: 450, category: 'Accessories' }
-];
-
-const initialActivities = [
-  { id: 1, type: 'sale', title: "Bulk Sale to 'Metro Distributors'", time: 'Today, 10:45 AM', detail: '₹45,000', icon: 'sale' },
-  { id: 2, type: 'expense', title: "Inventory Restock: Raw Materials", time: 'Yesterday, 04:20 PM', detail: '₹12,800', icon: 'expense' },
-  { id: 3, type: 'customer', title: "New Customer Registered: 'Sia Designs'", time: 'Yesterday, 11:15 AM', detail: 'Mumbai Region', icon: 'customer' }
-];
-
 export const DataProvider = ({ children }) => {
-  const [sales, setSales] = useState(initialSales);
-  const [expenses, setExpenses] = useState(initialExpenses);
-  const [inventory, setInventory] = useState(initialInventory);
-  const [activities, setActivities] = useState(initialActivities);
+  const { isAuthenticated, token } = useAuth();
+
+  const [sales, setSales] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+  const [inventory, setInventory] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Modals & Chat states
   const [isAddSaleOpen, setIsAddSaleOpen] = useState(false);
@@ -47,64 +37,174 @@ export const DataProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Fetch all user data from MongoDB backend
+  const refreshData = useCallback(async () => {
+    if (!isAuthenticated || !token) {
+      setSales([]);
+      setExpenses([]);
+      setInventory([]);
+      setActivities([]);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      let [salesData, expensesData, inventoryData, activitiesData] = await Promise.all([
+        getSales(),
+        getExpenses(),
+        getInventory(),
+        getActivities(),
+      ]);
+
+      // If user has 0 records across all entities, auto-seed starter database entries for rich initial dashboard experience
+      if (
+        salesData.length === 0 &&
+        expensesData.length === 0 &&
+        inventoryData.length === 0
+      ) {
+        try {
+          await seedUserDataApi();
+          [salesData, expensesData, inventoryData, activitiesData] = await Promise.all([
+            getSales(),
+            getExpenses(),
+            getInventory(),
+            getActivities(),
+          ]);
+        } catch (seedErr) {
+          console.warn('Auto-seed error:', seedErr.message);
+        }
+      }
+
+      // Format items to match expected component properties
+      setSales(
+        salesData.map((s) => ({
+          id: s._id || s.invoiceId,
+          invoiceId: s.invoiceId,
+          client: s.client,
+          amount: Number(s.amount),
+          status: s.status,
+          date: s.date,
+          item: s.item,
+        }))
+      );
+
+      setExpenses(
+        expensesData.map((e) => ({
+          id: e._id || e.expenseId,
+          expenseId: e.expenseId,
+          title: e.title,
+          amount: Number(e.amount),
+          category: e.category,
+          date: e.date,
+          vendor: e.vendor,
+        }))
+      );
+
+      setInventory(
+        inventoryData.map((i) => ({
+          id: i._id || i.productId,
+          productId: i.productId,
+          name: i.name,
+          stock: Number(i.stock),
+          unit: i.unit,
+          minStock: Number(i.minStock),
+          unitPrice: Number(i.unitPrice),
+          category: i.category,
+        }))
+      );
+
+      setActivities(
+        activitiesData.map((a) => ({
+          id: a._id,
+          type: a.type,
+          title: a.title,
+          time: a.time,
+          detail: a.detail,
+          icon: a.icon,
+        }))
+      );
+    } catch (err) {
+      console.error('Error loading data from MongoDB API:', err.message);
+      setError(err.message || 'Failed to load business data');
+    } finally {
+      setLoading(false);
+    }
+  }, [isAuthenticated, token]);
+
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
+
   // Derived metrics
-  const totalSales = sales.reduce((acc, curr) => acc + curr.amount, 0);
-  const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalSales = sales.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
+  const totalExpenses = expenses.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const netProfit = totalSales - totalExpenses;
-  const healthScore = Math.min(98, Math.max(60, Math.round(75 + (netProfit / 10000))));
+  const healthScore = Math.min(98, Math.max(60, Math.round(75 + netProfit / 10000)));
 
-  const addSale = (newSale) => {
-    const saleObj = {
-      id: `INV-2026-00${sales.length + 1}`,
-      date: new Date().toISOString().split('T')[0],
-      status: 'Paid',
-      ...newSale,
-      amount: Number(newSale.amount)
-    };
-    setSales([saleObj, ...sales]);
-    setActivities([
-      {
-        id: Date.now(),
-        type: 'sale',
-        title: `Bulk Sale to '${newSale.client}'`,
-        time: 'Just now',
-        detail: `₹${Number(newSale.amount).toLocaleString('en-IN')}`,
-        icon: 'sale'
-      },
-      ...activities
-    ]);
+  // Add Sale connected to MongoDB API
+  const addSale = async (newSale) => {
+    try {
+      const created = await createSaleApi(newSale);
+      await refreshData();
+      return created;
+    } catch (err) {
+      console.error('Failed to add sale to DB:', err);
+      throw err;
+    }
   };
 
-  const addExpense = (newExp) => {
-    const expObj = {
-      id: `EXP-${100 + expenses.length + 1}`,
-      date: new Date().toISOString().split('T')[0],
-      ...newExp,
-      amount: Number(newExp.amount)
-    };
-    setExpenses([expObj, ...expenses]);
-    setActivities([
-      {
-        id: Date.now(),
-        type: 'expense',
-        title: newExp.title,
-        time: 'Just now',
-        detail: `₹${Number(newExp.amount).toLocaleString('en-IN')}`,
-        icon: 'expense'
-      },
-      ...activities
-    ]);
+  // Add Expense connected to MongoDB API
+  const addExpense = async (newExp) => {
+    try {
+      const created = await createExpenseApi(newExp);
+      await refreshData();
+      return created;
+    } catch (err) {
+      console.error('Failed to add expense to DB:', err);
+      throw err;
+    }
   };
 
-  const addProduct = (newProd) => {
-    const prodObj = {
-      id: `PRD-0${inventory.length + 1}`,
-      ...newProd,
-      stock: Number(newProd.stock),
-      unitPrice: Number(newProd.unitPrice),
-      minStock: Number(newProd.minStock || 100)
-    };
-    setInventory([...inventory, prodObj]);
+  // Add Product connected to MongoDB API
+  const addProduct = async (newProd) => {
+    try {
+      const created = await createProductApi(newProd);
+      await refreshData();
+      return created;
+    } catch (err) {
+      console.error('Failed to add product to DB:', err);
+      throw err;
+    }
+  };
+
+  // Delete handlers
+  const deleteSale = async (id) => {
+    try {
+      await deleteSaleApi(id);
+      await refreshData();
+    } catch (err) {
+      console.error('Failed to delete sale:', err);
+    }
+  };
+
+  const deleteExpense = async (id) => {
+    try {
+      await deleteExpenseApi(id);
+      await refreshData();
+    } catch (err) {
+      console.error('Failed to delete expense:', err);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      await deleteProductApi(id);
+      await refreshData();
+    } catch (err) {
+      console.error('Failed to delete product:', err);
+    }
   };
 
   return (
@@ -118,9 +218,15 @@ export const DataProvider = ({ children }) => {
         totalExpenses,
         netProfit,
         healthScore,
+        loading,
+        error,
+        refreshData,
         addSale,
         addExpense,
         addProduct,
+        deleteSale,
+        deleteExpense,
+        deleteProduct,
         isAddSaleOpen,
         setIsAddSaleOpen,
         isAddExpenseOpen,
@@ -134,7 +240,7 @@ export const DataProvider = ({ children }) => {
         activeTab,
         setActiveTab,
         searchQuery,
-        setSearchQuery
+        setSearchQuery,
       }}
     >
       {children}

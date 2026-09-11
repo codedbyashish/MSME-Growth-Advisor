@@ -3,6 +3,11 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import saleRoutes from "./routes/saleRoutes.js";
+import expenseRoutes from "./routes/expenseRoutes.js";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
+import activityRoutes from "./routes/activityRoutes.js";
+import seedRoutes from "./routes/seedRoutes.js";
 
 // 1. Load environment variables first
 dotenv.config();
@@ -21,6 +26,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/sales", saleRoutes);
+app.use("/api/expenses", expenseRoutes);
+app.use("/api/inventory", inventoryRoutes);
+app.use("/api/activities", activityRoutes);
+app.use("/api/seed", seedRoutes);
 
 // Health check endpoint
 app.get("/", (req, res) => {

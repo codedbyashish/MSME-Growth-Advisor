@@ -255,28 +255,40 @@ export default function Dashboard() {
   const [inputMsg, setInputMsg] = useState('');
 
   // Handlers for Modals
-  const handleSaleSubmit = (e) => {
+  const handleSaleSubmit = async (e) => {
     e.preventDefault();
     if (!saleForm.client || !saleForm.amount) return;
-    addSale(saleForm);
-    setSaleForm({ client: '', item: '', amount: '', status: 'Paid' });
-    setIsAddSaleOpen(false);
+    try {
+      await addSale(saleForm);
+      setSaleForm({ client: '', item: '', amount: '', status: 'Paid' });
+      setIsAddSaleOpen(false);
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to save sale to database');
+    }
   };
 
-  const handleExpenseSubmit = (e) => {
+  const handleExpenseSubmit = async (e) => {
     e.preventDefault();
     if (!expenseForm.title || !expenseForm.amount) return;
-    addExpense(expenseForm);
-    setExpenseForm({ title: '', category: 'Inventory', amount: '', vendor: '' });
-    setIsAddExpenseOpen(false);
+    try {
+      await addExpense(expenseForm);
+      setExpenseForm({ title: '', category: 'Inventory', amount: '', vendor: '' });
+      setIsAddExpenseOpen(false);
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to save expense to database');
+    }
   };
 
-  const handleProductSubmit = (e) => {
+  const handleProductSubmit = async (e) => {
     e.preventDefault();
     if (!productForm.name || !productForm.stock || !productForm.unitPrice) return;
-    addProduct(productForm);
-    setProductForm({ name: '', category: 'Textiles', stock: '', unit: 'Meters', unitPrice: '', minStock: '100' });
-    setIsAddProductOpen(false);
+    try {
+      await addProduct(productForm);
+      setProductForm({ name: '', category: 'Textiles', stock: '', unit: 'Meters', unitPrice: '', minStock: '100' });
+      setIsAddProductOpen(false);
+    } catch (err) {
+      alert(err?.response?.data?.message || 'Failed to save product to database');
+    }
   };
 
   const handleSendChat = (textToSend) => {
