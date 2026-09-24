@@ -8,6 +8,7 @@ import expenseRoutes from "./routes/expenseRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import activityRoutes from "./routes/activityRoutes.js";
 import seedRoutes from "./routes/seedRoutes.js";
+import advisorRoutes from "./routes/advisorRoutes.js";
 
 // 1. Load environment variables first
 dotenv.config();
@@ -30,6 +31,7 @@ app.use("/api/sales", saleRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/inventory", inventoryRoutes);
 app.use("/api/activities", activityRoutes);
+app.use("/api/advisor", advisorRoutes);
 app.use("/api/seed", seedRoutes);
 
 // Health check endpoint

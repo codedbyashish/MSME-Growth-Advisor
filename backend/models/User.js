@@ -24,9 +24,73 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Business name is required'],
       trim: true,
     },
+    phone: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    city: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    state: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    businessType: {
+      type: String,
+      default: 'Retail Store',
+    },
+    sector: {
+      type: String,
+      default: 'FMCG & Grocery',
+    },
+    gstin: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    annualTurnover: {
+      type: String,
+      default: '₹10L - ₹50L',
+    },
+    monthlyRevenue: {
+      type: String,
+      default: '',
+    },
+    monthlyExpenses: {
+      type: String,
+      default: '',
+    },
+    hasUploadedSalesData: {
+      type: Boolean,
+      default: false,
+    },
+    salesFileName: {
+      type: String,
+      default: null,
+    },
+    currency: {
+      type: String,
+      default: 'INR (₹)',
+    },
+    taxRate: {
+      type: Number,
+      default: 18,
+    },
+    emailNotifications: {
+      type: Boolean,
+      default: true,
+    },
+    aiSuggestionsEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
-    timestamps: { createdAt: true, updatedAt: false },
+    timestamps: true,
   }
 );
 

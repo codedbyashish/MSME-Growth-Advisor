@@ -207,6 +207,18 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  // Update product handler
+  const updateProduct = async (id, updatedData) => {
+    try {
+      const updated = await updateProductApi(id, updatedData);
+      await refreshData();
+      return updated;
+    } catch (err) {
+      console.error('Failed to update product in DB:', err);
+      throw err;
+    }
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -224,6 +236,7 @@ export const DataProvider = ({ children }) => {
         addSale,
         addExpense,
         addProduct,
+        updateProduct,
         deleteSale,
         deleteExpense,
         deleteProduct,

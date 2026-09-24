@@ -64,3 +64,24 @@ export const seedUserDataApi = async () => {
   const response = await api.post('/seed');
   return response.data;
 };
+
+// Advisor & AI APIs
+export const sendAdvisorChatApi = async (message) => {
+  const response = await api.post('/advisor/chat', { message });
+  return response.data;
+};
+
+export const getAdvisorInsightsApi = async () => {
+  const response = await api.get('/advisor/insights');
+  return response.data;
+};
+
+export const getAdvisorForecastApi = async () => {
+  const response = await api.get('/advisor/forecast');
+  return response.data;
+};
+
+export const getAdvisorReportsApi = async () => {
+  const response = await api.get('/advisor/reports');
+  return response.data;
+};

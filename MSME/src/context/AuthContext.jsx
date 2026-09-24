@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loginUser, registerUser, getCurrentUser } from '../services/authApi';
+import { loginUser, registerUser, getCurrentUser, updateUserProfile, changeUserPassword } from '../services/authApi';
 
 const AuthContext = createContext(null);
 
@@ -42,12 +42,7 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     const data = await loginUser(credentials);
     const jwtToken = data.token;
-    const userData = data.user || {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      businessName: data.businessName,
-    };
+    const userData = data.user || data;
 
     if (jwtToken) {
       localStorage.setItem('token', jwtToken);
@@ -64,12 +59,7 @@ export function AuthProvider({ children }) {
   const register = async (userDataInput) => {
     const data = await registerUser(userDataInput);
     const jwtToken = data.token;
-    const userData = data.user || {
-      id: data.id,
-      name: data.name,
-      email: data.email,
-      businessName: data.businessName,
-    };
+    const userData = data.user || data;
 
     if (jwtToken) {
       localStorage.setItem('token', jwtToken);
@@ -80,6 +70,22 @@ export function AuthProvider({ children }) {
       setUser(userData);
     }
     return data;
+  };
+
+  // Update profile handler
+  const updateProfile = async (profileData) => {
+    const data = await updateUserProfile(profileData);
+    const updatedUser = data.user || data;
+    if (updatedUser) {
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser((prev) => ({ ...prev, ...updatedUser }));
+    }
+    return data;
+  };
+
+  // Change password handler
+  const changePassword = async (passwordData) => {
+    return await changeUserPassword(passwordData);
   };
 
   // Logout handler
@@ -96,6 +102,8 @@ export function AuthProvider({ children }) {
     loading,
     login,
     register,
+    updateProfile,
+    changePassword,
     logout,
     isAuthenticated: !!user && !!token,
   };
