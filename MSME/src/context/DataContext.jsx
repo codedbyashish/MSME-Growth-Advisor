@@ -11,7 +11,6 @@ import {
   createProductApi,
   deleteProductApi,
   getActivities,
-  seedUserDataApi,
 } from '../services/dataApi';
 
 const DataContext = createContext();
@@ -57,25 +56,6 @@ export const DataProvider = ({ children }) => {
         getInventory(),
         getActivities(),
       ]);
-
-      // If user has 0 records across all entities, auto-seed starter database entries for rich initial dashboard experience
-      if (
-        salesData.length === 0 &&
-        expensesData.length === 0 &&
-        inventoryData.length === 0
-      ) {
-        try {
-          await seedUserDataApi();
-          [salesData, expensesData, inventoryData, activitiesData] = await Promise.all([
-            getSales(),
-            getExpenses(),
-            getInventory(),
-            getActivities(),
-          ]);
-        } catch (seedErr) {
-          console.warn('Auto-seed error:', seedErr.message);
-        }
-      }
 
       // Format items to match expected component properties
       setSales(

@@ -85,3 +85,14 @@ export const getAdvisorReportsApi = async () => {
   const response = await api.get('/advisor/reports');
   return response.data;
 };
+
+// Import API
+export const validateImportApi = async (importData) => {
+  const response = await api.post('/import/validate', importData);
+  return response.data;
+};
+
+export const executeImportApi = async (payload) => {
+  const response = await api.post('/import/execute', payload);
+  return response.data;
+};

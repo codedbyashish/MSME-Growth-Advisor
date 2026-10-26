@@ -242,6 +242,8 @@ export const updateProfile = async (req, res) => {
       sector,
       gstin,
       annualTurnover,
+      monthlyRevenue,
+      monthlyExpenses,
       currency,
       taxRate,
       emailNotifications,
@@ -257,6 +259,8 @@ export const updateProfile = async (req, res) => {
     if (sector !== undefined) user.sector = sector;
     if (gstin !== undefined) user.gstin = gstin;
     if (annualTurnover !== undefined) user.annualTurnover = annualTurnover;
+    if (monthlyRevenue !== undefined) user.monthlyRevenue = monthlyRevenue;
+    if (monthlyExpenses !== undefined) user.monthlyExpenses = monthlyExpenses;
     if (currency !== undefined) user.currency = currency;
     if (taxRate !== undefined) user.taxRate = Number(taxRate);
     if (emailNotifications !== undefined) user.emailNotifications = Boolean(emailNotifications);
@@ -278,10 +282,13 @@ export const updateProfile = async (req, res) => {
         sector: updatedUser.sector,
         gstin: updatedUser.gstin,
         annualTurnover: updatedUser.annualTurnover,
+        monthlyRevenue: updatedUser.monthlyRevenue,
+        monthlyExpenses: updatedUser.monthlyExpenses,
         currency: updatedUser.currency,
         taxRate: updatedUser.taxRate,
         emailNotifications: updatedUser.emailNotifications,
         aiSuggestionsEnabled: updatedUser.aiSuggestionsEnabled,
+        createdAt: updatedUser.createdAt,
       },
     });
   } catch (error) {

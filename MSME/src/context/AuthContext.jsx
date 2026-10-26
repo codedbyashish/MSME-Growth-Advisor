@@ -83,6 +83,21 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  // Refresh profile from backend handler
+  const refreshProfile = async () => {
+    try {
+      const userData = await getCurrentUser();
+      if (userData) {
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        return userData;
+      }
+    } catch (error) {
+      console.error('Error refreshing profile:', error.message);
+      throw error;
+    }
+  };
+
   // Change password handler
   const changePassword = async (passwordData) => {
     return await changeUserPassword(passwordData);
@@ -103,6 +118,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     updateProfile,
+    refreshProfile,
     changePassword,
     logout,
     isAuthenticated: !!user && !!token,
