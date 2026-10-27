@@ -57,10 +57,10 @@ function NavButton({ item, isActive, onClick, compact = false }) {
         group relative w-full flex items-center gap-3 rounded-lg text-left
         text-[13px] font-medium transition-colors duration-150
         focus:outline-none focus-visible:ring-2 focus-visible:ring-[#202B3C]/40
-        ${compact ? 'px-3 py-1.5' : 'px-3 py-2'}
+        ${compact ? 'px-3 py-1.5 min-h-[38px]' : 'px-3 py-2.5 min-h-[44px]'}
         ${isActive
           ? 'bg-white text-[#202B3C] font-semibold shadow-[0_1px_2px_rgba(32,43,60,0.08),0_0_0_1px_rgba(32,43,60,0.06)]'
-          : 'text-[#5C5446] hover:bg-[#EBE7DF] hover:text-[#202B3C]'}
+          : 'text-[#5C5446] hover:bg-[#EBE7DF] hover:text-[#202B3C] active:bg-[#E2DDD3]'}
       `}
     >
       {/* Active indicator */}
@@ -126,7 +126,7 @@ export default function Sidebar({
         aria-label="Main navigation"
         className={`
           fixed top-0 bottom-0 left-0 z-50 lg:z-auto lg:static
-          w-64 flex flex-col justify-between
+          w-72 max-w-[85vw] lg:w-64 flex flex-col justify-between
           bg-[#F5F3EE] border-r border-[#E7E3DC]
           px-3 py-4 font-sans select-none
           transition-transform duration-200 ease-out motion-reduce:transition-none
@@ -157,10 +157,10 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="lg:hidden p-1.5 rounded-md text-[#7C8593] hover:text-[#202B3C] hover:bg-[#EBE7DF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#202B3C]/40"
-              aria-label="Close sidebar"
+              className="lg:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-[#7C8593] hover:text-[#202B3C] hover:bg-[#EBE7DF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#202B3C]/40 cursor-pointer"
+              aria-label="Close sidebar navigation"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
           </div>
 

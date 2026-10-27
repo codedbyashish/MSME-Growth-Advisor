@@ -36,9 +36,14 @@ const expenseSchema = new mongoose.Schema(
       default: 'Standard Vendor',
       trim: true,
     },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 

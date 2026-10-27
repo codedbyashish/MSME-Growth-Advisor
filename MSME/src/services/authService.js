@@ -128,23 +128,6 @@ export const authService = {
     }
   },
 
-  /**
-   * Login with Google OAuth (Demo)
-   */
-  async loginWithGoogle() {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    const mockUser = {
-      _id: 'usr_google_202',
-      name: 'Google Business User',
-      email: 'owner@business.com',
-      businessName: 'My Enterprise',
-      token: 'google_session_token',
-    };
-
-    localStorage.setItem('msme_auth_token', mockUser.token);
-    localStorage.setItem('msme_user', JSON.stringify(mockUser));
-    return mockUser;
-  },
 
   /**
    * Logout user

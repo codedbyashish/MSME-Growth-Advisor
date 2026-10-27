@@ -36,9 +36,14 @@ const saleSchema = new mongoose.Schema(
       default: 'General Order',
       trim: true,
     },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 

@@ -23,7 +23,7 @@ export const getSales = async (req, res) => {
  */
 export const createSale = async (req, res) => {
   try {
-    const { client, amount, item, status } = req.body;
+    const { client, amount, item, status, quantity, metadata, date } = req.body;
 
     if (!client || amount === undefined) {
       return res.status(400).json({ message: 'Client name and amount are required' });
@@ -39,7 +39,9 @@ export const createSale = async (req, res) => {
       amount: Number(amount),
       item: item || 'General Order',
       status: status || 'Paid',
-      date: new Date().toISOString().split('T')[0],
+      date: date || new Date().toISOString().split('T')[0],
+      quantity: quantity !== undefined && !isNaN(Number(quantity)) ? Number(quantity) : undefined,
+      metadata: metadata || undefined,
     });
 
     // Log Activity
@@ -60,6 +62,32 @@ export const createSale = async (req, res) => {
 };
 
 /**
+ * @desc    Update a sale invoice (e.g. payment status)
+ * @route   PUT /api/sales/:id
+ * @access  Private
+ */
+export const updateSale = async (req, res) => {
+  try {
+    const sale = await Sale.findOne({ _id: req.params.id, user: req.user._id });
+    if (!sale) {
+      return res.status(404).json({ message: 'Sale invoice not found' });
+    }
+
+    if (req.body.status) sale.status = req.body.status;
+    if (req.body.client) sale.client = req.body.client;
+    if (req.body.amount !== undefined) sale.amount = Number(req.body.amount);
+    if (req.body.item) sale.item = req.body.item;
+    if (req.body.date) sale.date = req.body.date;
+
+    const updatedSale = await sale.save();
+    return res.status(200).json(updatedSale);
+  } catch (error) {
+    console.error(`Update sale error: ${error.message}`);
+    return res.status(500).json({ message: error.message || 'Error updating sale' });
+  }
+};
+
+/**
  * @desc    Delete a sale invoice
  * @route   DELETE /api/sales/:id
  * @access  Private
@@ -76,3 +104,5 @@ export const deleteSale = async (req, res) => {
     return res.status(500).json({ message: 'Error deleting sale' });
   }
 };
+
+

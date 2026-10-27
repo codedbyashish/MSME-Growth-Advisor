@@ -591,31 +591,31 @@ export default function ProfileView() {
 
       {/* EDIT PROFILE MODAL */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
-          <div className="bg-white rounded-2xl max-w-2xl w-full border border-[#E8E3D9] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 z-50 animate-in fade-in overflow-y-auto">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-2xl w-full border border-[#E8E3D9] shadow-2xl flex flex-col max-h-[94vh] sm:max-h-[90vh] overflow-hidden my-auto">
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E3D9] bg-[#FBF9F6]">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-lg bg-[#274258] text-white flex items-center justify-center font-bold text-sm">
+            <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-[#E8E3D9] bg-[#FBF9F6]">
+              <div className="flex items-center space-x-2 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-[#274258] text-white flex items-center justify-center font-bold text-sm shrink-0">
                   {initialLetter}
                 </div>
-                <div>
-                  <h3 className="font-serif-heading text-lg font-bold text-[#1C2A39]">
+                <div className="min-w-0">
+                  <h3 className="font-serif-heading text-base sm:text-lg font-bold text-[#1C2A39] truncate">
                     Edit User Profile & Business Details
                   </h3>
-                  <p className="text-[11px] text-[#786E60]">Update your enterprise profile stored in MongoDB</p>
+                  <p className="text-[10px] sm:text-[11px] text-[#786E60] truncate">Update your enterprise profile stored in MongoDB</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsEditModalOpen(false)}
-                className="text-[#786E60] hover:text-[#1C2A39] p-1 rounded-md cursor-pointer"
+                className="text-[#786E60] hover:text-[#1C2A39] p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-md cursor-pointer shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body Form */}
-            <form onSubmit={handleProfileSubmit} className="p-6 overflow-y-auto space-y-5 text-xs">
+            <form onSubmit={handleProfileSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5 text-xs">
               {editError && (
                 <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -829,27 +829,27 @@ export default function ProfileView() {
 
       {/* CHANGE PASSWORD MODAL */}
       {isPasswordModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in">
-          <div className="bg-white rounded-2xl max-w-md w-full border border-[#E8E3D9] shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E3D9] bg-[#FBF9F6]">
-              <div className="flex items-center space-x-2">
-                <div className="p-2 rounded-lg bg-[#274258] text-white">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 z-50 animate-in fade-in overflow-y-auto">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-md w-full border border-[#E8E3D9] shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col">
+            <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-[#E8E3D9] bg-[#FBF9F6]">
+              <div className="flex items-center space-x-2 min-w-0">
+                <div className="p-2 rounded-lg bg-[#274258] text-white shrink-0">
                   <Key className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="font-serif-heading text-lg font-bold text-[#1C2A39]">Change Password</h3>
-                  <p className="text-[11px] text-[#786E60]">Update your account security credentials</p>
+                <div className="min-w-0">
+                  <h3 className="font-serif-heading text-base sm:text-lg font-bold text-[#1C2A39] truncate">Change Password</h3>
+                  <p className="text-[10px] sm:text-[11px] text-[#786E60] truncate">Update your account security credentials</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="text-[#786E60] hover:text-[#1C2A39] p-1 rounded-md cursor-pointer"
+                className="text-[#786E60] hover:text-[#1C2A39] p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-md cursor-pointer shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handlePasswordSubmit} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handlePasswordSubmit} className="p-4 sm:p-6 overflow-y-auto space-y-4 text-xs">
               {pwError && (
                 <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center space-x-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />

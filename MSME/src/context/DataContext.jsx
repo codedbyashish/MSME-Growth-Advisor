@@ -3,8 +3,10 @@ import { useAuth } from './AuthContext';
 import {
   getSales,
   createSaleApi,
+  updateSaleApi,
   deleteSaleApi,
   getExpenses,
+
   createExpenseApi,
   deleteExpenseApi,
   getInventory,
@@ -67,6 +69,8 @@ export const DataProvider = ({ children }) => {
           status: s.status,
           date: s.date,
           item: s.item,
+          quantity: s.quantity,
+          metadata: s.metadata,
         }))
       );
 
@@ -134,6 +138,19 @@ export const DataProvider = ({ children }) => {
       throw err;
     }
   };
+
+  // Update Sale connected to MongoDB API
+  const updateSale = async (id, updatedData) => {
+    try {
+      const updated = await updateSaleApi(id, updatedData);
+      await refreshData();
+      return updated;
+    } catch (err) {
+      console.error('Failed to update sale in DB:', err);
+      throw err;
+    }
+  };
+
 
   // Add Expense connected to MongoDB API
   const addExpense = async (newExp) => {
@@ -214,9 +231,11 @@ export const DataProvider = ({ children }) => {
         error,
         refreshData,
         addSale,
+        updateSale,
         addExpense,
         addProduct,
         updateProduct,
+
         deleteSale,
         deleteExpense,
         deleteProduct,

@@ -11,7 +11,13 @@ export const createSaleApi = async (saleData) => {
   return response.data;
 };
 
+export const updateSaleApi = async (id, saleData) => {
+  const response = await api.put(`/sales/${id}`, saleData);
+  return response.data;
+};
+
 export const deleteSaleApi = async (id) => {
+
   const response = await api.delete(`/sales/${id}`);
   return response.data;
 };
@@ -81,8 +87,19 @@ export const getAdvisorForecastApi = async () => {
   return response.data;
 };
 
-export const getAdvisorReportsApi = async () => {
-  const response = await api.get('/advisor/reports');
+export const getAdvisorReportsApi = async (params = {}) => {
+  const response = await api.get('/advisor/reports', { params });
+  return response.data;
+};
+
+// Expense Audit & Safe Cleanup API
+export const auditExpensesApi = async (params = {}) => {
+  const response = await api.get('/expenses/audit', { params });
+  return response.data;
+};
+
+export const cleanupAuditExpensesApi = async (payload) => {
+  const response = await api.post('/expenses/cleanup-audit', payload);
   return response.data;
 };
 

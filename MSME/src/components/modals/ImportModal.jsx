@@ -1,430 +1,263 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import {
   FileSpreadsheet,
   Upload,
-  AlertTriangle,
   CheckCircle2,
-  XCircle,
-  HelpCircle,
-  Download,
-  ArrowRight,
-  ArrowLeft,
+  AlertTriangle,
   X,
-  FileText,
-  Layers,
+  Download,
+  TrendingUp,
+  Receipt,
+  Package,
   RefreshCw,
+  Sparkles,
+  ArrowRight,
+  FileText,
+  Trash2,
+  ChevronDown,
+  ChevronUp,
+  Layers,
+  HelpCircle,
+  Users,
+  ShoppingCart,
+  Truck,
+  Check,
   Info,
 } from 'lucide-react';
 import { validateImportApi, executeImportApi } from '../../services/dataApi';
+import { useData } from '../../context/DataContext';
+import {
+  processMultiSheetWorkbook,
+  downloadTemplate,
+  DEPARTMENT_CONFIG,
+} from '../../utils/smartImporter';
 
-// Design tokens matching dashboard
-const ui = {
-  card: 'rounded-lg border border-[#E7E3DC] bg-white',
-  primary:
-    'inline-flex items-center justify-center gap-2 rounded-md bg-[#202B3C] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#151D2A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#202B3C]/40 disabled:opacity-50 disabled:cursor-not-allowed',
-  ghost:
-    'inline-flex items-center justify-center gap-2 rounded-md border border-[#E7E3DC] bg-white px-3.5 py-2 text-sm font-medium text-[#202B3C] transition-colors hover:bg-[#F5F3EE] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#202B3C]/40 disabled:opacity-50',
-  input:
-    'w-full rounded-md border border-[#E7E3DC] bg-[#FAF9F6] px-3 py-2 text-sm text-[#202B3C] placeholder-[#9AA2AD] focus:border-[#202B3C] focus:bg-white focus:outline-none',
-  select:
-    'w-full rounded-md border border-[#E7E3DC] bg-[#FAF9F6] px-3 py-2 text-sm text-[#202B3C] focus:border-[#202B3C] focus:bg-white focus:outline-none',
+// ---------- Cream / Linen theme (matches dashboard) ----------
+const T = {
+  card: 'rounded-xl border border-[#E7E3DC] bg-white',
+  label: 'text-xs font-medium text-[#737D8B]',
+  muted: 'text-[#737D8B]',
+  btnPrimary:
+    'inline-flex items-center justify-center gap-2 rounded-lg bg-[#202B3C] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#151D2A] disabled:cursor-not-allowed disabled:opacity-50',
+  btnSecondary:
+    'inline-flex items-center justify-center gap-2 rounded-lg border border-[#E7E3DC] bg-white px-4 py-2.5 text-sm font-medium text-[#202B3C] transition-colors hover:bg-[#F5F3EE] disabled:opacity-50',
+  badgeGreen:
+    'inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200/60',
+  badgeGray:
+    'inline-flex items-center gap-1.5 rounded-md bg-[#F1EFEA] px-2.5 py-1 text-xs font-medium text-[#4B5563] border border-[#E7E3DC]',
+  badgeAmber:
+    'inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 border border-amber-200/60',
+  badgeBlue:
+    'inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700 border border-blue-200/60',
 };
 
-// Target field definitions per data type
-const TYPE_FIELDS = {
-  sales: [
-    { key: 'client', label: 'Customer / Client Name', required: true, aliases: ['client', 'customer', 'buyer', 'party', 'account', 'customer name', 'client name'] },
-    { key: 'amount', label: 'Amount (INR)', required: true, aliases: ['amount', 'total', 'grand total', 'subtotal', 'value', 'price', 'total amount'] },
-    { key: 'item', label: 'Item / Product', required: false, aliases: ['item', 'product', 'description', 'particulars', 'item name', 'goods'] },
-    { key: 'date', label: 'Invoice Date', required: false, aliases: ['date', 'invoice date', 'billing date', 'date of issue'] },
-    { key: 'status', label: 'Payment Status', required: false, aliases: ['status', 'payment status', 'payment', 'state'] },
-  ],
-  expenses: [
-    { key: 'title', label: 'Expense Title / Description', required: true, aliases: ['title', 'description', 'expense', 'particulars', 'item', 'expense title'] },
-    { key: 'amount', label: 'Amount (INR)', required: true, aliases: ['amount', 'cost', 'total', 'price', 'expense amount'] },
-    { key: 'category', label: 'Category', required: false, aliases: ['category', 'type', 'expense category', 'department', 'head'] },
-    { key: 'vendor', label: 'Vendor / Supplier', required: false, aliases: ['vendor', 'supplier', 'payee', 'paid to', 'merchant'] },
-    { key: 'date', label: 'Expense Date', required: false, aliases: ['date', 'expense date', 'payment date'] },
-  ],
-  inventory: [
-    { key: 'name', label: 'Product / Item Name', required: true, aliases: ['name', 'product', 'item', 'product name', 'item name', 'sku', 'title'] },
-    { key: 'unitPrice', label: 'Unit Price (INR)', required: true, aliases: ['unit price', 'unitprice', 'price', 'rate', 'cost', 'mrp', 'selling price'] },
-    { key: 'stock', label: 'Current Stock Qty', required: false, aliases: ['stock', 'quantity', 'qty', 'current stock', 'units', 'count'] },
-    { key: 'category', label: 'Category', required: false, aliases: ['category', 'product category', 'type', 'group'] },
-    { key: 'unit', label: 'Unit of Measure', required: false, aliases: ['unit', 'uom', 'measure', 'unit type'] },
-    { key: 'minStock', label: 'Minimum Stock Threshold', required: false, aliases: ['min stock', 'minimum stock', 'minstock', 'reorder level', 'threshold'] },
-  ],
+const formatFileSize = (bytes) => {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
 };
 
-// Sample template generators
-const generateSampleTemplate = (type, format = 'xlsx') => {
-  let sampleData = [];
-  let fileName = '';
-
-  if (type === 'sales') {
-    fileName = 'Sales_Sample_Template';
-    sampleData = [
-      {
-        'Customer Name': 'Sharma Enterprises Pvt Ltd',
-        'Item / Product': 'Industrial Fasteners Pack',
-        'Amount (INR)': 45000,
-        'Invoice Date': '2026-10-15',
-        'Payment Status': 'Paid',
-      },
-      {
-        'Customer Name': 'Apex Electronics',
-        'Item / Product': 'PCB Assembly Batch #4',
-        'Amount (INR)': 28500,
-        'Invoice Date': '2026-10-20',
-        'Payment Status': 'Pending',
-      },
-      {
-        'Customer Name': 'Vikas Logistics',
-        'Item / Product': 'Fleet Spares Consignment',
-        'Amount (INR)': 62000,
-        'Invoice Date': '2026-10-24',
-        'Payment Status': 'Paid',
-      },
-    ];
-  } else if (type === 'expenses') {
-    fileName = 'Expenses_Sample_Template';
-    sampleData = [
-      {
-        'Expense Title': 'Office Electricity Bill',
-        'Amount (INR)': 14200,
-        Category: 'Utilities',
-        Vendor: 'State Electricity Board',
-        'Expense Date': '2026-10-12',
-      },
-      {
-        'Expense Title': 'Raw Materials Freight',
-        'Amount (INR)': 8500,
-        Category: 'Logistics',
-        Vendor: 'Blue Express Cargo',
-        'Expense Date': '2026-10-18',
-      },
-      {
-        'Expense Title': 'Workshop Maintenance & Tools',
-        'Amount (INR)': 6200,
-        Category: 'Operations',
-        Vendor: 'National Tool Works',
-        'Expense Date': '2026-10-22',
-      },
-    ];
-  } else if (type === 'inventory') {
-    fileName = 'Inventory_Sample_Template';
-    sampleData = [
-      {
-        'Product Name': 'High-Tensile Hex Bolt M8',
-        'Unit Price (INR)': 18.5,
-        'Current Stock Qty': 450,
-        Category: 'Hardware',
-        'Unit of Measure': 'Pieces',
-        'Minimum Stock Threshold': 50,
-      },
-      {
-        'Product Name': 'Copper Wire Spool 10m',
-        'Unit Price (INR)': 240,
-        'Current Stock Qty': 85,
-        Category: 'Electrical',
-        'Unit of Measure': 'Spools',
-        'Minimum Stock Threshold': 20,
-      },
-      {
-        'Product Name': 'Industrial Sealant Cartridge',
-        'Unit Price (INR)': 380,
-        'Current Stock Qty': 30,
-        Category: 'Chemicals',
-        'Unit of Measure': 'Tubes',
-        'Minimum Stock Threshold': 10,
-      },
-    ];
-  }
-
-  const worksheet = XLSX.utils.json_to_sheet(sampleData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, `${type.toUpperCase()}`);
-
-  if (format === 'csv') {
-    XLSX.writeFile(workbook, `${fileName}.csv`, { bookType: 'csv' });
-  } else {
-    XLSX.writeFile(workbook, `${fileName}.xlsx`, { bookType: 'xlsx' });
-  }
-};
-
-export default function ImportModal({ isOpen, onClose, onImportSuccess }) {
+export default function ImportModal({
+  isOpen,
+  onClose,
+  onImportSuccess,
+  initialCategory = 'all',
+}) {
   const fileInputRef = useRef(null);
+  const { setActiveTab, refreshData } = useData();
 
-  // Workflow steps: 1: 'upload', 2: 'mapping', 3: 'preview', 4: 'complete'
-  const [step, setStep] = useState(1);
-  const [dataType, setDataType] = useState('sales');
-
-  // File & Workbook state
   const [file, setFile] = useState(null);
-  const [workbook, setWorkbook] = useState(null);
-  const [sheetNames, setSheetNames] = useState([]);
-  const [selectedSheet, setSelectedSheet] = useState('');
-  const [rawHeaders, setRawHeaders] = useState([]);
-  const [rawRows, setRawRows] = useState([]);
-
-  // Mapping state: { [targetKey]: selectedHeader }
-  const [columnMapping, setColumnMapping] = useState({});
-
-  // Validation results from server
-  const [validationResult, setValidationResult] = useState(null);
-  const [isValidating, setIsValidating] = useState(false);
-  const [validationError, setValidationError] = useState('');
-
-  // Execution options and state
+  const [workbookInstance, setWorkbookInstance] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [sheetTypeOverrides, setSheetTypeOverrides] = useState({});
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [serverValidation, setServerValidation] = useState(null);
   const [skipDuplicates, setSkipDuplicates] = useState(true);
   const [overwriteDuplicates, setOverwriteDuplicates] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState(null);
+  const [modalStage, setModalStage] = useState('upload'); // 'upload' | 'preview' | 'complete'
+  const [activePreviewTab, setActivePreviewTab] = useState('all');
+  const [showFieldDetails, setShowFieldDetails] = useState(false);
+  const [showAttentionDetails, setShowAttentionDetails] = useState(false);
 
-  // Drag and drop states
-  const [isDragging, setIsDragging] = useState(false);
-
-  // Close on Escape
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && !isImporting && !isValidating) {
-        handleClose();
+      if (e.key === 'Escape' && !isImporting && !isAnalyzing) {
+        handleResetAndClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isImporting, isValidating]);
+  }, [isOpen, isImporting, isAnalyzing]);
 
-  // Reset state on modal open/close
-  const handleClose = () => {
-    setStep(1);
+  const handleResetAndClose = () => {
     setFile(null);
-    setWorkbook(null);
-    setSheetNames([]);
-    setSelectedSheet('');
-    setRawHeaders([]);
-    setRawRows([]);
-    setColumnMapping({});
-    setValidationResult(null);
-    setValidationError('');
+    setWorkbookInstance(null);
+    setSheetTypeOverrides({});
+    setAnalysis(null);
+    setServerValidation(null);
+    setErrorMessage('');
+    setIsImporting(false);
+    setIsAnalyzing(false);
     setImportResult(null);
+    setModalStage('upload');
+    setActivePreviewTab('all');
+    setShowAttentionDetails(false);
+    setShowFieldDetails(false);
     onClose();
   };
 
-  // Helper to auto-suggest column mapping based on aliases
-  const autoMapHeaders = (headers, targetFields) => {
-    const mapping = {};
-    const lowerHeaders = headers.map((h) => ({
-      raw: h,
-      clean: String(h).trim().toLowerCase().replace(/[^a-z0-9]/g, ''),
-    }));
-
-    targetFields.forEach((field) => {
-      // 1. Direct alias exact match
-      let match = lowerHeaders.find((lh) =>
-        field.aliases.some((alias) => alias.replace(/[^a-z0-9]/g, '') === lh.clean)
-      );
-
-      // 2. Substring match if no exact match found
-      if (!match) {
-        match = lowerHeaders.find((lh) =>
-          field.aliases.some((alias) => lh.clean.includes(alias.replace(/[^a-z0-9]/g, '')))
-        );
-      }
-
-      if (match) {
-        mapping[field.key] = match.raw;
-      } else {
-        mapping[field.key] = '';
-      }
-    });
-
-    return mapping;
-  };
-
-  // Parse worksheet content safely
-  const parseSheet = (wb, sheetName, currentType) => {
-    const sheet = wb.Sheets[sheetName];
-    if (!sheet) return;
-
-    // Convert to 2D array with headers
-    const jsonRows = XLSX.utils.sheet_to_json(sheet, {
-      raw: false,
-      defval: '',
-      blankrows: false,
-    });
-
-    if (jsonRows.length === 0) {
-      setValidationError('Selected worksheet appears to be empty.');
-      setRawHeaders([]);
-      setRawRows([]);
-      return;
-    }
-
-    const headers = Object.keys(jsonRows[0] || {});
-    setRawHeaders(headers);
-    setRawRows(jsonRows);
-    setValidationError('');
-
-    // Pre-calculate suggested mapping
-    const targetFields = TYPE_FIELDS[currentType] || [];
-    const initialMapping = autoMapHeaders(headers, targetFields);
-    setColumnMapping(initialMapping);
-  };
-
-  // Handle uploaded file
-  const handleFileProcess = (uploadedFile) => {
+  const readAndProcessFile = (uploadedFile) => {
     if (!uploadedFile) return;
 
-    // Validate size (max 10MB)
     if (uploadedFile.size > 10 * 1024 * 1024) {
-      setValidationError('File size exceeds the 10MB limit. Please upload a smaller file.');
+      setErrorMessage('File size exceeds the 10 MB limit. Please upload a smaller file.');
       return;
     }
 
-    // Validate extension
-    const extension = uploadedFile.name.split('.').pop().toLowerCase();
-    if (!['xlsx', 'xls', 'csv'].includes(extension)) {
-      setValidationError('Unsupported file format. Please upload an .xlsx, .xls, or .csv spreadsheet.');
+    const ext = uploadedFile.name.split('.').pop().toLowerCase();
+    if (!['xlsx', 'xls', 'csv'].includes(ext)) {
+      setErrorMessage('Please upload a valid Excel (.xlsx, .xls) or CSV (.csv) file.');
       return;
     }
 
-    setValidationError('');
+    setErrorMessage('');
     setFile(uploadedFile);
+    setIsAnalyzing(true);
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = new Uint8Array(e.target.result);
         const wb = XLSX.read(data, {
           type: 'array',
-          cellFormula: false, // Security: never execute formulas
+          cellFormula: false,
           cellHTML: false,
         });
 
-        setWorkbook(wb);
-        setSheetNames(wb.SheetNames);
-        const initialSheet = wb.SheetNames[0];
-        setSelectedSheet(initialSheet);
-        parseSheet(wb, initialSheet, dataType);
-        setStep(2);
+        setWorkbookInstance(wb);
+        await runWorkbookAnalysis(wb, {});
       } catch (err) {
-        console.error('Spreadsheet parse error:', err);
-        setValidationError('Failed to parse spreadsheet. File might be corrupted or password protected.');
+        console.error('File parsing error:', err);
+        setErrorMessage('Failed to read spreadsheet. File might be corrupted or password-protected.');
+        setModalStage('upload');
+        setIsAnalyzing(false);
       }
     };
+
     reader.readAsArrayBuffer(uploadedFile);
   };
 
-  // Change worksheet
-  const handleSheetChange = (sheetName) => {
-    setSelectedSheet(sheetName);
-    if (workbook) {
-      parseSheet(workbook, sheetName, dataType);
-    }
-  };
-
-  // Change data type
-  const handleDataTypeChange = (newType) => {
-    setDataType(newType);
-    if (rawHeaders.length > 0) {
-      const targetFields = TYPE_FIELDS[newType] || [];
-      const updatedMapping = autoMapHeaders(rawHeaders, targetFields);
-      setColumnMapping(updatedMapping);
-    }
-  };
-
-  // Map raw row to standard payload
-  const transformRowWithMapping = (row, mapping) => {
-    const transformed = {};
-    Object.entries(mapping).forEach(([targetKey, sourceHeader]) => {
-      if (sourceHeader && row[sourceHeader] !== undefined) {
-        transformed[targetKey] = row[sourceHeader];
-      }
-    });
-    return transformed;
-  };
-
-  // Step 2 -> Step 3: Run Validation via Backend API
-  const handleValidateAndPreview = async () => {
-    const targetFields = TYPE_FIELDS[dataType] || [];
-    // Verify all required fields are mapped
-    const missingRequired = targetFields
-      .filter((f) => f.required && !columnMapping[f.key])
-      .map((f) => f.label);
-
-    if (missingRequired.length > 0) {
-      setValidationError(`Please map required fields: ${missingRequired.join(', ')}`);
-      return;
-    }
-
-    setIsValidating(true);
-    setValidationError('');
+  const runWorkbookAnalysis = async (wb, overrides = {}) => {
+    setIsAnalyzing(true);
+    setErrorMessage('');
 
     try {
-      // Transform raw rows according to the mapping
-      const mappedRows = rawRows.map((r) => transformRowWithMapping(r, columnMapping));
+      // Automatic detection across ALL sheets in the workbook
+      const result = processMultiSheetWorkbook(wb, 'all', overrides);
+      setAnalysis(result);
 
-      const res = await validateImportApi({
-        type: dataType,
-        rows: mappedRows,
-      });
+      if (result.totalReadyCount === 0) {
+        setErrorMessage(
+          'We could not find any valid records in this spreadsheet. Check if headers are empty or non-numeric values exist.'
+        );
+        setIsAnalyzing(false);
+        setModalStage('upload');
+        return;
+      }
 
-      setValidationResult(res);
-      setStep(3);
+      // Validate across all detected modules on the backend
+      try {
+        const serverRes = await validateImportApi({
+          type: 'all',
+          modules: {
+            sales: (result.categorizedReadyRows?.sales || []).map((r) => r.data),
+            expenses: (result.categorizedReadyRows?.expenses || []).map((r) => r.data),
+            purchases: (result.categorizedReadyRows?.purchases || []).map((r) => r.data),
+            inventory: (result.categorizedReadyRows?.inventory || []).map((r) => r.data),
+          },
+        });
+        setServerValidation(serverRes);
+      } catch (serverErr) {
+        console.warn('Server validation warning:', serverErr);
+        setServerValidation({ duplicateCount: 0 });
+      }
+
+      setModalStage('preview');
     } catch (err) {
-      console.error('Validation error:', err);
-      setValidationError(
-        err.response?.data?.message || err.message || 'Error validating data with backend server.'
-      );
+      console.error('Analysis error:', err);
+      setErrorMessage('Error analyzing spreadsheet data.');
+      setModalStage('upload');
     } finally {
-      setIsValidating(false);
+      setIsAnalyzing(false);
     }
   };
 
-  // Step 3 -> Step 4: Execute Batch Import to MongoDB
-  const handleExecuteImport = async () => {
-    if (!validationResult || validationResult.validCount === 0) {
-      setValidationError('No valid records available to import.');
+  const handleClarifySheet = (sheetName, chosenType) => {
+    const updatedOverrides = { ...sheetTypeOverrides, [sheetName]: chosenType };
+    setSheetTypeOverrides(updatedOverrides);
+    if (workbookInstance) {
+      runWorkbookAnalysis(workbookInstance, updatedOverrides);
+    }
+  };
+
+  const handleRemoveFile = (e) => {
+    e?.stopPropagation();
+    setFile(null);
+    setWorkbookInstance(null);
+    setSheetTypeOverrides({});
+    setAnalysis(null);
+    setServerValidation(null);
+    setErrorMessage('');
+    setModalStage('upload');
+    setActivePreviewTab('all');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleImportAllData = async () => {
+    if (!analysis || analysis.totalReadyCount === 0) {
+      setErrorMessage('No valid records are available to import.');
       return;
     }
 
     setIsImporting(true);
-    setValidationError('');
+    setErrorMessage('');
 
     try {
-      // Filter the rows to import based on validation results and duplicate choices
-      let rowsToImport = validationResult.validRows.map((vr) => vr.data);
-
-      if (skipDuplicates && !overwriteDuplicates) {
-        // Only include non-duplicates if user chose strictly skip duplicates
-        const nonDuplicateRows = validationResult.validRows
-          .filter((vr) => !vr.isDuplicate)
-          .map((vr) => vr.data);
-
-        // If there are duplicate rows, pass all valid rows to backend with skipDuplicates=true
-        // Backend handles skipping safely
-      }
-
-      const res = await executeImportApi({
-        type: dataType,
-        rows: rowsToImport,
+      // Send all detected modules to backend in one action
+      const payload = {
+        type: 'all',
+        modules: {
+          sales: (analysis.categorizedReadyRows?.sales || []).map((r) => r.data),
+          expenses: (analysis.categorizedReadyRows?.expenses || []).map((r) => r.data),
+          purchases: (analysis.categorizedReadyRows?.purchases || []).map((r) => r.data),
+          inventory: (analysis.categorizedReadyRows?.inventory || []).map((r) => r.data),
+        },
         skipDuplicates,
         overwriteDuplicates,
-      });
+      };
 
+      const res = await executeImportApi(payload);
       setImportResult(res);
-      setStep(4);
+      setModalStage('complete');
 
-      // Trigger automatic refresh of the dashboard data
+      // Refresh every affected department across the entire application
+      if (typeof refreshData === 'function') {
+        await refreshData();
+      }
       if (typeof onImportSuccess === 'function') {
         onImportSuccess();
       }
     } catch (err) {
-      console.error('Execute import error:', err);
-      setValidationError(
+      console.error('Import execution error:', err);
+      setErrorMessage(
         err.response?.data?.message || err.message || 'Error saving imported records to database.'
       );
     } finally {
@@ -432,667 +265,929 @@ export default function ImportModal({ isOpen, onClose, onImportSuccess }) {
     }
   };
 
+  const handleViewImportedData = () => {
+    if (analysis?.categorizedReadyRows?.sales?.length > 0) {
+      setActiveTab('orders');
+    } else if (analysis?.categorizedReadyRows?.inventory?.length > 0) {
+      setActiveTab('products');
+    } else {
+      setActiveTab('dashboard');
+    }
+    handleResetAndClose();
+  };
+
+  const handleReturnToDashboard = () => {
+    setActiveTab('dashboard');
+    handleResetAndClose();
+  };
+
   if (!isOpen) return null;
 
+  const duplicateCount = serverValidation?.duplicateCount || 0;
+
+  // Filter preview rows based on active tab
+  const getFilteredPreviewRows = () => {
+    if (!analysis) return [];
+    if (activePreviewTab === 'all') {
+      return analysis.previewRows || [];
+    }
+    if (activePreviewTab === 'sales') {
+      return (analysis.categorizedReadyRows?.sales || []).slice(0, 10).map((r) => ({
+        ...r.data,
+        _module: 'sales',
+        _department: 'Sales & Invoices',
+        _sheet: r.sheetName,
+      }));
+    }
+    if (activePreviewTab === 'expenses') {
+      return (analysis.categorizedReadyRows?.expenses || []).slice(0, 10).map((r) => ({
+        ...r.data,
+        _module: 'expenses',
+        _department: 'Business Expenses',
+        _sheet: r.sheetName,
+      }));
+    }
+    if (activePreviewTab === 'purchases') {
+      return (analysis.categorizedReadyRows?.purchases || []).slice(0, 10).map((r) => ({
+        ...r.data,
+        _module: 'purchases',
+        _department: 'Ingredient Purchases',
+        _sheet: r.sheetName,
+      }));
+    }
+    if (activePreviewTab === 'inventory') {
+      return (analysis.categorizedReadyRows?.inventory || []).slice(0, 10).map((r) => ({
+        ...r.data,
+        _module: 'inventory',
+        _department: 'Products & Stock',
+        _sheet: r.sheetName,
+      }));
+    }
+    return [];
+  };
+
+  const currentPreviewRows = getFilteredPreviewRows();
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#202B3C]/50 p-4 backdrop-blur-sm animate-fade-in">
-      <div
-        className={`${ui.card} flex flex-col w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden`}
-        role="dialog"
-        aria-modal="true"
-      >
-        {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-[#E7E3DC] px-6 py-4 bg-[#FAF9F6]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#202B3C] text-white shadow-sm">
-              <FileSpreadsheet className="h-5 w-5" />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#202B3C]/40 p-2 sm:p-4 backdrop-blur-sm overflow-y-auto"
+      style={{ colorScheme: 'light' }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="import-modal-title"
+    >
+      {/* File input (always mounted so replace works seamlessly) */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".xlsx,.xls,.csv"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            readAndProcessFile(e.target.files[0]);
+          }
+          e.target.value = '';
+        }}
+      />
+
+      <div className="flex max-h-[96vh] sm:max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-[#E7E3DC] bg-[#FAF9F6] text-[#202B3C] shadow-2xl my-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-[#E7E3DC] bg-white px-4 py-3 sm:px-6 sm:py-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-[#202B3C] text-white">
+              <FileSpreadsheet className="h-4 w-4 sm:h-5 sm:w-5" />
             </div>
-            <div>
-              <h2 className="text-base font-semibold text-[#202B3C]">Import Excel / CSV</h2>
-              <p className="text-xs text-[#737D8B]">
-                Batch import records into your business workspace
+            <div className="min-w-0">
+              <h2 id="import-modal-title" className="text-base sm:text-lg font-semibold leading-tight truncate">
+                Import Excel & Worksheets
+              </h2>
+              <p className={`mt-0.5 text-xs sm:text-sm ${T.muted} truncate max-w-[280px] sm:max-w-none`}>
+                Upload one spreadsheet — all departments are detected automatically.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Download Sample Button */}
-            <div className="relative group">
-              <button
-                type="button"
-                onClick={() => generateSampleTemplate(dataType, 'xlsx')}
-                className="inline-flex items-center gap-1.5 rounded-md border border-[#E7E3DC] bg-white px-2.5 py-1.5 text-xs font-medium text-[#202B3C] hover:bg-[#F5F3EE] transition-colors"
-                title="Download formatted Excel sample file"
-              >
-                <Download className="h-3.5 w-3.5 text-[#737D8B]" />
-                Sample {dataType.charAt(0).toUpperCase() + dataType.slice(1)} Template
-              </button>
-            </div>
-
-            <button
-              type="button"
-              onClick={handleClose}
-              disabled={isImporting}
-              className="rounded-md p-1.5 text-[#737D8B] hover:bg-[#E7E3DC]/60 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleResetAndClose}
+            disabled={isImporting || isAnalyzing}
+            aria-label="Close dialog"
+            className="rounded-lg p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center text-[#737D8B] transition-colors hover:bg-[#F1EFEA] hover:text-[#202B3C] cursor-pointer"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
-        {/* Step Indicator */}
-        <div className="grid grid-cols-4 border-b border-[#E7E3DC] bg-white text-xs font-medium">
-          {[
-            { num: 1, label: '1. Select File' },
-            { num: 2, label: '2. Map Columns' },
-            { num: 3, label: '3. Validate & Review' },
-            { num: 4, label: '4. Completion' },
-          ].map((item) => (
-            <div
-              key={item.num}
-              className={`flex items-center justify-center py-2.5 px-3 border-r border-[#E7E3DC] last:border-r-0 transition-colors ${
-                step === item.num
-                  ? 'bg-[#FAF9F6] text-[#202B3C] font-semibold border-b-2 border-b-[#202B3C]'
-                  : step > item.num
-                  ? 'text-emerald-700 bg-white'
-                  : 'text-[#9AA2AD] bg-white'
-              }`}
-            >
-              <span>{item.label}</span>
-              {step > item.num && <CheckCircle2 className="h-3.5 w-3.5 ml-1.5 text-emerald-600 inline" />}
-            </div>
-          ))}
-        </div>
-
-        {/* Modal Body */}
-        <div className="flex-1 overflow-y-auto p-6 bg-white space-y-5">
-          {validationError && (
-            <div className="flex items-start gap-2.5 rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-800">
-              <AlertTriangle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
-              <div className="flex-1 font-medium">{validationError}</div>
+        {/* Body */}
+        <div className="flex-1 space-y-4 sm:space-y-5 overflow-y-auto p-3.5 sm:p-6">
+          {errorMessage && (
+            <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3.5 text-sm text-red-800">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-600" />
+              <div className="flex-1 leading-relaxed">{errorMessage}</div>
               <button
                 type="button"
-                onClick={() => setValidationError('')}
+                onClick={() => setErrorMessage('')}
                 className="text-red-500 hover:text-red-700"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
           )}
 
-          {/* STEP 1: Upload & Target Selection */}
-          {step === 1 && (
-            <div className="space-y-6 animate-fade-in">
-              {/* Data Type Selection */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#737D8B] mb-2">
-                  Select Data to Import
-                </label>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { id: 'sales', title: 'Sales Invoices', desc: 'Customer, item, amount, date & payment' },
-                    { id: 'expenses', title: 'Business Expenses', desc: 'Category, vendor, cost & date' },
-                    { id: 'inventory', title: 'Product Catalog', desc: 'Stock quantities, prices & unit thresholds' },
-                  ].map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => handleDataTypeChange(t.id)}
-                      className={`text-left p-3.5 rounded-lg border transition-all ${
-                        dataType === t.id
-                          ? 'border-[#202B3C] bg-[#FAF9F6] ring-1 ring-[#202B3C]'
-                          : 'border-[#E7E3DC] hover:border-[#B8C2CC] bg-white'
-                      }`}
-                    >
-                      <div className="font-semibold text-sm text-[#202B3C]">{t.title}</div>
-                      <div className="text-xs text-[#737D8B] mt-1">{t.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Drag & Drop File Zone */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-[#737D8B] mb-2">
-                  Upload Spreadsheet
-                </label>
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setIsDragging(true);
-                  }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setIsDragging(false);
-                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                      handleFileProcess(e.dataTransfer.files[0]);
-                    }
-                  }}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`flex flex-col items-center justify-center p-8 rounded-lg border-2 border-dashed cursor-pointer transition-colors ${
-                    isDragging
-                      ? 'border-[#202B3C] bg-[#FAF9F6]'
-                      : 'border-[#E7E3DC] hover:border-[#737D8B] bg-[#FAF9F6]/40'
-                  }`}
-                >
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".xlsx,.xls,.csv"
-                    className="hidden"
-                    onChange={(e) => {
-                      if (e.target.files && e.target.files[0]) {
-                        handleFileProcess(e.target.files[0]);
-                      }
-                    }}
-                  />
-
-                  <div className="h-12 w-12 rounded-full bg-white border border-[#E7E3DC] flex items-center justify-center text-[#202B3C] shadow-sm mb-3">
-                    <Upload className="h-6 w-6 text-[#202B3C]" />
+          {/* ========================================================================= */}
+          {/* STAGE 1: UPLOAD (No forced department selection) */}
+          {/* ========================================================================= */}
+          {modalStage === 'upload' && (
+            <div className="space-y-6">
+              {/* Dropzone */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setIsDragging(true);
+                }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    readAndProcessFile(e.dataTransfer.files[0]);
+                  }
+                }}
+                onClick={() => fileInputRef.current?.click()}
+                className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 transition-all ${
+                  isDragging
+                    ? 'border-[#202B3C] bg-white ring-2 ring-[#202B3C]/10'
+                    : 'border-[#D8D2C6] bg-white/70 hover:border-[#737D8B] hover:bg-white'
+                }`}
+              >
+                {isAnalyzing ? (
+                  <div className="flex flex-col items-center gap-3 py-6">
+                    <RefreshCw className="h-8 w-8 animate-spin text-[#202B3C]" />
+                    <div className="text-base font-semibold">Scanning all worksheets...</div>
+                    <p className={`text-xs ${T.muted}`}>
+                      Detecting Sales, Expenses, Stock, Ingredient Purchases & mapping columns
+                    </p>
                   </div>
+                ) : (
+                  <>
+                    <div className="mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#E7E3DC] bg-[#FAF9F6] text-[#202B3C] shadow-sm">
+                      <Upload className="h-7 w-7" />
+                    </div>
 
-                  <p className="text-sm font-semibold text-[#202B3C]">
-                    Click to select file or drag & drop here
-                  </p>
-                  <p className="text-xs text-[#737D8B] mt-1">
-                    Supports Microsoft Excel (.xlsx, .xls) and CSV (.csv) up to 10MB
-                  </p>
+                    <p className="text-center text-base font-semibold text-[#202B3C]">
+                      Drag and drop your Excel or CSV file
+                    </p>
+                    <p className={`mt-1 text-xs sm:text-sm ${T.muted}`}>
+                      or click to browse from your computer
+                    </p>
 
-                  <div className="mt-4 flex items-center gap-2 text-xs text-[#737D8B] bg-white px-3 py-1.5 rounded-md border border-[#E7E3DC]">
-                    <Info className="h-3.5 w-3.5 text-[#202B3C]" />
-                    <span>Clean headers and non-empty rows recommended for automatic mapping</span>
-                  </div>
-                </div>
-              </div>
+                    <div className={`${T.badgeGreen} mt-4`}>
+                      <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>Automatic detection: reads all worksheets in one single upload</span>
+                    </div>
 
-              {/* Download templates guide */}
-              <div className="rounded-lg border border-[#E7E3DC] bg-[#FAF9F6] p-4 flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-semibold text-[#202B3C]">Need a pre-built spreadsheet template?</h4>
-                  <p className="text-xs text-[#737D8B] mt-0.5">
-                    Download sample files with valid mock data for your chosen data type.
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={() => generateSampleTemplate(dataType, 'xlsx')}
-                    className={ui.ghost}
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    Download .xlsx
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => generateSampleTemplate(dataType, 'csv')}
-                    className={ui.ghost}
-                  >
-                    <Download className="h-3.5 w-3.5" />
-                    Download .csv
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* STEP 2: Worksheet Selection & Column Mapping */}
-          {step === 2 && (
-            <div className="space-y-6 animate-fade-in">
-              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-[#FAF9F6] rounded-lg border border-[#E7E3DC]">
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-[#202B3C]" />
-                  <span className="text-xs font-semibold text-[#202B3C]">File:</span>
-                  <span className="text-xs text-[#737D8B] font-mono">{file?.name}</span>
-                  <span className="text-xs text-[#9AA2AD]">({rawRows.length} rows detected)</span>
-                </div>
-
-                {/* Multiple worksheets selector */}
-                {sheetNames.length > 1 && (
-                  <div className="flex items-center gap-2">
-                    <Layers className="h-4 w-4 text-[#202B3C]" />
-                    <label className="text-xs font-semibold text-[#202B3C]">Worksheet:</label>
-                    <select
-                      value={selectedSheet}
-                      onChange={(e) => handleSheetChange(e.target.value)}
-                      className="rounded border border-[#E7E3DC] bg-white px-2 py-1 text-xs text-[#202B3C]"
-                    >
-                      {sheetNames.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                    <div className="mt-2.5 text-[11px] text-[#9AA2AD]">
+                      Supports .xlsx, .xls, and .csv up to 10 MB
+                    </div>
+                  </>
                 )}
               </div>
 
-              {/* Column Mapping Grid */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <h3 className="text-sm font-semibold text-[#202B3C]">Map Spreadsheet Columns</h3>
-                    <p className="text-xs text-[#737D8B]">
-                      Match each field in MSME Growth Advisor with the corresponding column from your file.
+              {/* Supported Departments Grid */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-[#737D8B]">
+                    Recognized Departments & Modules
+                  </h3>
+                  <span className="text-[11px] text-[#737D8B]">
+                    Automatically detected from sheet names & headers
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className={`${T.card} p-3`}>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+                        <TrendingUp className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-xs font-semibold">Sales & Invoices</span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-[#737D8B]">
+                      Customers, amounts, invoice dates & payment status
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const targetFields = TYPE_FIELDS[dataType] || [];
-                      setColumnMapping(autoMapHeaders(rawHeaders, targetFields));
-                    }}
-                    className="inline-flex items-center gap-1 text-xs font-medium text-[#202B3C] hover:underline"
-                  >
-                    <RefreshCw className="h-3 w-3" />
-                    Reset Auto-Mapping
-                  </button>
-                </div>
-
-                <div className="rounded-lg border border-[#E7E3DC] overflow-hidden divide-y divide-[#E7E3DC]">
-                  <div className="grid grid-cols-12 bg-[#FAF9F6] px-4 py-2.5 text-xs font-semibold text-[#737D8B]">
-                    <div className="col-span-5">Application Field</div>
-                    <div className="col-span-7">Spreadsheet Header</div>
+                  <div className={`${T.card} p-3`}>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-rose-50 text-rose-700">
+                        <Receipt className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-xs font-semibold">Business Expenses</span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-[#737D8B]">
+                      Expense titles, categories, costs & vendors
+                    </p>
                   </div>
 
-                  {TYPE_FIELDS[dataType]?.map((field) => (
-                    <div key={field.key} className="grid grid-cols-12 px-4 py-3 items-center gap-4 bg-white">
-                      <div className="col-span-5">
-                        <div className="flex items-center gap-1.5 text-sm font-medium text-[#202B3C]">
-                          <span>{field.label}</span>
-                          {field.required && (
-                            <span className="text-xs font-bold text-red-600" title="Required field">*</span>
-                          )}
-                        </div>
-                        <span className="text-[11px] text-[#9AA2AD]">
-                          {field.required ? 'Required field' : 'Optional field'}
-                        </span>
+                  <div className={`${T.card} p-3`}>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-50 text-blue-700">
+                        <Package className="h-3.5 w-3.5" />
                       </div>
-
-                      <div className="col-span-7">
-                        <select
-                          value={columnMapping[field.key] || ''}
-                          onChange={(e) =>
-                            setColumnMapping((prev) => ({
-                              ...prev,
-                              [field.key]: e.target.value,
-                            }))
-                          }
-                          className={ui.select}
-                        >
-                          <option value="">-- Do Not Import / Skip --</option>
-                          {rawHeaders.map((header) => (
-                            <option key={header} value={header}>
-                              {header} {rawRows[0]?.[header] ? `(e.g. "${rawRows[0][header]}")` : ''}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      <span className="text-xs font-semibold">Products & Stock</span>
                     </div>
-                  ))}
+                    <p className="mt-1 text-[11px] text-[#737D8B]">
+                      Product names, unit prices, available stock & units
+                    </p>
+                  </div>
+
+                  <div className={`${T.card} p-3`}>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-50 text-amber-700">
+                        <ShoppingCart className="h-3.5 w-3.5" />
+                      </div>
+                      <span className="text-xs font-semibold">Ingredient Purchases</span>
+                    </div>
+                    <p className="mt-1 text-[11px] text-[#737D8B]">
+                      Ingredients, suppliers, quantities & total costs
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Sample Data Preview Table */}
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#737D8B] mb-2">
-                  Source Data Preview (First 4 rows)
-                </h4>
-                <div className="overflow-x-auto rounded-lg border border-[#E7E3DC]">
+              {/* Sample Templates Card */}
+              <div className={`${T.card} flex flex-col justify-between gap-3 p-4 sm:flex-row sm:items-center`}>
+                <div>
+                  <h4 className="text-sm font-semibold">Need a sample template?</h4>
+                  <p className={`mt-0.5 text-xs ${T.muted}`}>
+                    Download pre-formatted spreadsheets with sample business data.
+                  </p>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => downloadTemplate('all', 'xlsx')}
+                    className={`${T.btnSecondary} !px-3 !py-1.5 !text-xs`}
+                  >
+                    <Download className="h-3.5 w-3.5 text-[#737D8B]" />
+                    All Departments (.xlsx)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => downloadTemplate('sales', 'csv')}
+                    className={`${T.btnSecondary} !px-3 !py-1.5 !text-xs`}
+                  >
+                    <Download className="h-3.5 w-3.5 text-[#737D8B]" />
+                    Sales (.csv)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* STAGE 2: COMBINED PREVIEW & VALIDATION */}
+          {/* ========================================================================= */}
+          {modalStage === 'preview' && analysis && (
+            <div className="space-y-5">
+              {/* File Info Bar */}
+              <div className={`${T.card} flex items-center justify-between p-3.5`}>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-semibold">{file?.name}</div>
+                    <div className={`text-xs ${T.muted}`}>
+                      {formatFileSize(file?.size)} · {analysis.totalWorksheets} worksheet
+                      {analysis.totalWorksheets > 1 ? 's' : ''} detected · {analysis.totalFieldsCount} recognized fields
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isImporting}
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#202B3C] hover:bg-[#F1EFEA]"
+                  >
+                    Replace File
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    disabled={isImporting}
+                    title="Remove file"
+                    className="rounded-lg p-1.5 text-[#737D8B] hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* KPI Cards */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className={`${T.card} p-3.5`}>
+                  <div className={T.label}>Worksheets</div>
+                  <div className="mt-1 text-2xl font-semibold">{analysis.totalWorksheets}</div>
+                  <div className={`mt-0.5 text-xs ${T.muted}`}>detected in file</div>
+                </div>
+                <div className={`${T.card} p-3.5`}>
+                  <div className={T.label}>Recognized Fields</div>
+                  <div className="mt-1 text-2xl font-semibold">{analysis.totalFieldsCount}</div>
+                  <div className={`mt-0.5 text-xs ${T.muted}`}>mapped columns</div>
+                </div>
+                <div className={`${T.card} p-3.5`}>
+                  <div className={T.label}>Ready to Import</div>
+                  <div className="mt-1 text-2xl font-semibold text-emerald-700">{analysis.totalReadyCount}</div>
+                  <div className="mt-0.5 text-xs text-emerald-700">valid records</div>
+                </div>
+                <div className={`${T.card} p-3.5`}>
+                  <div className={T.label}>Needs Attention</div>
+                  <div className="mt-1 text-2xl font-semibold">{analysis.totalAttentionCount}</div>
+                  <div className={`mt-0.5 text-xs ${analysis.totalAttentionCount > 0 ? 'text-orange-700' : T.muted}`}>
+                    {analysis.totalAttentionCount > 0 ? 'will be skipped' : '0 errors'}
+                  </div>
+                </div>
+              </div>
+
+              {/* =================================================================== */}
+              {/* COMBINED DEPARTMENT SUMMARY TABLE (Requirement 3 from prompt) */}
+              {/* =================================================================== */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold">Detected Worksheets & Departments</h3>
+                    <p className={`text-xs ${T.muted}`}>
+                      Summary of all worksheets parsed from this workbook
+                    </p>
+                  </div>
+                  <span className={T.badgeGreen}>
+                    <Check className="h-3 w-3" />
+                    All valid sheets will import in one click
+                  </span>
+                </div>
+
+                <div className="overflow-x-auto -webkit-overflow-scrolling-touch scrollbar-thin rounded-xl border border-[#E7E3DC] bg-white shadow-sm">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#FAF9F6] text-[#737D8B] border-b border-[#E7E3DC]">
+                    <thead className="border-b border-[#E7E3DC] bg-[#FAF9F6] text-[#737D8B]">
                       <tr>
-                        <th className="py-2 px-3 font-semibold">#</th>
-                        {rawHeaders.map((h) => (
-                          <th key={h} className="py-2 px-3 font-semibold whitespace-nowrap">
-                            {h}
-                          </th>
-                        ))}
+                        <th className="px-3.5 py-3 font-semibold">Department & Worksheet</th>
+                        <th className="px-3 py-3 text-right font-semibold">Detected Rows</th>
+                        <th className="px-3 py-3 text-right font-semibold text-emerald-700">Valid</th>
+                        <th className="px-3 py-3 text-right font-semibold text-[#737D8B]">Invalid</th>
+                        <th className="px-3.5 py-3 text-center font-semibold">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E7E3DC]">
-                      {rawRows.slice(0, 4).map((row, idx) => (
-                        <tr key={idx} className="hover:bg-[#FAF9F6]/50">
-                          <td className="py-2 px-3 font-mono text-[#9AA2AD]">{idx + 1}</td>
-                          {rawHeaders.map((h) => (
-                            <td key={h} className="py-2 px-3 text-[#202B3C] whitespace-nowrap">
-                              {row[h] !== undefined ? String(row[h]) : '—'}
+                      {analysis.sheets.map((s, idx) => {
+                        const isSkipped = s.isSkipped;
+                        const isInformational = s.detectedCategory === 'ignored';
+
+                        let deptIcon = <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />;
+                        if (s.detectedCategory === 'expenses') deptIcon = <Receipt className="h-3.5 w-3.5 text-rose-600" />;
+                        if (s.detectedCategory === 'purchases') deptIcon = <ShoppingCart className="h-3.5 w-3.5 text-amber-600" />;
+                        if (s.detectedCategory === 'inventory') deptIcon = <Package className="h-3.5 w-3.5 text-blue-600" />;
+                        if (isInformational) deptIcon = <Info className="h-3.5 w-3.5 text-gray-500" />;
+
+                        return (
+                          <tr key={idx} className="transition-colors hover:bg-[#FAF9F6]/80">
+                            <td className="px-3.5 py-3">
+                              <div className="flex items-center gap-2.5">
+                                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#FAF9F6] border border-[#E7E3DC]">
+                                  {deptIcon}
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-[#202B3C]">
+                                    {s.departmentName || s.detectedCategory}
+                                  </div>
+                                  <div className="flex items-center gap-1.5 mt-0.5">
+                                    <span className="font-mono text-[10px] text-[#737D8B] bg-[#F1EFEA] px-1.5 py-0.5 rounded">
+                                      Sheet: {s.sheetName}
+                                    </span>
+                                    {isSkipped && (
+                                      <span className="text-[10px] text-gray-500 italic">
+                                        ({s.skipReason || 'Non-transactional data'})
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
                             </td>
-                          ))}
-                        </tr>
-                      ))}
+                            <td className="px-3 py-3 text-right font-semibold text-[#202B3C]">
+                              {s.totalRows}
+                            </td>
+                            <td className="px-3 py-3 text-right font-semibold text-emerald-700">
+                              {s.readyCount}
+                            </td>
+                            <td className="px-3 py-3 text-right text-[#737D8B]">
+                              {s.attentionCount}
+                            </td>
+                            <td className="px-3.5 py-3 text-center">
+                              {isSkipped ? (
+                                <span className={T.badgeGray}>
+                                  Skipped ({isInformational ? 'Informational' : 'Excluded'})
+                                </span>
+                              ) : (
+                                <span className={T.badgeGreen}>
+                                  <Check className="h-3 w-3" />
+                                  Import
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* STEP 3: Preview, Row-Level Validation & Duplicates Review */}
-          {step === 3 && validationResult && (
-            <div className="space-y-6 animate-fade-in">
-              {/* Validation Stats Cards */}
-              <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-emerald-800">Valid Rows</span>
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              {/* Ambiguous Sheet Clarification (if any) */}
+              {analysis.ambiguousSheets?.length > 0 && (
+                <div className="space-y-3 rounded-xl border border-orange-200 bg-orange-50/50 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-orange-900">
+                    <HelpCircle className="h-4 w-4 text-orange-600" />
+                    <span>Clarify Department for Ambiguous Worksheet</span>
                   </div>
-                  <div className="text-2xl font-bold text-emerald-900 mt-1">
-                    {validationResult.validCount}
-                  </div>
-                  <div className="text-xs text-emerald-700 mt-0.5">Ready to import</div>
+
+                  {analysis.ambiguousSheets.map((amb, i) => (
+                    <div
+                      key={i}
+                      className="flex flex-col justify-between gap-2.5 rounded-lg border border-[#E7E3DC] bg-white p-3 sm:flex-row sm:items-center"
+                    >
+                      <div className="text-xs">
+                        <span className="font-semibold text-[#202B3C]">Worksheet "{amb.sheetName}"</span>
+                        <span className={`ml-1.5 ${T.muted}`}>
+                          headers: {amb.headers.slice(0, 3).join(', ')}...
+                        </span>
+                      </div>
+
+                      <div className="inline-flex rounded-lg border border-[#E7E3DC] bg-[#FAF9F6] p-0.5">
+                        {['sales', 'expenses', 'purchases', 'inventory'].map((cand) => {
+                          const active = (sheetTypeOverrides[amb.sheetName] || amb.suggestedType) === cand;
+                          return (
+                            <button
+                              key={cand}
+                              type="button"
+                              onClick={() => handleClarifySheet(amb.sheetName, cand)}
+                              className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                                active ? 'bg-[#202B3C] text-white' : 'text-[#737D8B] hover:text-[#202B3C]'
+                              }`}
+                            >
+                              {cand === 'sales'
+                                ? 'Sales'
+                                : cand === 'expenses'
+                                ? 'Expenses'
+                                : cand === 'purchases'
+                                ? 'Purchases'
+                                : 'Stock'}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              )}
 
-                <div className="rounded-lg border border-amber-200 bg-amber-50/60 p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-amber-800">Duplicates Detected</span>
-                    <AlertTriangle className="h-4 w-4 text-amber-600" />
+              {/* Duplicate Detection Options */}
+              {duplicateCount > 0 && (
+                <div className="space-y-2.5 rounded-xl border border-orange-200 bg-orange-50/50 p-4">
+                  <div className="text-sm font-semibold text-orange-900">
+                    {duplicateCount} possible duplicate record{duplicateCount > 1 ? 's' : ''} detected
                   </div>
-                  <div className="text-2xl font-bold text-amber-900 mt-1">
-                    {validationResult.duplicateCount}
-                  </div>
-                  <div className="text-xs text-amber-700 mt-0.5">Match existing database records</div>
-                </div>
-
-                <div className="rounded-lg border border-red-200 bg-red-50/60 p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-red-800">Invalid Rows</span>
-                    <XCircle className="h-4 w-4 text-red-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-red-900 mt-1">
-                    {validationResult.invalidCount}
-                  </div>
-                  <div className="text-xs text-red-700 mt-0.5">Will be excluded from import</div>
-                </div>
-              </div>
-
-              {/* Duplicate Handling Preferences */}
-              {validationResult.duplicateCount > 0 && (
-                <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-4">
-                  <h4 className="text-sm font-semibold text-amber-900 mb-2">
-                    Duplicate Records Resolution Policy
-                  </h4>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-amber-900">
+                  <div className="space-y-2 text-xs sm:text-sm text-[#202B3C]">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
-                        name="duplicatePolicy"
+                        name="dupChoice"
                         checked={skipDuplicates && !overwriteDuplicates}
                         onChange={() => {
                           setSkipDuplicates(true);
                           setOverwriteDuplicates(false);
                         }}
-                        className="rounded border-[#E7E3DC] text-[#202B3C] focus:ring-0"
+                        className="text-[#202B3C] focus:ring-0"
                       />
                       <span>
-                        <strong>Skip duplicates</strong> (Safely ignore matching spreadsheet rows and keep current database records unchanged)
+                        <strong>Skip duplicates</strong>{' '}
+                        <span className={T.muted}>(recommended — prevents double-counting existing invoices)</span>
                       </span>
                     </label>
 
-                    <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-amber-900">
+                    <label className="flex cursor-pointer items-center gap-2">
                       <input
                         type="radio"
-                        name="duplicatePolicy"
+                        name="dupChoice"
                         checked={overwriteDuplicates}
                         onChange={() => {
                           setSkipDuplicates(false);
                           setOverwriteDuplicates(true);
                         }}
-                        className="rounded border-[#E7E3DC] text-[#202B3C] focus:ring-0"
+                        className="text-[#202B3C] focus:ring-0"
                       />
                       <span>
-                        <strong>Overwrite matching records</strong> (Update existing database entries with data from this spreadsheet)
+                        <strong>Update existing records</strong>{' '}
+                        <span className={T.muted}>with values from this spreadsheet</span>
                       </span>
                     </label>
                   </div>
                 </div>
               )}
 
-              {/* Invalid Rows Table if any */}
-              {validationResult.invalidCount > 0 && (
-                <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-red-700 mb-2">
-                    Invalid Rows ({validationResult.invalidCount}) - Requires Attention
-                  </h4>
-                  <div className="overflow-x-auto rounded-lg border border-red-200 bg-red-50/30 max-h-48">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-red-100/50 text-red-900 border-b border-red-200">
-                        <tr>
-                          <th className="py-2 px-3 font-semibold">Row #</th>
-                          <th className="py-2 px-3 font-semibold">Errors</th>
-                          <th className="py-2 px-3 font-semibold">Row Data Sample</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-red-200">
-                        {validationResult.invalidRows.map((inv, idx) => (
-                          <tr key={idx} className="hover:bg-red-50/50">
-                            <td className="py-2 px-3 font-mono text-red-700 font-semibold">{inv.rowNumber}</td>
-                            <td className="py-2 px-3 text-red-800 font-medium">
-                              {inv.errors?.join('; ')}
-                            </td>
-                            <td className="py-2 px-3 text-[#737D8B] font-mono text-[11px] truncate max-w-xs">
-                              {JSON.stringify(inv.data)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+              {/* Interactive Department Switcher & Row Preview */}
+              <div className="space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-sm font-semibold">Data Preview</h3>
+                  <div className="inline-flex rounded-lg border border-[#E7E3DC] bg-white p-0.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setActivePreviewTab('all')}
+                      className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                        activePreviewTab === 'all'
+                          ? 'bg-[#202B3C] text-white'
+                          : 'text-[#737D8B] hover:text-[#202B3C]'
+                      }`}
+                    >
+                      All ({analysis.totalReadyCount})
+                    </button>
+                    {(analysis.categorizedReadyRows?.sales?.length || 0) > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setActivePreviewTab('sales')}
+                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                          activePreviewTab === 'sales'
+                            ? 'bg-[#202B3C] text-white'
+                            : 'text-[#737D8B] hover:text-[#202B3C]'
+                        }`}
+                      >
+                        Sales ({analysis.categorizedReadyRows.sales.length})
+                      </button>
+                    )}
+                    {(analysis.categorizedReadyRows?.expenses?.length || 0) > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setActivePreviewTab('expenses')}
+                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                          activePreviewTab === 'expenses'
+                            ? 'bg-[#202B3C] text-white'
+                            : 'text-[#737D8B] hover:text-[#202B3C]'
+                        }`}
+                      >
+                        Expenses ({analysis.categorizedReadyRows.expenses.length})
+                      </button>
+                    )}
+                    {(analysis.categorizedReadyRows?.purchases?.length || 0) > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setActivePreviewTab('purchases')}
+                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                          activePreviewTab === 'purchases'
+                            ? 'bg-[#202B3C] text-white'
+                            : 'text-[#737D8B] hover:text-[#202B3C]'
+                        }`}
+                      >
+                        Purchases ({analysis.categorizedReadyRows.purchases.length})
+                      </button>
+                    )}
+                    {(analysis.categorizedReadyRows?.inventory?.length || 0) > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setActivePreviewTab('inventory')}
+                        className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+                          activePreviewTab === 'inventory'
+                            ? 'bg-[#202B3C] text-white'
+                            : 'text-[#737D8B] hover:text-[#202B3C]'
+                        }`}
+                      >
+                        Stock ({analysis.categorizedReadyRows.inventory.length})
+                      </button>
+                    )}
                   </div>
                 </div>
-              )}
 
-              {/* Valid Rows Preview Table */}
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-[#737D8B] mb-2">
-                  Records Ready For Import ({validationResult.validCount})
-                </h4>
-                <div className="overflow-x-auto rounded-lg border border-[#E7E3DC] max-h-60">
+                <div className="overflow-x-auto rounded-xl border border-[#E7E3DC] bg-white">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#FAF9F6] text-[#737D8B] border-b border-[#E7E3DC] sticky top-0">
+                    <thead className="border-b border-[#E7E3DC] bg-[#FAF9F6] text-[#737D8B]">
                       <tr>
-                        <th className="py-2 px-3 font-semibold">Row #</th>
-                        <th className="py-2 px-3 font-semibold">Status</th>
-                        {dataType === 'sales' && (
-                          <>
-                            <th className="py-2 px-3 font-semibold">Customer</th>
-                            <th className="py-2 px-3 font-semibold">Item</th>
-                            <th className="py-2 px-3 font-semibold">Amount</th>
-                            <th className="py-2 px-3 font-semibold">Date</th>
-                            <th className="py-2 px-3 font-semibold">Payment</th>
-                          </>
-                        )}
-                        {dataType === 'expenses' && (
-                          <>
-                            <th className="py-2 px-3 font-semibold">Title</th>
-                            <th className="py-2 px-3 font-semibold">Category</th>
-                            <th className="py-2 px-3 font-semibold">Amount</th>
-                            <th className="py-2 px-3 font-semibold">Vendor</th>
-                            <th className="py-2 px-3 font-semibold">Date</th>
-                          </>
-                        )}
-                        {dataType === 'inventory' && (
-                          <>
-                            <th className="py-2 px-3 font-semibold">Product</th>
-                            <th className="py-2 px-3 font-semibold">Category</th>
-                            <th className="py-2 px-3 font-semibold">Stock</th>
-                            <th className="py-2 px-3 font-semibold">Unit Price</th>
-                            <th className="py-2 px-3 font-semibold">Unit</th>
-                          </>
-                        )}
+                        <th className="px-3 py-2.5 font-medium">Department</th>
+                        <th className="px-3 py-2.5 font-medium">Worksheet</th>
+                        <th className="px-3 py-2.5 font-medium">Name / Title</th>
+                        <th className="px-3 py-2.5 text-right font-medium">Amount / Price</th>
+                        <th className="px-3 py-2.5 font-medium">Date / Stock</th>
+                        <th className="px-3 py-2.5 font-medium">Additional Details</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E7E3DC]">
-                      {validationResult.validRows.map((vr) => (
-                        <tr key={vr.rowNumber} className="hover:bg-[#FAF9F6]/60">
-                          <td className="py-2 px-3 font-mono text-[#9AA2AD]">{vr.rowNumber}</td>
-                          <td className="py-2 px-3">
-                            {vr.isDuplicate ? (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 text-amber-800">
-                                Duplicate
+                      {currentPreviewRows.map((row, idx) => {
+                        const moduleType = row._module || 'sales';
+                        const customKeys = row.metadata ? Object.keys(row.metadata) : [];
+
+                        let badgeStyle = 'bg-emerald-50 text-emerald-700';
+                        let labelText = 'Sale';
+                        if (moduleType === 'expenses') {
+                          badgeStyle = 'bg-rose-50 text-rose-700';
+                          labelText = 'Expense';
+                        } else if (moduleType === 'purchases') {
+                          badgeStyle = 'bg-amber-50 text-amber-700';
+                          labelText = 'Purchase';
+                        } else if (moduleType === 'inventory') {
+                          badgeStyle = 'bg-blue-50 text-blue-700';
+                          labelText = 'Product';
+                        }
+
+                        return (
+                          <tr key={idx} className="transition-colors hover:bg-[#FAF9F6]/70">
+                            <td className="px-3 py-2.5">
+                              <span
+                                className={`inline-flex items-center rounded px-2 py-0.5 text-[10px] font-semibold ${badgeStyle}`}
+                              >
+                                {labelText}
                               </span>
-                            ) : (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-800">
-                                Valid
-                              </span>
-                            )}
-                          </td>
-                          {dataType === 'sales' && (
-                            <>
-                              <td className="py-2 px-3 font-medium text-[#202B3C]">{vr.data.client}</td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.item}</td>
-                              <td className="py-2 px-3 font-mono font-medium text-[#202B3C]">
-                                ₹{Number(vr.data.amount).toLocaleString('en-IN')}
-                              </td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.date}</td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.status}</td>
-                            </>
-                          )}
-                          {dataType === 'expenses' && (
-                            <>
-                              <td className="py-2 px-3 font-medium text-[#202B3C]">{vr.data.title}</td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.category}</td>
-                              <td className="py-2 px-3 font-mono font-medium text-[#202B3C]">
-                                ₹{Number(vr.data.amount).toLocaleString('en-IN')}
-                              </td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.vendor}</td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.date}</td>
-                            </>
-                          )}
-                          {dataType === 'inventory' && (
-                            <>
-                              <td className="py-2 px-3 font-medium text-[#202B3C]">{vr.data.name}</td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.category}</td>
-                              <td className="py-2 px-3 font-mono font-medium text-[#202B3C]">{vr.data.stock}</td>
-                              <td className="py-2 px-3 font-mono font-medium text-[#202B3C]">
-                                ₹{Number(vr.data.unitPrice).toLocaleString('en-IN')}
-                              </td>
-                              <td className="py-2 px-3 text-[#737D8B]">{vr.data.unit}</td>
-                            </>
-                          )}
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="px-3 py-2.5 font-mono text-[11px] text-[#737D8B]">
+                              {row._sheet || 'Sheet'}
+                            </td>
+                            <td className="px-3 py-2.5 font-medium text-[#202B3C]">
+                              {row.client || row.title || row.name || '—'}
+                            </td>
+                            <td className="px-3 py-2.5 text-right font-medium">
+                              ₹{Number(row.amount || row.unitPrice || 0).toLocaleString('en-IN')}
+                            </td>
+                            <td className={`px-3 py-2.5 ${T.muted}`}>
+                              {row.date ||
+                                (row.stock !== undefined ? `${row.stock} ${row.unit || 'units'}` : '—')}
+                            </td>
+                            <td className={`px-3 py-2.5 text-[11px] ${T.muted}`}>
+                              {customKeys.length > 0 ? (
+                                <span className="font-mono text-[#4B5563]">
+                                  {customKeys.slice(0, 3).join(', ')}
+                                  {customKeys.length > 3 ? '...' : ''}
+                                </span>
+                              ) : (
+                                <span className="text-[#9AA2AD]">Standard fields</span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
               </div>
+
+              {/* View Recognized Fields Accordion */}
+              <div className={`${T.card} overflow-hidden`}>
+                <button
+                  type="button"
+                  onClick={() => setShowFieldDetails(!showFieldDetails)}
+                  className="flex w-full items-center justify-between p-3.5 text-sm font-medium transition-colors hover:bg-[#FAF9F6]"
+                >
+                  <div className="flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-[#737D8B]" />
+                    <span>View all {analysis.totalFieldsCount} recognized column headers</span>
+                  </div>
+                  {showFieldDetails ? (
+                    <ChevronUp className="h-4 w-4" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4" />
+                  )}
+                </button>
+
+                {showFieldDetails && (
+                  <div className="space-y-3 border-t border-[#E7E3DC] p-4">
+                    <p className={`text-xs ${T.muted}`}>
+                      Standard columns are mapped to application modules. Custom or extra columns are safely preserved as metadata.
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {analysis.allHeaders.map((hdr) => (
+                        <span
+                          key={hdr}
+                          className="rounded-md border border-[#E7E3DC] bg-[#FAF9F6] px-2.5 py-1 font-mono text-[11px] text-[#202B3C]"
+                        >
+                          {hdr}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Attention notice if any records are missing required fields */}
+              {analysis.totalAttentionCount > 0 && (
+                <div className="overflow-hidden rounded-xl border border-orange-200 bg-orange-50/50">
+                  <button
+                    type="button"
+                    onClick={() => setShowAttentionDetails(!showAttentionDetails)}
+                    className="flex w-full items-center justify-between p-3.5 text-left text-sm font-medium text-orange-900 transition-colors hover:bg-orange-100/40"
+                  >
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-orange-600" />
+                      <span>
+                        {analysis.totalAttentionCount} record{analysis.totalAttentionCount > 1 ? 's' : ''} have
+                        missing required fields and will be skipped
+                      </span>
+                    </div>
+                    {showAttentionDetails ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+
+                  {showAttentionDetails && (
+                    <div className="border-t border-orange-200 p-3.5 text-xs text-orange-800">
+                      All valid records will be imported safely without requiring you to manually edit the spreadsheet.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
-          {/* STEP 4: Import Complete Summary */}
-          {step === 4 && importResult && (
-            <div className="py-8 text-center space-y-4 animate-fade-in">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                <CheckCircle2 className="h-8 w-8" />
+          {/* ========================================================================= */}
+          {/* STAGE 3: COMPLETE RESULTS BREAKDOWN */}
+          {/* ========================================================================= */}
+          {modalStage === 'complete' && importResult && (
+            <div className="space-y-6 py-6 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 shadow-sm border border-emerald-200">
+                <CheckCircle2 className="h-9 w-9" />
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-[#202B3C]">Import Successfully Completed!</h3>
-                <p className="text-xs text-[#737D8B] mt-1 max-w-md mx-auto">
-                  {importResult.message}
+                <h3 className="text-xl font-semibold text-[#202B3C]">Import Complete</h3>
+                <p className={`mx-auto mt-1 max-w-lg text-sm ${T.muted}`}>
+                  {importResult.message || 'All records have been processed and saved to your business workspace.'}
                 </p>
               </div>
 
-              <div className="inline-grid grid-cols-3 gap-3 p-4 bg-[#FAF9F6] rounded-lg border border-[#E7E3DC] text-left">
+              {/* Top Level Summary Cards */}
+              <div className={`${T.card} inline-grid min-w-[320px] grid-cols-3 gap-6 p-4 text-left shadow-sm`}>
                 <div>
-                  <div className="text-xs text-[#737D8B]">New Added</div>
-                  <div className="text-xl font-bold text-emerald-700">{importResult.insertedCount}</div>
+                  <div className={T.label}>Inserted</div>
+                  <div className="mt-0.5 text-2xl font-semibold text-emerald-700">
+                    {importResult.insertedCount ?? 0}
+                  </div>
                 </div>
                 <div>
-                  <div className="text-xs text-[#737D8B]">Updated</div>
-                  <div className="text-xl font-bold text-blue-700">{importResult.updatedCount}</div>
+                  <div className={T.label}>Updated</div>
+                  <div className="mt-0.5 text-2xl font-semibold text-[#202B3C]">
+                    {importResult.updatedCount ?? 0}
+                  </div>
                 </div>
                 <div>
-                  <div className="text-xs text-[#737D8B]">Skipped</div>
-                  <div className="text-xl font-bold text-[#737D8B]">{importResult.skippedCount}</div>
+                  <div className={T.label}>Skipped</div>
+                  <div className={`mt-0.5 text-2xl font-semibold ${T.muted}`}>
+                    {(importResult.skippedCount ?? 0) + (analysis?.totalAttentionCount || 0)}
+                  </div>
                 </div>
               </div>
 
-              <div className="pt-4">
+              {/* Per-Department Results Breakdown */}
+              {importResult.byModule && (
+                <div className="text-left space-y-2 max-w-xl mx-auto">
+                  <div className="text-xs font-semibold uppercase tracking-wider text-[#737D8B]">
+                    Per-Department Results
+                  </div>
+                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                    {importResult.byModule.sales && (
+                      <div className={`${T.card} p-3 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4 text-emerald-600" />
+                          <span className="text-xs font-semibold">Sales & Invoices</span>
+                        </div>
+                        <span className="text-xs font-semibold text-emerald-700">
+                          {importResult.byModule.sales.inserted} added
+                          {importResult.byModule.sales.updated > 0 ? `, ${importResult.byModule.sales.updated} updated` : ''}
+                        </span>
+                      </div>
+                    )}
+
+                    {importResult.byModule.expenses && (
+                      <div className={`${T.card} p-3 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <Receipt className="h-4 w-4 text-rose-600" />
+                          <span className="text-xs font-semibold">Business Expenses</span>
+                        </div>
+                        <span className="text-xs font-semibold text-rose-700">
+                          {importResult.byModule.expenses.inserted} added
+                          {importResult.byModule.expenses.updated > 0 ? `, ${importResult.byModule.expenses.updated} updated` : ''}
+                        </span>
+                      </div>
+                    )}
+
+                    {importResult.byModule.purchases && (
+                      <div className={`${T.card} p-3 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <ShoppingCart className="h-4 w-4 text-amber-600" />
+                          <span className="text-xs font-semibold">Ingredient Purchases</span>
+                        </div>
+                        <span className="text-xs font-semibold text-amber-700">
+                          {importResult.byModule.purchases.inserted} added
+                          {importResult.byModule.purchases.updated > 0 ? `, ${importResult.byModule.purchases.updated} updated` : ''}
+                        </span>
+                      </div>
+                    )}
+
+                    {importResult.byModule.inventory && (
+                      <div className={`${T.card} p-3 flex items-center justify-between`}>
+                        <div className="flex items-center gap-2">
+                          <Package className="h-4 w-4 text-blue-600" />
+                          <span className="text-xs font-semibold">Products & Stock</span>
+                        </div>
+                        <span className="text-xs font-semibold text-blue-700">
+                          {importResult.byModule.inventory.inserted} added
+                          {importResult.byModule.inventory.updated > 0 ? `, ${importResult.byModule.inventory.updated} updated` : ''}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Informational Sheets Skipped Notice */}
+              {analysis?.sheets?.some((s) => s.isSkipped) && (
+                <div className="max-w-xl mx-auto rounded-lg border border-[#E7E3DC] bg-white p-3 text-left text-xs text-[#737D8B]">
+                  <span className="font-semibold text-[#202B3C]">Informational Sheets Excluded: </span>
+                  {analysis.sheets
+                    .filter((s) => s.isSkipped)
+                    .map((s) => `"${s.sheetName}" (${s.skipReason || 'Informational'})`)
+                    .join(', ')}
+                </div>
+              )}
+
+              {/* Navigation Actions */}
+              <div className="flex flex-col items-center justify-center gap-3 pt-2 sm:flex-row">
                 <button
                   type="button"
-                  onClick={handleClose}
-                  className={ui.primary}
+                  onClick={handleViewImportedData}
+                  className={`${T.btnPrimary} w-full sm:w-auto`}
                 >
-                  View In Dashboard
+                  View Imported Data
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleReturnToDashboard}
+                  className={`${T.btnSecondary} w-full sm:w-auto`}
+                >
+                  Return to Dashboard
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        {/* Modal Footer Controls */}
-        <div className="flex items-center justify-between border-t border-[#E7E3DC] px-6 py-4 bg-[#FAF9F6]">
-          {step > 1 && step < 4 ? (
-            <button
-              type="button"
-              onClick={() => setStep((prev) => prev - 1)}
-              disabled={isImporting || isValidating}
-              className={ui.ghost}
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </button>
-          ) : (
-            <div />
-          )}
-
-          <div className="flex items-center gap-3">
-            {step < 4 && (
+        {/* Footer */}
+        {modalStage !== 'complete' && (
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2.5 border-t border-[#E7E3DC] bg-white px-4 py-3 sm:px-6 sm:py-4">
+            {modalStage === 'preview' ? (
               <button
                 type="button"
-                onClick={handleClose}
-                disabled={isImporting || isValidating}
-                className="text-xs text-[#737D8B] hover:text-[#202B3C] font-medium px-3 py-2"
+                onClick={() => setModalStage('upload')}
+                disabled={isImporting}
+                className={`inline-flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium ${T.muted} transition-colors hover:text-[#202B3C] py-1 cursor-pointer`}
+              >
+                ← Back / Replace File
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex flex-col-reverse sm:flex-row items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                onClick={handleResetAndClose}
+                disabled={isImporting}
+                className={`${T.btnSecondary} w-full sm:w-auto min-h-[40px] justify-center`}
               >
                 Cancel
               </button>
-            )}
 
-            {step === 2 && (
-              <button
-                type="button"
-                onClick={handleValidateAndPreview}
-                disabled={isValidating}
-                className={ui.primary}
-              >
-                {isValidating ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    Validating Rows...
-                  </>
-                ) : (
-                  <>
-                    Validate & Preview
-                    <ArrowRight className="h-4 w-4" />
-                  </>
-                )}
-              </button>
-            )}
-
-            {step === 3 && (
-              <button
-                type="button"
-                onClick={handleExecuteImport}
-                disabled={isImporting || !validationResult || validationResult.validCount === 0}
-                className={ui.primary}
-              >
-                {isImporting ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    Importing Records...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="h-4 w-4" />
-                    Confirm & Import ({validationResult?.validCount} records)
-                  </>
-                )}
-              </button>
-            )}
+              {modalStage === 'preview' && (
+                <button
+                  type="button"
+                  onClick={handleImportAllData}
+                  disabled={isImporting || !analysis || analysis.totalReadyCount === 0}
+                  className={`${T.btnPrimary} w-full sm:w-auto min-h-[40px] justify-center`}
+                >
+                  {isImporting ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      Importing All Data...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" />
+                      Import All Data ({analysis?.totalReadyCount} Records)
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

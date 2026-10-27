@@ -53,7 +53,7 @@ export default function AuthLayout({ children }) {
       </header>
 
       {/* Main Content: 2-Column Layout */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+      <main className="flex-1 flex items-center justify-center px-3 sm:px-6 lg:px-8 py-6 sm:py-16">
         <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
           
           {/* Left Column: Landing Page Style Brand Messaging & Features */}
@@ -107,7 +107,7 @@ export default function AuthLayout({ children }) {
 
           {/* Right Column: Authentication Card */}
           <div className="lg:col-span-6 flex justify-center w-full">
-            <div className="w-full max-w-[460px] bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 shadow-xl relative transition-all">
+            <div className="w-full max-w-[460px] bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-8 shadow-xl relative transition-all">
               {children}
             </div>
           </div>

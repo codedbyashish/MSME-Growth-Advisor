@@ -8,6 +8,7 @@ import LandingPage from './components/LandingPage';
 import Dashboard from './components/Dashboard';
 import LoginPage from './components/auth/LoginPage';
 import SignupPage from './components/auth/SignupPage';
+import NotFoundPage from './components/NotFoundPage';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ function AppContent() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<LandingPage onLaunchDashboard={() => navigate('/dashboard')} />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

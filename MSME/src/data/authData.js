@@ -58,11 +58,8 @@ export const defaultAuthData = {
     { value: "Services & Logistics", label: "Medium - Services & Logistics" },
     { value: "Agri & Food Processing", label: "Agri & Food Processing" }
   ],
-  socialProviders: [
-    { id: "google", name: "Google", icon: "Google" },
-    { id: "whatsapp", name: "WhatsApp OTP", icon: "Smartphone" }
-  ],
-  dividerText: "OR CONTINUE WITH",
+  socialProviders: [],
+  dividerText: "",
   successMessages: {
     loginTitle: "Authentication Successful!",
     signupTitle: "Account Created Successfully!",

@@ -42,9 +42,14 @@ const inventorySchema = new mongoose.Schema(
       default: 'General',
       trim: true,
     },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 
