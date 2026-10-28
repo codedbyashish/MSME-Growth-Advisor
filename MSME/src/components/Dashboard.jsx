@@ -2234,48 +2234,6 @@ export default function Dashboard() {
                 </div>
               </PageHeader>
 
-              {/* Audit Notification Banner for Accidental Procurement in Expenses */}
-              {procurementExpenses.length > 0 && (
-                <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-4">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-start gap-3">
-                      <AlertTriangle className="mt-0.5 h-5 w-5 text-amber-600 shrink-0" />
-                      <div>
-                        <h3 className="text-sm font-semibold text-amber-900">
-                          Audit Notice: {procurementExpenses.length} Raw Material Procurement Records in Expense Ledger
-                        </h3>
-                        <p className="mt-0.5 text-xs text-amber-800 leading-relaxed">
-                          We identified {procurementExpenses.length} ingredient purchase transactions totalling {money(sum(procurementExpenses, 'amount'))}.
-                          Under standard MSME accounting, raw materials are inventory assets until utilized, not operational overhead.
-                          They are currently excluded from operating expenses to ensure your net profit reflects actual operational performance.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
-                      <button
-                        onClick={() => setIsAuditModalOpen(true)}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-amber-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-amber-950 shadow-xs"
-                      >
-                        <ShieldCheck className="h-3.5 w-3.5" />
-                        Review & Safe Cleanup
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex items-center gap-2 pt-3 border-t border-amber-200/60 text-xs text-amber-900">
-                    <label className="flex items-center gap-2 cursor-pointer font-medium">
-                      <input
-                        type="checkbox"
-                        checked={includeProcurementInPnL}
-                        onChange={(e) => setIncludeProcurementInPnL(e.target.checked)}
-                        className="rounded border-amber-300 text-[#202B3C] focus:ring-amber-500"
-                      />
-                      <span>Include raw material procurement in calculations (Historical cash outflow comparison mode)</span>
-                    </label>
-                  </div>
-                </div>
-              )}
 
               {/* Performance Metrics Cards */}
               <div className="grid grid-cols-1 min-[420px]:grid-cols-2 xl:grid-cols-4 gap-3">
