@@ -772,6 +772,11 @@ export default function Dashboard() {
   const [isCleaningUpAudit, setIsCleaningUpAudit] = useState(false);
   const [cleanupSuccessMsg, setCleanupSuccessMsg] = useState('');
 
+  // Always load live business metrics when Dashboard mounts or user reconnects
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
+
   /* Identity */
 
   const businessName =

@@ -442,17 +442,19 @@ export default function SignupPage() {
       }
 
       // 3. Refresh user data so dashboard metrics update immediately
+      const currentToken = activeUser?.token || localStorage.getItem('token');
       if (refreshData) {
         try {
-          await refreshData();
+          await refreshData(currentToken);
         } catch (rErr) {
           console.warn('refreshData error on signup completion:', rErr);
         }
       }
 
+      // Smooth transition to dashboard
       setTimeout(() => {
         navigate('/dashboard');
-      }, 600);
+      }, 400);
 
     } catch (err) {
       console.error('Registration / import error:', err);

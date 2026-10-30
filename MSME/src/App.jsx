@@ -16,11 +16,20 @@ function AppContent() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage onLaunchDashboard={() => navigate('/dashboard')} />} />
+      <Route path="/index.html" element={<LandingPage onLaunchDashboard={() => navigate('/dashboard')} />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/register" element={<SignupPage />} />
       <Route
         path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard/*"
         element={
           <ProtectedRoute>
             <Dashboard />

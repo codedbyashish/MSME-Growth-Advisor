@@ -39,13 +39,21 @@ export const DataProvider = ({ children }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch all user data from MongoDB backend
-  const refreshData = useCallback(async () => {
-    if (!isAuthenticated || !token) {
+  const refreshData = useCallback(async (explicitToken) => {
+    const activeToken =
+      explicitToken ||
+      token ||
+      (typeof window !== 'undefined' ? localStorage.getItem('token') : '');
+    const storedUser =
+      typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+    const isAuthed = isAuthenticated || (!!activeToken && !!storedUser);
+
+    if (!activeToken || !isAuthed) {
       setSales([]);
       setExpenses([]);
       setInventory([]);
       setActivities([]);
-      return;
+      return null;
     }
 
     setLoading(true);
@@ -59,59 +67,63 @@ export const DataProvider = ({ children }) => {
         getActivities(),
       ]);
 
-      // Format items to match expected component properties
-      setSales(
-        salesData.map((s) => ({
-          id: s._id || s.invoiceId,
-          invoiceId: s.invoiceId,
-          client: s.client,
-          amount: Number(s.amount),
-          status: s.status,
-          date: s.date,
-          item: s.item,
-          quantity: s.quantity,
-          metadata: s.metadata,
-        }))
-      );
+      const formattedSales = (salesData || []).map((s) => ({
+        id: s._id || s.invoiceId,
+        invoiceId: s.invoiceId,
+        client: s.client,
+        amount: Number(s.amount),
+        status: s.status,
+        date: s.date,
+        item: s.item,
+        quantity: s.quantity,
+        metadata: s.metadata,
+      }));
 
-      setExpenses(
-        expensesData.map((e) => ({
-          id: e._id || e.expenseId,
-          expenseId: e.expenseId,
-          title: e.title,
-          amount: Number(e.amount),
-          category: e.category,
-          date: e.date,
-          vendor: e.vendor,
-        }))
-      );
+      const formattedExpenses = (expensesData || []).map((e) => ({
+        id: e._id || e.expenseId,
+        expenseId: e.expenseId,
+        title: e.title,
+        amount: Number(e.amount),
+        category: e.category,
+        date: e.date,
+        vendor: e.vendor,
+      }));
 
-      setInventory(
-        inventoryData.map((i) => ({
-          id: i._id || i.productId,
-          productId: i.productId,
-          name: i.name,
-          stock: Number(i.stock),
-          unit: i.unit,
-          minStock: Number(i.minStock),
-          unitPrice: Number(i.unitPrice),
-          category: i.category,
-        }))
-      );
+      const formattedInventory = (inventoryData || []).map((i) => ({
+        id: i._id || i.productId,
+        productId: i.productId,
+        name: i.name,
+        stock: Number(i.stock),
+        unit: i.unit,
+        minStock: Number(i.minStock),
+        unitPrice: Number(i.unitPrice),
+        category: i.category,
+      }));
 
-      setActivities(
-        activitiesData.map((a) => ({
-          id: a._id,
-          type: a.type,
-          title: a.title,
-          time: a.time,
-          detail: a.detail,
-          icon: a.icon,
-        }))
-      );
+      const formattedActivities = (activitiesData || []).map((a) => ({
+        id: a._id,
+        type: a.type,
+        title: a.title,
+        time: a.time,
+        detail: a.detail,
+        icon: a.icon,
+      }));
+
+      setSales(formattedSales);
+      setExpenses(formattedExpenses);
+      setInventory(formattedInventory);
+      setActivities(formattedActivities);
+
+      return {
+        sales: formattedSales,
+        expenses: formattedExpenses,
+        inventory: formattedInventory,
+        activities: formattedActivities,
+      };
     } catch (err) {
       console.error('Error loading data from MongoDB API:', err.message);
       setError(err.message || 'Failed to load business data');
+      return null;
     } finally {
       setLoading(false);
     }

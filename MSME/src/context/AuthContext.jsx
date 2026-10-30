@@ -22,11 +22,25 @@ export function AuthProvider({ children }) {
           setToken(storedToken);
           localStorage.setItem('user', JSON.stringify(userData));
         } catch (error) {
-          console.error('Session expired or invalid token:', error.message);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-          setUser(null);
-          setToken('');
+          console.error('Session verification error:', error.message);
+          // Only clear session if token is genuinely invalid or expired (401/403)
+          if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setUser(null);
+            setToken('');
+          } else {
+            // For network errors or server cold-starting, retain locally cached user and token
+            const cachedUser = localStorage.getItem('user');
+            if (cachedUser) {
+              try {
+                setUser(JSON.parse(cachedUser));
+              } catch (_) {
+                // ignore parsing error
+              }
+            }
+            setToken(storedToken);
+          }
         }
       } else {
         setUser(null);

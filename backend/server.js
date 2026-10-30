@@ -1,6 +1,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import saleRoutes from "./routes/saleRoutes.js";
@@ -45,14 +48,45 @@ app.use("/api/advisor", advisorRoutes);
 app.use("/api/import", importRoutes);
 app.use("/api/seed", seedRoutes);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve frontend build if available (supports fullstack / monolithic deployments)
+const candidateDistPaths = [
+  path.resolve(__dirname, "../MSME/dist"),
+  path.resolve(__dirname, "./dist"),
+  path.resolve(__dirname, "../dist"),
+];
+const frontendDistPath = candidateDistPaths.find((p) => fs.existsSync(p));
+
+if (frontendDistPath) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (req, res, next) => {
+    if (req.originalUrl.startsWith("/api") || req.originalUrl === "/health") {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+}
+
 // Health check endpoints
-app.get(["/", "/health", "/api/health"], (req, res) => {
+app.get(["/health", "/api/health"], (req, res) => {
   res.status(200).json({
     status: "ok",
     message: "MSME Growth Advisor API is active",
     timestamp: new Date().toISOString(),
   });
 });
+
+if (!frontendDistPath) {
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      status: "ok",
+      message: "MSME Growth Advisor API is active",
+      timestamp: new Date().toISOString(),
+    });
+  });
+}
 
 // 404 Route Handler
 app.use((req, res) => {
